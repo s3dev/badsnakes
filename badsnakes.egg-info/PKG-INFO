@@ -1,0 +1,53 @@
+Metadata-Version: 2.1
+Name: badsnakes
+Version: 0.0.0.dev1
+Summary: A toolset to identify malware in Python projects.
+Author-email: The Developers <development@s3dev.uk>
+License: GNU GPL-3
+Keywords: library,utility,utilities,security,malware detection
+Classifier: Development Status :: 1 - Planning
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Security
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Utilities
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+
+# A toolset to identify malware in Python projects.
+
+Currently a **placeholder** for when this project is ready in the near future.
+
+The ``badsnakes`` project is a CPython library and command line utility which plugs the gap in malware analysis for Python-based malware by employing code and syntax analysis, searching for various patterns and techniques used by threat actors.
+
+
+## Installation
+Coming soon ...
+
+
+## Toolset
+Coming soon ...
+
+
+## Using the Library
+Coming soon ...
+
+
+## Additional Information
+Coming soon ...
+

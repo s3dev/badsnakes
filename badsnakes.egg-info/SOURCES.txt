@@ -1,0 +1,11 @@
+LICENSE
+MANIFEST.in
+README.md
+pyproject.toml
+badsnakes/__init__.py
+badsnakes/_version.py
+badsnakes/badsnakes.py
+badsnakes.egg-info/PKG-INFO
+badsnakes.egg-info/SOURCES.txt
+badsnakes.egg-info/dependency_links.txt
+badsnakes.egg-info/top_level.txt

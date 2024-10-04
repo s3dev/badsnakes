@@ -1,0 +1,45 @@
+[build-system]
+requires = ["wheel", "setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "badsnakes"
+description = "A toolset to identify malware in Python projects."
+authors = [{name = "The Developers", email = "development@s3dev.uk"}]
+classifiers = [
+               "Development Status :: 1 - Planning",
+               "Intended Audience :: Developers",
+               "Intended Audience :: Education",
+               "Intended Audience :: End Users/Desktop",
+               "Intended Audience :: System Administrators",
+               "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+               "Operating System :: POSIX :: Linux",
+               "Operating System :: Microsoft :: Windows",
+               "Programming Language :: Python :: 3.7",
+               "Programming Language :: Python :: 3.8",
+               "Programming Language :: Python :: 3.9",
+               "Programming Language :: Python :: 3.10",
+               "Programming Language :: Python :: 3.11",
+               "Programming Language :: Python :: 3.12",
+               "Programming Language :: Python :: Implementation :: CPython",
+                "Topic :: Security",
+               "Topic :: Software Development",
+               "Topic :: Software Development :: Libraries",
+               "Topic :: Utilities",
+              ]
+dependencies = []
+dynamic = ["version"]
+keywords = ["library", "utility", "utilities", "security", "malware detection"]
+license = {text = "GNU GPL-3"}
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.7"
+
+[project.urls]
+
+[tool.setuptools.dynamic]
+version = {attr = "badsnakes.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["badsnakes"]
+exclude = []

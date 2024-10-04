@@ -1,0 +1,62 @@
+=====
+Notes
+=====
+
+
+Names
+=====
+- nacslam
+- snakescan
+- snakehunter
+- badsnakes **
+
+
+Important
+=========
+Important things that should be noted and remembered.
+
+- ppk's testing functionality must be moved into this library for
+  entralised analysis.
+- ppk must be updated to use this library for its tests.
+
+Indicators
+==========
+These are malware indicators the library should use for detecting malware
+or suspect code.
+
+- pypi: no github link
+- pypi: user with only 1 project
+- pypi: newly created user
+- pypi: use the vulerabilities key in the JSON
+- code: compare against blacklisted strings
+- code: high percentage of long lines
+- code: use of semi-colons
+- code: use of __import__
+- code: use of __builtins__
+- code: can very long strings (b64) be detected?
+
+Notes
+=====
+General notes and ideas regarding the functionality or techniques to be
+used.
+
+- comments should be excluded from the analysis
+- only search plain text files
+- can dis be used to interact with the bytecode?
+- can the inspect module be used to parse the code?
+- report the severity of the detection: display the findings
+- when detecting if a file is plaintext or binary, only read the
+  first N bytes.
+
+
+Capabilities
+============
+The library should be capable of the following.
+
+- installed library
+  - analysing a wheel file
+  - analysing a pickle file 
+- command line interface
+  - analysing a wheel file
+  - analysing a pickle file
+
