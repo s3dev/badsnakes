@@ -1,0 +1,1605 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module: analysers.py &mdash; badsnakes - v0.1.0 Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/s5defs-rules.css?v=0345028d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Module: badsnakes.py" href="badsnakes.html" />
+    <link rel="prev" title="Libary API Documentation" href="library.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            badsnakes
+              <img src="_static/s3dev_tri_white_sm.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library.html">Libary API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library.html#module-documentation">Module Documentation</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Module: analysers.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="badsnakes.html">Module: badsnakes.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="collector.html">Module: collector.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html">Module: config.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="containers.html">Module: containers.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enums.html">Module: enums.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractor.html">Module: extractor.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logger.html">Module: logger.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="module.html">Module: module.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parser.html">Module: parser.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reporter.html">Module: reporter.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html">Module: utilities.py</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact Us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">badsnakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="library.html">Libary API Documentation</a></li>
+      <li class="breadcrumb-item active">Module: analysers.py</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-badsnakes.libs.analysers">
+<span id="module-analysers-py"></span><h1>Module: analysers.py<a class="headerlink" href="#module-badsnakes.libs.analysers" title="Link to this heading"></a></h1>
+<dl class="field-list">
+<dt class="field-odd">Purpose<span class="colon">:</span></dt>
+<dd class="field-odd"><p>This module provides the AST node analysers for the project.</p>
+<p>The analyser classes in this module iterate over the
+AST-node-specific <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a> objects
+which store the details extracted from each AST node. Using
+the values defined in <code class="docutils literal notranslate"><span class="pre">config.toml</span></code> the <code class="docutils literal notranslate"><span class="pre">severity</span></code> flag
+in each container object is set according to the severity of
+the node analysis.</p>
+</dd>
+<dt class="field-even">Platform<span class="colon">:</span></dt>
+<dd class="field-even"><p>Linux/Windows | Python 3.10+</p>
+</dd>
+<dt class="field-odd">Developer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>J Berendt</p>
+</dd>
+<dt class="field-even">Email<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="mailto:development&#37;&#52;&#48;s3dev&#46;uk">development<span>&#64;</span>s3dev<span>&#46;</span>uk</a></p>
+</dd>
+<dt class="field-odd">Comments<span class="colon">:</span></dt>
+<dd class="field-odd"><p>n/a</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers._BaseAnalyser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.analysers.</span></span><span class="sig-name descname"><span class="pre">_BaseAnalyser</span></span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#_BaseAnalyser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers._BaseAnalyser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base analyser class.</p>
+<p>This class contains base functionality which is designed to be
+inherited and specialised as required by the node-type-specific
+classes.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers._BaseAnalyser.dangerous">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers._BaseAnalyser.dangerous" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers._BaseAnalyser.dangerous_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers._BaseAnalyser.dangerous_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers._BaseAnalyser.suspect">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers._BaseAnalyser.suspect" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers._BaseAnalyser.suspect_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers._BaseAnalyser.suspect_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers._BaseAnalyser.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#_BaseAnalyser.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers._BaseAnalyser.analyse" title="Link to this definition"></a></dt>
+<dd><p>Run the analyser against this module.</p>
+<p>For most AST nodes, the analyser first performs a ‘quick search’
+to determine if any of the listed keywords from the config file
+are found in the AST extraction. If no keywords are present, no
+further analysis is performed. If keywords are present, the
+extracted statements are analysed further and flagged
+accordingly.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodes</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the values extracted from the AST
+nodes.</p>
+</dd>
+<dt class="field-even">Implementation note<span class="colon">:</span></dt>
+<dd class="field-even"><p>The call to <a class="reference internal" href="#badsnakes.libs.analysers._BaseAnalyser._suspect" title="badsnakes.libs.analysers._BaseAnalyser._suspect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_suspect()</span></code></a> must be made <em>before</em> the call
+to <a class="reference internal" href="#badsnakes.libs.analysers._BaseAnalyser._dangerous" title="badsnakes.libs.analysers._BaseAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a>.</p>
+<p>There is a check in some <a class="reference internal" href="#badsnakes.libs.analysers._BaseAnalyser._dangerous" title="badsnakes.libs.analysers._BaseAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a> methods which
+test if the AST node has already been flagged as ‘suspect’.
+If so, a copy of the node class container is made so as not
+to re-classify suspect statements as dangerous; a copy of the
+container will be classified as dangerous. Obviously, this
+will result is double-reporting, but that’s OK.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers._BaseAnalyser._dangerous">
+<span class="sig-name descname"><span class="pre">_dangerous</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#_BaseAnalyser._dangerous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers._BaseAnalyser._dangerous" title="Link to this definition"></a></dt>
+<dd><p>Search for dangerous code elements for this node type.</p>
+<p>Any statements flagged as dangerous are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_d</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a <em>generalised</em> dangerous search method which looks
+at the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute only.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers._BaseAnalyser._find_long_strings">
+<span class="sig-name descname"><span class="pre">_find_long_strings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><span class="pre">Severity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.SUSPECT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#_BaseAnalyser._find_long_strings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers._BaseAnalyser._find_long_strings" title="Link to this definition"></a></dt>
+<dd><p>Search for long strings in the node values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the node classes to be analysed.</p></li>
+<li><p><strong>category</strong> (<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><em>Severity</em></a><em>, </em><em>optional</em>) – The
+<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Severity</span></code></a> class enum to be
+assigned to flagged strings.
+Defaults to <code class="docutils literal notranslate"><span class="pre">Severity.SUSPECT</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of badsnakes container objects containing long
+string values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers._BaseAnalyser._no_dangerous_items_found">
+<span class="sig-name descname"><span class="pre">_no_dangerous_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#_BaseAnalyser._no_dangerous_items_found"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers._BaseAnalyser._no_dangerous_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no dangerous items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers._BaseAnalyser._no_suspect_items_found">
+<span class="sig-name descname"><span class="pre">_no_suspect_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#_BaseAnalyser._no_suspect_items_found"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers._BaseAnalyser._no_suspect_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no suspect items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers._BaseAnalyser._quick_search">
+<span class="sig-name descname"><span class="pre">_quick_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#_BaseAnalyser._quick_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers._BaseAnalyser._quick_search" title="Link to this definition"></a></dt>
+<dd><p>Search through extracted attributes for blacklisted items.</p>
+<p>A set of blacklisted items for this node type is compared against
+a set of extracted attributes for this node type. Further analysis
+is only carried out if there is an intersection in the two sets.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a <em>generalised</em> quick search method which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute only.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers._BaseAnalyser._suspect">
+<span class="sig-name descname"><span class="pre">_suspect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#_BaseAnalyser._suspect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers._BaseAnalyser._suspect" title="Link to this definition"></a></dt>
+<dd><p>Search for suspect code elements for this node type.</p>
+<p>Any statements flagged as suspect are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_s</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a <em>generalised</em> dangerous search method which looks
+at the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute only.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ArgumentAnalyser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.analysers.</span></span><span class="sig-name descname"><span class="pre">ArgumentAnalyser</span></span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#ArgumentAnalyser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.ArgumentAnalyser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.analysers._BaseAnalyser" title="badsnakes.libs.analysers._BaseAnalyser"><code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseAnalyser</span></code></a></p>
+<p>Specialised analyser class for the <em>Argument</em> node class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ArgumentAnalyser._dangerous">
+<span class="sig-name descname"><span class="pre">_dangerous</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.ArgumentAnalyser._dangerous" title="Link to this definition"></a></dt>
+<dd><p>Search for dangerous code elements for this node type.</p>
+<p>Any statements flagged as dangerous are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_d</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a <em>generalised</em> dangerous search method which looks
+at the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute only.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ArgumentAnalyser._find_long_strings">
+<span class="sig-name descname"><span class="pre">_find_long_strings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><span class="pre">Severity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.SUSPECT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#badsnakes.libs.analysers.ArgumentAnalyser._find_long_strings" title="Link to this definition"></a></dt>
+<dd><p>Search for long strings in the node values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the node classes to be analysed.</p></li>
+<li><p><strong>category</strong> (<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><em>Severity</em></a><em>, </em><em>optional</em>) – The
+<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Severity</span></code></a> class enum to be
+assigned to flagged strings.
+Defaults to <code class="docutils literal notranslate"><span class="pre">Severity.SUSPECT</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of badsnakes container objects containing long
+string values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ArgumentAnalyser._no_dangerous_items_found">
+<span class="sig-name descname"><span class="pre">_no_dangerous_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.ArgumentAnalyser._no_dangerous_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no dangerous items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ArgumentAnalyser._no_suspect_items_found">
+<span class="sig-name descname"><span class="pre">_no_suspect_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.ArgumentAnalyser._no_suspect_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no suspect items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ArgumentAnalyser._quick_search">
+<span class="sig-name descname"><span class="pre">_quick_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.ArgumentAnalyser._quick_search" title="Link to this definition"></a></dt>
+<dd><p>Search through extracted attributes for blacklisted items.</p>
+<p>A set of blacklisted items for this node type is compared against
+a set of extracted attributes for this node type. Further analysis
+is only carried out if there is an intersection in the two sets.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a <em>generalised</em> quick search method which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute only.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ArgumentAnalyser._suspect">
+<span class="sig-name descname"><span class="pre">_suspect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.ArgumentAnalyser._suspect" title="Link to this definition"></a></dt>
+<dd><p>Search for suspect code elements for this node type.</p>
+<p>Any statements flagged as suspect are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_s</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a <em>generalised</em> dangerous search method which looks
+at the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute only.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ArgumentAnalyser.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.ArgumentAnalyser.analyse" title="Link to this definition"></a></dt>
+<dd><p>Run the analyser against this module.</p>
+<p>For most AST nodes, the analyser first performs a ‘quick search’
+to determine if any of the listed keywords from the config file
+are found in the AST extraction. If no keywords are present, no
+further analysis is performed. If keywords are present, the
+extracted statements are analysed further and flagged
+accordingly.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodes</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the values extracted from the AST
+nodes.</p>
+</dd>
+<dt class="field-even">Implementation note<span class="colon">:</span></dt>
+<dd class="field-even"><p>The call to <a class="reference internal" href="#badsnakes.libs.analysers.ArgumentAnalyser._suspect" title="badsnakes.libs.analysers.ArgumentAnalyser._suspect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_suspect()</span></code></a> must be made <em>before</em> the call
+to <a class="reference internal" href="#badsnakes.libs.analysers.ArgumentAnalyser._dangerous" title="badsnakes.libs.analysers.ArgumentAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a>.</p>
+<p>There is a check in some <a class="reference internal" href="#badsnakes.libs.analysers.ArgumentAnalyser._dangerous" title="badsnakes.libs.analysers.ArgumentAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a> methods which
+test if the AST node has already been flagged as ‘suspect’.
+If so, a copy of the node class container is made so as not
+to re-classify suspect statements as dangerous; a copy of the
+container will be classified as dangerous. Obviously, this
+will result is double-reporting, but that’s OK.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ArgumentAnalyser.dangerous">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.ArgumentAnalyser.dangerous" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ArgumentAnalyser.dangerous_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.ArgumentAnalyser.dangerous_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ArgumentAnalyser.suspect">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.ArgumentAnalyser.suspect" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ArgumentAnalyser.suspect_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.ArgumentAnalyser.suspect_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AssignmentAnalyser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.analysers.</span></span><span class="sig-name descname"><span class="pre">AssignmentAnalyser</span></span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#AssignmentAnalyser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.AssignmentAnalyser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.analysers._BaseAnalyser" title="badsnakes.libs.analysers._BaseAnalyser"><code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseAnalyser</span></code></a></p>
+<p>Specialised analyser class for the <em>Assignment</em> node class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AssignmentAnalyser._dangerous">
+<span class="sig-name descname"><span class="pre">_dangerous</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.AssignmentAnalyser._dangerous" title="Link to this definition"></a></dt>
+<dd><p>Search for dangerous code elements for this node type.</p>
+<p>Any statements flagged as dangerous are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_d</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a <em>generalised</em> dangerous search method which looks
+at the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute only.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AssignmentAnalyser._find_long_strings">
+<span class="sig-name descname"><span class="pre">_find_long_strings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><span class="pre">Severity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.SUSPECT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#badsnakes.libs.analysers.AssignmentAnalyser._find_long_strings" title="Link to this definition"></a></dt>
+<dd><p>Search for long strings in the node values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the node classes to be analysed.</p></li>
+<li><p><strong>category</strong> (<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><em>Severity</em></a><em>, </em><em>optional</em>) – The
+<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Severity</span></code></a> class enum to be
+assigned to flagged strings.
+Defaults to <code class="docutils literal notranslate"><span class="pre">Severity.SUSPECT</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of badsnakes container objects containing long
+string values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AssignmentAnalyser._no_dangerous_items_found">
+<span class="sig-name descname"><span class="pre">_no_dangerous_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.AssignmentAnalyser._no_dangerous_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no dangerous items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AssignmentAnalyser._no_suspect_items_found">
+<span class="sig-name descname"><span class="pre">_no_suspect_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.AssignmentAnalyser._no_suspect_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no suspect items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AssignmentAnalyser._quick_search">
+<span class="sig-name descname"><span class="pre">_quick_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.AssignmentAnalyser._quick_search" title="Link to this definition"></a></dt>
+<dd><p>Search through extracted attributes for blacklisted items.</p>
+<p>A set of blacklisted items for this node type is compared against
+a set of extracted attributes for this node type. Further analysis
+is only carried out if there is an intersection in the two sets.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a <em>generalised</em> quick search method which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute only.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AssignmentAnalyser._suspect">
+<span class="sig-name descname"><span class="pre">_suspect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.AssignmentAnalyser._suspect" title="Link to this definition"></a></dt>
+<dd><p>Search for suspect code elements for this node type.</p>
+<p>Any statements flagged as suspect are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_s</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a <em>generalised</em> dangerous search method which looks
+at the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute only.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AssignmentAnalyser.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.AssignmentAnalyser.analyse" title="Link to this definition"></a></dt>
+<dd><p>Run the analyser against this module.</p>
+<p>For most AST nodes, the analyser first performs a ‘quick search’
+to determine if any of the listed keywords from the config file
+are found in the AST extraction. If no keywords are present, no
+further analysis is performed. If keywords are present, the
+extracted statements are analysed further and flagged
+accordingly.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodes</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the values extracted from the AST
+nodes.</p>
+</dd>
+<dt class="field-even">Implementation note<span class="colon">:</span></dt>
+<dd class="field-even"><p>The call to <a class="reference internal" href="#badsnakes.libs.analysers.AssignmentAnalyser._suspect" title="badsnakes.libs.analysers.AssignmentAnalyser._suspect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_suspect()</span></code></a> must be made <em>before</em> the call
+to <a class="reference internal" href="#badsnakes.libs.analysers.AssignmentAnalyser._dangerous" title="badsnakes.libs.analysers.AssignmentAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a>.</p>
+<p>There is a check in some <a class="reference internal" href="#badsnakes.libs.analysers.AssignmentAnalyser._dangerous" title="badsnakes.libs.analysers.AssignmentAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a> methods which
+test if the AST node has already been flagged as ‘suspect’.
+If so, a copy of the node class container is made so as not
+to re-classify suspect statements as dangerous; a copy of the
+container will be classified as dangerous. Obviously, this
+will result is double-reporting, but that’s OK.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AssignmentAnalyser.dangerous">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.AssignmentAnalyser.dangerous" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AssignmentAnalyser.dangerous_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.AssignmentAnalyser.dangerous_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AssignmentAnalyser.suspect">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.AssignmentAnalyser.suspect" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AssignmentAnalyser.suspect_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.AssignmentAnalyser.suspect_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AttributeAnalyser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.analysers.</span></span><span class="sig-name descname"><span class="pre">AttributeAnalyser</span></span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#AttributeAnalyser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.AttributeAnalyser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.analysers._BaseAnalyser" title="badsnakes.libs.analysers._BaseAnalyser"><code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseAnalyser</span></code></a></p>
+<p>Specialised analyser class for the <em>Attribute</em> node class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AttributeAnalyser._dangerous">
+<span class="sig-name descname"><span class="pre">_dangerous</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#AttributeAnalyser._dangerous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.AttributeAnalyser._dangerous" title="Link to this definition"></a></dt>
+<dd><p>Search for dangerous code elements for this node type.</p>
+<p>Any statements flagged as dangerous are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_d</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.name</span></code> and <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attributes.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AttributeAnalyser._quick_search">
+<span class="sig-name descname"><span class="pre">_quick_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#AttributeAnalyser._quick_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.AttributeAnalyser._quick_search" title="Link to this definition"></a></dt>
+<dd><p>Search through extracted attributes for blacklisted items.</p>
+<p>A set of blacklisted items for this node type is compared against
+a set of extracted attributes for this node type. Further analysis
+is only carried out if there is an intersection in the two sets.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.name</span></code> and <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attributes.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AttributeAnalyser._suspect">
+<span class="sig-name descname"><span class="pre">_suspect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#AttributeAnalyser._suspect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.AttributeAnalyser._suspect" title="Link to this definition"></a></dt>
+<dd><p>Search for suspect code elements for this node type.</p>
+<p>Any statements flagged as suspect are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_s</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.name</span></code> and <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attributes.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AttributeAnalyser._find_long_strings">
+<span class="sig-name descname"><span class="pre">_find_long_strings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><span class="pre">Severity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.SUSPECT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#badsnakes.libs.analysers.AttributeAnalyser._find_long_strings" title="Link to this definition"></a></dt>
+<dd><p>Search for long strings in the node values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the node classes to be analysed.</p></li>
+<li><p><strong>category</strong> (<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><em>Severity</em></a><em>, </em><em>optional</em>) – The
+<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Severity</span></code></a> class enum to be
+assigned to flagged strings.
+Defaults to <code class="docutils literal notranslate"><span class="pre">Severity.SUSPECT</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of badsnakes container objects containing long
+string values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AttributeAnalyser._no_dangerous_items_found">
+<span class="sig-name descname"><span class="pre">_no_dangerous_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.AttributeAnalyser._no_dangerous_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no dangerous items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AttributeAnalyser._no_suspect_items_found">
+<span class="sig-name descname"><span class="pre">_no_suspect_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.AttributeAnalyser._no_suspect_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no suspect items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AttributeAnalyser.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.AttributeAnalyser.analyse" title="Link to this definition"></a></dt>
+<dd><p>Run the analyser against this module.</p>
+<p>For most AST nodes, the analyser first performs a ‘quick search’
+to determine if any of the listed keywords from the config file
+are found in the AST extraction. If no keywords are present, no
+further analysis is performed. If keywords are present, the
+extracted statements are analysed further and flagged
+accordingly.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodes</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the values extracted from the AST
+nodes.</p>
+</dd>
+<dt class="field-even">Implementation note<span class="colon">:</span></dt>
+<dd class="field-even"><p>The call to <a class="reference internal" href="#badsnakes.libs.analysers.AttributeAnalyser._suspect" title="badsnakes.libs.analysers.AttributeAnalyser._suspect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_suspect()</span></code></a> must be made <em>before</em> the call
+to <a class="reference internal" href="#badsnakes.libs.analysers.AttributeAnalyser._dangerous" title="badsnakes.libs.analysers.AttributeAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a>.</p>
+<p>There is a check in some <a class="reference internal" href="#badsnakes.libs.analysers.AttributeAnalyser._dangerous" title="badsnakes.libs.analysers.AttributeAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a> methods which
+test if the AST node has already been flagged as ‘suspect’.
+If so, a copy of the node class container is made so as not
+to re-classify suspect statements as dangerous; a copy of the
+container will be classified as dangerous. Obviously, this
+will result is double-reporting, but that’s OK.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AttributeAnalyser.dangerous">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.AttributeAnalyser.dangerous" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AttributeAnalyser.dangerous_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.AttributeAnalyser.dangerous_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AttributeAnalyser.suspect">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.AttributeAnalyser.suspect" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.AttributeAnalyser.suspect_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.AttributeAnalyser.suspect_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CallAnalyser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.analysers.</span></span><span class="sig-name descname"><span class="pre">CallAnalyser</span></span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CallAnalyser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CallAnalyser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.analysers._BaseAnalyser" title="badsnakes.libs.analysers._BaseAnalyser"><code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseAnalyser</span></code></a></p>
+<p>Specialised analyser class for the <em>Call</em> node class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CallAnalyser._dangerous">
+<span class="sig-name descname"><span class="pre">_dangerous</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CallAnalyser._dangerous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CallAnalyser._dangerous" title="Link to this definition"></a></dt>
+<dd><p>Search for dangerous code elements for this node type.</p>
+<p>Any statements flagged as dangerous (which are not in the
+whitelist) are written to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">_d</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.name</span></code> and <code class="docutils literal notranslate"><span class="pre">[node.module].[node.name]</span></code>
+attributes.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CallAnalyser._quick_search">
+<span class="sig-name descname"><span class="pre">_quick_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CallAnalyser._quick_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CallAnalyser._quick_search" title="Link to this definition"></a></dt>
+<dd><p>Search through extracted attributes for blacklisted items.</p>
+<p>A set of blacklisted items for this node type is compared against
+a set of extracted attributes for this node type. Further analysis
+is only carried out if there is an intersection in the two sets.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.name</span></code> and (<code class="docutils literal notranslate"><span class="pre">node.module</span></code> and <code class="docutils literal notranslate"><span class="pre">node.name</span></code>)
+attributes.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CallAnalyser._suspect">
+<span class="sig-name descname"><span class="pre">_suspect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CallAnalyser._suspect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CallAnalyser._suspect" title="Link to this definition"></a></dt>
+<dd><p>Search for suspect code elements for this node type.</p>
+<p>Any statements flagged as suspect are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_s</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.module</span></code> and <code class="docutils literal notranslate"><span class="pre">node.name</span></code> attributes.</p>
+<p>Both the [.function] name and the [module.function] are
+tested. Additionally, if a function name is only a single
+character in length, it is flagged.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CallAnalyser._find_long_strings">
+<span class="sig-name descname"><span class="pre">_find_long_strings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><span class="pre">Severity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.SUSPECT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#badsnakes.libs.analysers.CallAnalyser._find_long_strings" title="Link to this definition"></a></dt>
+<dd><p>Search for long strings in the node values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the node classes to be analysed.</p></li>
+<li><p><strong>category</strong> (<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><em>Severity</em></a><em>, </em><em>optional</em>) – The
+<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Severity</span></code></a> class enum to be
+assigned to flagged strings.
+Defaults to <code class="docutils literal notranslate"><span class="pre">Severity.SUSPECT</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of badsnakes container objects containing long
+string values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CallAnalyser._no_dangerous_items_found">
+<span class="sig-name descname"><span class="pre">_no_dangerous_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.CallAnalyser._no_dangerous_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no dangerous items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CallAnalyser._no_suspect_items_found">
+<span class="sig-name descname"><span class="pre">_no_suspect_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.CallAnalyser._no_suspect_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no suspect items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CallAnalyser.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.CallAnalyser.analyse" title="Link to this definition"></a></dt>
+<dd><p>Run the analyser against this module.</p>
+<p>For most AST nodes, the analyser first performs a ‘quick search’
+to determine if any of the listed keywords from the config file
+are found in the AST extraction. If no keywords are present, no
+further analysis is performed. If keywords are present, the
+extracted statements are analysed further and flagged
+accordingly.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodes</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the values extracted from the AST
+nodes.</p>
+</dd>
+<dt class="field-even">Implementation note<span class="colon">:</span></dt>
+<dd class="field-even"><p>The call to <a class="reference internal" href="#badsnakes.libs.analysers.CallAnalyser._suspect" title="badsnakes.libs.analysers.CallAnalyser._suspect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_suspect()</span></code></a> must be made <em>before</em> the call
+to <a class="reference internal" href="#badsnakes.libs.analysers.CallAnalyser._dangerous" title="badsnakes.libs.analysers.CallAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a>.</p>
+<p>There is a check in some <a class="reference internal" href="#badsnakes.libs.analysers.CallAnalyser._dangerous" title="badsnakes.libs.analysers.CallAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a> methods which
+test if the AST node has already been flagged as ‘suspect’.
+If so, a copy of the node class container is made so as not
+to re-classify suspect statements as dangerous; a copy of the
+container will be classified as dangerous. Obviously, this
+will result is double-reporting, but that’s OK.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CallAnalyser.dangerous">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.CallAnalyser.dangerous" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CallAnalyser.dangerous_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.CallAnalyser.dangerous_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CallAnalyser.suspect">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.CallAnalyser.suspect" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CallAnalyser.suspect_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.CallAnalyser.suspect_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.analysers.</span></span><span class="sig-name descname"><span class="pre">CodeTextAnalyser</span></span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CodeTextAnalyser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.analysers._BaseAnalyser" title="badsnakes.libs.analysers._BaseAnalyser"><code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseAnalyser</span></code></a></p>
+<p>Analyse the textual code itself for suspect activity.</p>
+<p>This analyser class is different from the other analysers in this
+module as the checks performed are based on the textual code base,
+rather than on parsed AST node extractions.</p>
+<dl class="field-list">
+<dt class="field-odd">Checks<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The checks performed by this class are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Modules with no defined functions or imports.</p></li>
+<li><p>High percentage of long lines, relative to the number of
+lines in a module.</p></li>
+<li><p>A high percentage of semi-colons, relative to the number of
+lines in a module.</p></li>
+</ul>
+</div></blockquote>
+<p>As these techniques are often used by threat actors to obfuscate
+code, these checks should pass for well-written / PEP oriented
+Python code, and are expected to trigger for suspect or poorly
+written code.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><span class="pre">Module</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CodeTextAnalyser.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser.analyse" title="Link to this definition"></a></dt>
+<dd><p>Run the code text analyser against this module.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>module</strong> (<a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><em>module.Module</em></a>) – A <a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a>
+class containing the stream of textual code to be
+analysed, and <code class="docutils literal notranslate"><span class="pre">module.nodeclasses</span></code> object for further
+inspection.</p>
+</dd>
+<dt class="field-even">Code analysis<span class="colon">:</span></dt>
+<dd class="field-even"><ul>
+<li><p>Suspect:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Single line modules</p></li>
+<li><p>Modules with no defined functions or imports</p></li>
+<li><p>Modules with a high percentage of long lines</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Dangerous:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A ‘frequent’ use of semi-colons, relative to the
+number of lines in the module</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._get_line_count">
+<span class="sig-name descname"><span class="pre">_get_line_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CodeTextAnalyser._get_line_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._get_line_count" title="Link to this definition"></a></dt>
+<dd><p>Count the lines of <em>code</em> in the module.</p>
+<p>The number of lines is determined by traversing the top level of
+the AST and storing the <code class="docutils literal notranslate"><span class="pre">node.lineno</span></code> and <code class="docutils literal notranslate"><span class="pre">node.end_lineno</span></code>
+attributes into a set (to prevent duplication), then summing
+the difference in last-first+1, to get the total number of
+<em>coded</em> lines in a module.</p>
+<p>This approach is used as this skips comments and blank lines and
+only accounts the actual lines of code.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._no_function_defs">
+<span class="sig-name descname"><span class="pre">_no_function_defs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CodeTextAnalyser._no_function_defs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._no_function_defs" title="Link to this definition"></a></dt>
+<dd><p>Test if the code has no function definitions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">badsnakes.libs.module.Module._NodeFunctionDefs.items</span></code>
+list is empty, otherwise False.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._no_imports">
+<span class="sig-name descname"><span class="pre">_no_imports</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CodeTextAnalyser._no_imports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._no_imports" title="Link to this definition"></a></dt>
+<dd><p>Test if the code has no imports.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">badsnakes.libs.module.Module._NodeImports.items</span></code>
+list is empty, otherwise False.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._set_items">
+<span class="sig-name descname"><span class="pre">_set_items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CodeTextAnalyser._set_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._set_items" title="Link to this definition"></a></dt>
+<dd><p>Set the <code class="docutils literal notranslate"><span class="pre">.items</span></code> attribute with the results.</p>
+<p>Typically, the module object will set the items on build with
+container object populated by the extractor. However, as code
+text analysis operates differently, the items are set here using
+the containers populated on analysis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._test_high_pct_long_lines">
+<span class="sig-name descname"><span class="pre">_test_high_pct_long_lines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CodeTextAnalyser._test_high_pct_long_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._test_high_pct_long_lines" title="Link to this definition"></a></dt>
+<dd><p>Test if the code has a high percentage of long lines.</p>
+<p>The maximum line length is defined in <code class="docutils literal notranslate"><span class="pre">config.toml</span></code> along with
+the percentage used by the test.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Logic<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Rewind the code stream to the beginning.</p></li>
+<li><p>Create a filter object containing lines whose length is
+greater than the maximum allowed, and obtain the length
+of the result.</p></li>
+<li><p>Divide the result by the number of lines in the module and
+test if the ratio is greater than or equal to the allowed
+limit.</p></li>
+<li><p>If the result of the test is True, a
+<a class="reference internal" href="containers.html#badsnakes.libs.containers.CodeText" title="badsnakes.libs.containers.CodeText"><code class="xref py py-class docutils literal notranslate"><span class="pre">badsnakes.libs.containers.CodeText</span></code></a> container is
+appended to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">_s</span></code> suspect attribute with the
+relevant details.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For an overview of how a module’s lines are counted, refer
+to the docstring for the <a class="reference internal" href="#badsnakes.libs.analysers.CodeTextAnalyser._get_line_count" title="badsnakes.libs.analysers.CodeTextAnalyser._get_line_count"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_get_line_count()</span></code></a> method.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._test_high_pct_semi_colons">
+<span class="sig-name descname"><span class="pre">_test_high_pct_semi_colons</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CodeTextAnalyser._test_high_pct_semi_colons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._test_high_pct_semi_colons" title="Link to this definition"></a></dt>
+<dd><p>Test for the use of semi-colons relative to line count.</p>
+<p>This test is designed to detect semi-colons which are used as
+<em>statement separators</em> in the code itself, as the
+<a class="reference internal" href="#badsnakes.libs.analysers.ConstantAnalyser" title="badsnakes.libs.analysers.ConstantAnalyser"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstantAnalyser</span></code></a> class detects
+semi-colons in strings.</p>
+<p>The percentage of semi-colons relative to the number of lines is
+defined in the <code class="docutils literal notranslate"><span class="pre">config.toml</span></code> file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Logic<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Rewind the code stream to the beginning.</p></li>
+<li><p>Iterate through the code stream and count the number of
+semi-colons on each line, and sum the results.</p></li>
+<li><p>Divide the summed result by the number of lines in the
+module and test if the ratio is greater than or equal to
+the allowed limit.</p></li>
+<li><p>If the result of the test is True, a
+<a class="reference internal" href="containers.html#badsnakes.libs.containers.CodeText" title="badsnakes.libs.containers.CodeText"><code class="xref py py-class docutils literal notranslate"><span class="pre">badsnakes.libs.containers.CodeText</span></code></a> container is
+appended to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">_d</span></code> dangerous attribute with the
+relevant details.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For an overview of how a module’s lines are counted, refer
+to the docstring for the <a class="reference internal" href="#badsnakes.libs.analysers.CodeTextAnalyser._get_line_count" title="badsnakes.libs.analysers.CodeTextAnalyser._get_line_count"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_get_line_count()</span></code></a> method.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._test_no_function_defs_no_imports">
+<span class="sig-name descname"><span class="pre">_test_no_function_defs_no_imports</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CodeTextAnalyser._test_no_function_defs_no_imports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._test_no_function_defs_no_imports" title="Link to this definition"></a></dt>
+<dd><p>Test if the code has no function definitions or imports.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Logic<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Test if a call to the <a class="reference internal" href="#badsnakes.libs.analysers.CodeTextAnalyser._no_function_defs" title="badsnakes.libs.analysers.CodeTextAnalyser._no_function_defs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_no_function_defs()</span></code></a> and
+<a class="reference internal" href="#badsnakes.libs.analysers.CodeTextAnalyser._no_imports" title="badsnakes.libs.analysers.CodeTextAnalyser._no_imports"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_no_imports()</span></code></a> methods are True.</p></li>
+<li><p>If True, a <a class="reference internal" href="containers.html#badsnakes.libs.containers.CodeText" title="badsnakes.libs.containers.CodeText"><code class="xref py py-class docutils literal notranslate"><span class="pre">badsnakes.libs.containers.CodeText</span></code></a>
+container is appended to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">_s</span></code> suspect attribute
+with the relevant details.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._test_single_line_module">
+<span class="sig-name descname"><span class="pre">_test_single_line_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CodeTextAnalyser._test_single_line_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._test_single_line_module" title="Link to this definition"></a></dt>
+<dd><p>Test if a module only contains a single line of code.</p>
+<p>Generally, this is an indication of a runner script, or a long
+statement (or string) used to obfuscate malicious code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Logic<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>If the <code class="xref py py-attr docutils literal notranslate"><span class="pre">_nlines</span></code> attribute is less than two, a
+<a class="reference internal" href="containers.html#badsnakes.libs.containers.CodeText" title="badsnakes.libs.containers.CodeText"><code class="xref py py-class docutils literal notranslate"><span class="pre">badsnakes.libs.containers.CodeText</span></code></a> container is
+appended to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">_s</span></code> suspect attribute with the
+relevant details.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Rationale<span class="colon">:</span></dt>
+<dd class="field-even"><p>For rationale on how lines of code are counted, refer to the
+docstring for the <a class="reference internal" href="#badsnakes.libs.analysers.CodeTextAnalyser._get_line_count" title="badsnakes.libs.analysers.CodeTextAnalyser._get_line_count"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_get_line_count()</span></code></a> method.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._dangerous">
+<span class="sig-name descname"><span class="pre">_dangerous</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._dangerous" title="Link to this definition"></a></dt>
+<dd><p>Search for dangerous code elements for this node type.</p>
+<p>Any statements flagged as dangerous are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_d</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a <em>generalised</em> dangerous search method which looks
+at the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute only.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._find_long_strings">
+<span class="sig-name descname"><span class="pre">_find_long_strings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><span class="pre">Severity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.SUSPECT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._find_long_strings" title="Link to this definition"></a></dt>
+<dd><p>Search for long strings in the node values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the node classes to be analysed.</p></li>
+<li><p><strong>category</strong> (<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><em>Severity</em></a><em>, </em><em>optional</em>) – The
+<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Severity</span></code></a> class enum to be
+assigned to flagged strings.
+Defaults to <code class="docutils literal notranslate"><span class="pre">Severity.SUSPECT</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of badsnakes container objects containing long
+string values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._no_dangerous_items_found">
+<span class="sig-name descname"><span class="pre">_no_dangerous_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._no_dangerous_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no dangerous items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._no_suspect_items_found">
+<span class="sig-name descname"><span class="pre">_no_suspect_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._no_suspect_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no suspect items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._quick_search">
+<span class="sig-name descname"><span class="pre">_quick_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._quick_search" title="Link to this definition"></a></dt>
+<dd><p>Search through extracted attributes for blacklisted items.</p>
+<p>A set of blacklisted items for this node type is compared against
+a set of extracted attributes for this node type. Further analysis
+is only carried out if there is an intersection in the two sets.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a <em>generalised</em> quick search method which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute only.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser._suspect">
+<span class="sig-name descname"><span class="pre">_suspect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser._suspect" title="Link to this definition"></a></dt>
+<dd><p>Search for suspect code elements for this node type.</p>
+<p>Any statements flagged as suspect are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_s</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a <em>generalised</em> dangerous search method which looks
+at the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute only.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser.dangerous">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser.dangerous" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser.dangerous_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser.dangerous_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser.suspect">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser.suspect" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser.suspect_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser.suspect_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ConstantAnalyser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.analysers.</span></span><span class="sig-name descname"><span class="pre">ConstantAnalyser</span></span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#ConstantAnalyser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.ConstantAnalyser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.analysers._BaseAnalyser" title="badsnakes.libs.analysers._BaseAnalyser"><code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseAnalyser</span></code></a></p>
+<p>Specialised analyser class for the <em>Constant</em> node class.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All function/method docstrings have been <em>excluded</em> from the
+containers enabling the search for simple strings such as
+<code class="docutils literal notranslate"><span class="pre">';'</span></code> and <code class="docutils literal notranslate"><span class="pre">'()'</span></code> in constants, without the presence of these
+strings in the docstring flagging a false-positive.</p>
+<p>The docstring extraction is performed by the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">extractor._extract_docstrings()</span></code> method.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ConstantAnalyser._dangerous">
+<span class="sig-name descname"><span class="pre">_dangerous</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#ConstantAnalyser._dangerous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.ConstantAnalyser._dangerous" title="Link to this definition"></a></dt>
+<dd><p>Search for dangerous code elements for this node type.</p>
+<p>Any statements flagged as dangerous are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_d</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute.</p>
+<p>The constants tests do <em>not</em> rely on the quick search, as we
+are searching for blacklisted strings <em>in</em> constants
+(strings). Therefore, as each constant is iterated a full
+blacklist search is occurring.</p>
+<p>Granted, it’s not efficient - but we must be thorough.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ConstantAnalyser._suspect">
+<span class="sig-name descname"><span class="pre">_suspect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#ConstantAnalyser._suspect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.ConstantAnalyser._suspect" title="Link to this definition"></a></dt>
+<dd><p>Search for suspect code elements for this node type.</p>
+<p>Any statements flagged as suspect are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_s</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute.</p>
+<p>The constants tests do <em>not</em> rely on the quick search, as we
+are searching for blacklisted strings <em>in</em> constants
+(strings). Therefore, as each constant is iterated a full
+blacklist search is occurring.</p>
+<p>Granted, it’s not efficient - but we must be thorough.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ConstantAnalyser._find_long_strings">
+<span class="sig-name descname"><span class="pre">_find_long_strings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><span class="pre">Severity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.SUSPECT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#badsnakes.libs.analysers.ConstantAnalyser._find_long_strings" title="Link to this definition"></a></dt>
+<dd><p>Search for long strings in the node values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the node classes to be analysed.</p></li>
+<li><p><strong>category</strong> (<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><em>Severity</em></a><em>, </em><em>optional</em>) – The
+<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Severity</span></code></a> class enum to be
+assigned to flagged strings.
+Defaults to <code class="docutils literal notranslate"><span class="pre">Severity.SUSPECT</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of badsnakes container objects containing long
+string values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ConstantAnalyser._no_dangerous_items_found">
+<span class="sig-name descname"><span class="pre">_no_dangerous_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.ConstantAnalyser._no_dangerous_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no dangerous items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ConstantAnalyser._no_suspect_items_found">
+<span class="sig-name descname"><span class="pre">_no_suspect_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.ConstantAnalyser._no_suspect_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no suspect items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ConstantAnalyser._quick_search">
+<span class="sig-name descname"><span class="pre">_quick_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.ConstantAnalyser._quick_search" title="Link to this definition"></a></dt>
+<dd><p>Search through extracted attributes for blacklisted items.</p>
+<p>A set of blacklisted items for this node type is compared against
+a set of extracted attributes for this node type. Further analysis
+is only carried out if there is an intersection in the two sets.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a <em>generalised</em> quick search method which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.value</span></code> attribute only.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ConstantAnalyser.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.ConstantAnalyser.analyse" title="Link to this definition"></a></dt>
+<dd><p>Run the analyser against this module.</p>
+<p>For most AST nodes, the analyser first performs a ‘quick search’
+to determine if any of the listed keywords from the config file
+are found in the AST extraction. If no keywords are present, no
+further analysis is performed. If keywords are present, the
+extracted statements are analysed further and flagged
+accordingly.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodes</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the values extracted from the AST
+nodes.</p>
+</dd>
+<dt class="field-even">Implementation note<span class="colon">:</span></dt>
+<dd class="field-even"><p>The call to <a class="reference internal" href="#badsnakes.libs.analysers.ConstantAnalyser._suspect" title="badsnakes.libs.analysers.ConstantAnalyser._suspect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_suspect()</span></code></a> must be made <em>before</em> the call
+to <a class="reference internal" href="#badsnakes.libs.analysers.ConstantAnalyser._dangerous" title="badsnakes.libs.analysers.ConstantAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a>.</p>
+<p>There is a check in some <a class="reference internal" href="#badsnakes.libs.analysers.ConstantAnalyser._dangerous" title="badsnakes.libs.analysers.ConstantAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a> methods which
+test if the AST node has already been flagged as ‘suspect’.
+If so, a copy of the node class container is made so as not
+to re-classify suspect statements as dangerous; a copy of the
+container will be classified as dangerous. Obviously, this
+will result is double-reporting, but that’s OK.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ConstantAnalyser.dangerous">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.ConstantAnalyser.dangerous" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ConstantAnalyser.dangerous_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.ConstantAnalyser.dangerous_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ConstantAnalyser.suspect">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.ConstantAnalyser.suspect" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ConstantAnalyser.suspect_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.ConstantAnalyser.suspect_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.FunctionDefAnalyser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.analysers.</span></span><span class="sig-name descname"><span class="pre">FunctionDefAnalyser</span></span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#FunctionDefAnalyser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.FunctionDefAnalyser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.analysers._BaseAnalyser" title="badsnakes.libs.analysers._BaseAnalyser"><code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseAnalyser</span></code></a></p>
+<p>Specialised analyser class for the <em>FunctionDef</em> node class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.FunctionDefAnalyser._dangerous">
+<span class="sig-name descname"><span class="pre">_dangerous</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#FunctionDefAnalyser._dangerous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.FunctionDefAnalyser._dangerous" title="Link to this definition"></a></dt>
+<dd><p>Search for dangerous code elements for this node type.</p>
+<p>Any statements flagged as dangerous are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_d</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.name</span></code> attribute.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.FunctionDefAnalyser._quick_search">
+<span class="sig-name descname"><span class="pre">_quick_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#FunctionDefAnalyser._quick_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.FunctionDefAnalyser._quick_search" title="Link to this definition"></a></dt>
+<dd><p>Search through extracted attributes for blacklisted items.</p>
+<p>A set of blacklisted items for this node type is compared against
+a set of extracted attributes for this node type. Further analysis
+is only carried out if there is an intersection in the two sets.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.name</span></code> attribute.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.FunctionDefAnalyser._suspect">
+<span class="sig-name descname"><span class="pre">_suspect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#FunctionDefAnalyser._suspect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.FunctionDefAnalyser._suspect" title="Link to this definition"></a></dt>
+<dd><p>Search for suspect code elements for this node type.</p>
+<p>Any statements flagged as suspect are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_s</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.name</span></code> attribute.</p>
+<p>As all function names are tested (specifically in search of
+single character function names) the quick search is
+bypassed.</p>
+<p>Additionally, any function names containing <code class="docutils literal notranslate"><span class="pre">'0x'</span></code> in the
+name are flagged as this suggests an attempt at obfuscation.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.FunctionDefAnalyser._find_long_strings">
+<span class="sig-name descname"><span class="pre">_find_long_strings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><span class="pre">Severity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.SUSPECT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#badsnakes.libs.analysers.FunctionDefAnalyser._find_long_strings" title="Link to this definition"></a></dt>
+<dd><p>Search for long strings in the node values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the node classes to be analysed.</p></li>
+<li><p><strong>category</strong> (<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><em>Severity</em></a><em>, </em><em>optional</em>) – The
+<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Severity</span></code></a> class enum to be
+assigned to flagged strings.
+Defaults to <code class="docutils literal notranslate"><span class="pre">Severity.SUSPECT</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of badsnakes container objects containing long
+string values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.FunctionDefAnalyser._no_dangerous_items_found">
+<span class="sig-name descname"><span class="pre">_no_dangerous_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.FunctionDefAnalyser._no_dangerous_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no dangerous items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.FunctionDefAnalyser._no_suspect_items_found">
+<span class="sig-name descname"><span class="pre">_no_suspect_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.FunctionDefAnalyser._no_suspect_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no suspect items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.FunctionDefAnalyser.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.FunctionDefAnalyser.analyse" title="Link to this definition"></a></dt>
+<dd><p>Run the analyser against this module.</p>
+<p>For most AST nodes, the analyser first performs a ‘quick search’
+to determine if any of the listed keywords from the config file
+are found in the AST extraction. If no keywords are present, no
+further analysis is performed. If keywords are present, the
+extracted statements are analysed further and flagged
+accordingly.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodes</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the values extracted from the AST
+nodes.</p>
+</dd>
+<dt class="field-even">Implementation note<span class="colon">:</span></dt>
+<dd class="field-even"><p>The call to <a class="reference internal" href="#badsnakes.libs.analysers.FunctionDefAnalyser._suspect" title="badsnakes.libs.analysers.FunctionDefAnalyser._suspect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_suspect()</span></code></a> must be made <em>before</em> the call
+to <a class="reference internal" href="#badsnakes.libs.analysers.FunctionDefAnalyser._dangerous" title="badsnakes.libs.analysers.FunctionDefAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a>.</p>
+<p>There is a check in some <a class="reference internal" href="#badsnakes.libs.analysers.FunctionDefAnalyser._dangerous" title="badsnakes.libs.analysers.FunctionDefAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a> methods which
+test if the AST node has already been flagged as ‘suspect’.
+If so, a copy of the node class container is made so as not
+to re-classify suspect statements as dangerous; a copy of the
+container will be classified as dangerous. Obviously, this
+will result is double-reporting, but that’s OK.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.FunctionDefAnalyser.dangerous">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.FunctionDefAnalyser.dangerous" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.FunctionDefAnalyser.dangerous_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.FunctionDefAnalyser.dangerous_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.FunctionDefAnalyser.suspect">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.FunctionDefAnalyser.suspect" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.FunctionDefAnalyser.suspect_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.FunctionDefAnalyser.suspect_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ImportAnalyser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.analysers.</span></span><span class="sig-name descname"><span class="pre">ImportAnalyser</span></span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#ImportAnalyser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.ImportAnalyser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.analysers._BaseAnalyser" title="badsnakes.libs.analysers._BaseAnalyser"><code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseAnalyser</span></code></a></p>
+<p>Specialised analyser class for the <em>Import</em> node class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ImportAnalyser._dangerous">
+<span class="sig-name descname"><span class="pre">_dangerous</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#ImportAnalyser._dangerous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.ImportAnalyser._dangerous" title="Link to this definition"></a></dt>
+<dd><p>Search for dangerous code elements for this node type.</p>
+<p>Any statements flagged as dangerous are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_d</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.module</span></code> and (<code class="docutils literal notranslate"><span class="pre">node.module</span></code>.``node.name``)
+attributes.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ImportAnalyser._quick_search">
+<span class="sig-name descname"><span class="pre">_quick_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#ImportAnalyser._quick_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.ImportAnalyser._quick_search" title="Link to this definition"></a></dt>
+<dd><p>Search through extracted attributes for blacklisted items.</p>
+<p>A set of blacklisted items for this node type is compared against
+a set of extracted attributes for this node type. Further analysis
+is only carried out if there is an intersection in the two sets.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.module</span></code> and (<code class="docutils literal notranslate"><span class="pre">node.module</span></code>.``node.name``)
+attributes.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ImportAnalyser._suspect">
+<span class="sig-name descname"><span class="pre">_suspect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#ImportAnalyser._suspect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.ImportAnalyser._suspect" title="Link to this definition"></a></dt>
+<dd><p>Search for suspect code elements for this node type.</p>
+<p>Any statements flagged as suspect are written to the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_s</span></code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is specific to the node type, which looks at
+the <code class="docutils literal notranslate"><span class="pre">node.module</span></code> and (<code class="docutils literal notranslate"><span class="pre">node.module</span></code>.``node.name``)
+attributes.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ImportAnalyser._find_long_strings">
+<span class="sig-name descname"><span class="pre">_find_long_strings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><span class="pre">Severity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Severity.SUSPECT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#badsnakes.libs.analysers.ImportAnalyser._find_long_strings" title="Link to this definition"></a></dt>
+<dd><p>Search for long strings in the node values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the node classes to be analysed.</p></li>
+<li><p><strong>category</strong> (<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><em>Severity</em></a><em>, </em><em>optional</em>) – The
+<a class="reference internal" href="enums.html#badsnakes.libs.enums.Severity" title="badsnakes.libs.enums.Severity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Severity</span></code></a> class enum to be
+assigned to flagged strings.
+Defaults to <code class="docutils literal notranslate"><span class="pre">Severity.SUSPECT</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of badsnakes container objects containing long
+string values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ImportAnalyser._no_dangerous_items_found">
+<span class="sig-name descname"><span class="pre">_no_dangerous_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.ImportAnalyser._no_dangerous_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no dangerous items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ImportAnalyser._no_suspect_items_found">
+<span class="sig-name descname"><span class="pre">_no_suspect_items_found</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.ImportAnalyser._no_suspect_items_found" title="Link to this definition"></a></dt>
+<dd><p>Report that no suspect items were found in the quick search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ImportAnalyser.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.analysers.ImportAnalyser.analyse" title="Link to this definition"></a></dt>
+<dd><p>Run the analyser against this module.</p>
+<p>For most AST nodes, the analyser first performs a ‘quick search’
+to determine if any of the listed keywords from the config file
+are found in the AST extraction. If no keywords are present, no
+further analysis is performed. If keywords are present, the
+extracted statements are analysed further and flagged
+accordingly.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodes</strong> (<em>list</em>) – A list of <a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a>
+objects containing the values extracted from the AST
+nodes.</p>
+</dd>
+<dt class="field-even">Implementation note<span class="colon">:</span></dt>
+<dd class="field-even"><p>The call to <a class="reference internal" href="#badsnakes.libs.analysers.ImportAnalyser._suspect" title="badsnakes.libs.analysers.ImportAnalyser._suspect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_suspect()</span></code></a> must be made <em>before</em> the call
+to <a class="reference internal" href="#badsnakes.libs.analysers.ImportAnalyser._dangerous" title="badsnakes.libs.analysers.ImportAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a>.</p>
+<p>There is a check in some <a class="reference internal" href="#badsnakes.libs.analysers.ImportAnalyser._dangerous" title="badsnakes.libs.analysers.ImportAnalyser._dangerous"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_dangerous()</span></code></a> methods which
+test if the AST node has already been flagged as ‘suspect’.
+If so, a copy of the node class container is made so as not
+to re-classify suspect statements as dangerous; a copy of the
+container will be classified as dangerous. Obviously, this
+will result is double-reporting, but that’s OK.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ImportAnalyser.dangerous">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.ImportAnalyser.dangerous" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ImportAnalyser.dangerous_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dangerous_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.ImportAnalyser.dangerous_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>dangerous</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ImportAnalyser.suspect">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.ImportAnalyser.suspect" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST nodes flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.analysers.ImportAnalyser.suspect_longstring">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suspect_longstring</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#badsnakes.libs.analysers.ImportAnalyser.suspect_longstring" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to long strings flagged as <em>suspect</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="library.html" class="btn btn-neutral float-left" title="Libary API Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="badsnakes.html" class="btn btn-neutral float-right" title="Module: badsnakes.py" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

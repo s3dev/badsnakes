@@ -1,0 +1,594 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>badsnakes.libs.logger &mdash; badsnakes - v0.1.0 Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/s5defs-rules.css?v=0345028d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            badsnakes
+              <img src="../../../_static/s3dev_tri_white_sm.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../library.html">Libary API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact Us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">badsnakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">badsnakes.libs.logger</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for badsnakes.libs.logger</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:Purpose:   This module provides the *file-based* reporting</span>
+<span class="sd">            functionality for the project. Terminal-based reporting is</span>
+<span class="sd">            handled by the :mod:`badsnakes.libs.reporter` module.</span>
+
+<span class="sd">            Each ``_LogTemplate*`` class is responsible for the</span>
+<span class="sd">            formatting of each AST node class. Whereas the primary caller</span>
+<span class="sd">            :class:`Logger` class controls the file creation and writing</span>
+<span class="sd">            functionalities.</span>
+
+<span class="sd">:Platform:  Linux/Windows | Python 3.10+</span>
+<span class="sd">:Developer: J Berendt</span>
+<span class="sd">:Email:     development@s3dev.uk</span>
+
+<span class="sd">:Comments:  n/a</span>
+
+<span class="sd">:Example:</span>
+<span class="sd">            Create a log file for a given module, or modules::</span>
+
+<span class="sd">                &gt;&gt;&gt; from badsnakes import Module</span>
+<span class="sd">                &gt;&gt;&gt; from badsnakes.libs.logger import Logger</span>
+
+<span class="sd">                # Analyse a Python module.</span>
+<span class="sd">                &gt;&gt;&gt; m = Module(path=&#39;/path/to/millworker.py&#39;)</span>
+<span class="sd">                &gt;&gt;&gt; m.analyse()</span>
+
+<span class="sd">                # Create the log file.</span>
+<span class="sd">                &gt;&gt;&gt; l = Logger(path=&#39;/path/to/millworker.log&#39;, modules=[m])</span>
+<span class="sd">                &gt;&gt;&gt; l.write()</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Enable type hinting</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<div class="viewcode-block" id="Logger">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger.Logger">[docs]</a>
+<span class="k">class</span> <span class="nc">Logger</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write module findings to a log file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): Full path to the log file to be created.</span>
+<span class="sd">        modules (list[module.Module] | tuple[module.Module]): A list or</span>
+<span class="sd">            tuple containing :class:`badsnakes.libs.module.Module`</span>
+<span class="sd">            objects containing findings to be written to a log file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_HEADER</span> <span class="o">=</span> <span class="s1">&#39;severity,module,line_start,line_end,title,text&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">modules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">module</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">module</span><span class="o">.</span><span class="n">Module</span><span class="p">]):</span>  <span class="c1"># noqa # pylint: disable=undefined-variable</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Logger class initialiser.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fp</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_modules</span> <span class="o">=</span> <span class="n">modules</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">modules</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="k">else</span> <span class="p">[</span><span class="n">modules</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tmps</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Logging templates.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Logger.write">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger.Logger.write">[docs]</a>
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write log entries for all modules.</span>
+
+<span class="sd">        :Logic:</span>
+<span class="sd">            For each module passed on instantiation, create a logging</span>
+<span class="sd">            template parent-class, based on the module&#39;s name.</span>
+
+<span class="sd">            Suspect findings are written first, followed by dangerous</span>
+<span class="sd">            findings.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modules</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tmps</span> <span class="o">=</span> <span class="n">_LogTemplates</span><span class="p">(</span><span class="n">module_name</span><span class="o">=</span><span class="n">module</span><span class="o">.</span><span class="n">name_and_parent</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_suspect</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_dangerous</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Logger._setup">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger.Logger._setup">[docs]</a>
+    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the new log file, if it does not already exist.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fp</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fp</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_HEADER</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Logger._write">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger.Logger._write">[docs]</a>
+    <span class="k">def</span> <span class="nf">_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generalised log entry writer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text (str): Delimited text string to be written to the log.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">text</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fp</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Logger._write_dangerous">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger.Logger._write_dangerous">[docs]</a>
+    <span class="k">def</span> <span class="nf">_write_dangerous</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="n">module</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>  <span class="c1"># noqa # pylint: disable=undefined-variable</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write a module&#39;s *dangerous* findings to the log file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            module (module.Module): Module for which the log entries are</span>
+<span class="sd">                to be written.</span>
+
+<span class="sd">        :Logic:</span>
+<span class="sd">            For each AST node class, obtain the associated log template</span>
+<span class="sd">            sub-class from :class:`_LogTemplates`, using the node class&#39;</span>
+<span class="sd">            ``.name`` property.</span>
+
+<span class="sd">            Using the AST-specific log template, write the dangerous</span>
+<span class="sd">            findings to the log file created on logger instantiation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">nc</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">nodeclasses</span><span class="p">:</span>
+            <span class="n">logger</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmps</span><span class="p">,</span> <span class="n">nc</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">logger</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">analyser</span><span class="o">.</span><span class="n">dangerous</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">entry</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">analyser</span><span class="o">.</span><span class="n">dangerous_longstring</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">entry_longstring</span><span class="p">(</span><span class="n">node</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Logger._write_suspect">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger.Logger._write_suspect">[docs]</a>
+    <span class="k">def</span> <span class="nf">_write_suspect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="n">module</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>  <span class="c1"># noqa # pylint: disable=undefined-variable</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write a module&#39;s *suspect* findings to the log file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            module (module.Module): Module for which the log entries are</span>
+<span class="sd">                to be written.</span>
+
+<span class="sd">        :Logic:</span>
+<span class="sd">            For each AST node class, obtain the associated log template</span>
+<span class="sd">            sub-class from :class:`_LogTemplates`, using the node class&#39;</span>
+<span class="sd">            ``.name`` property.</span>
+
+<span class="sd">            Using the AST-specific log template, write the suspect</span>
+<span class="sd">            findings to the log file created on logger instantiation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">nc</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">nodeclasses</span><span class="p">:</span>
+            <span class="n">logger</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmps</span><span class="p">,</span> <span class="n">nc</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">logger</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">analyser</span><span class="o">.</span><span class="n">suspect</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">entry</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">analyser</span><span class="o">.</span><span class="n">suspect_longstring</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">entry_longstring</span><span class="p">(</span><span class="n">node</span><span class="p">))</span></div>
+</div>
+
+
+
+<span class="c1"># %% Related private class implementations.</span>
+
+<div class="viewcode-block" id="_LogTemplates">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplates">[docs]</a>
+<span class="k">class</span> <span class="nc">_LogTemplates</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Private wrapper class for all logging templates.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span>  <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;arguments&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;assignments&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;attributes&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;calls&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;codetext&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;constants&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;functiondefs&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;imports&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">_LogTemplateArguments</span><span class="p">(</span><span class="n">module_name</span><span class="o">=</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assignments</span> <span class="o">=</span> <span class="n">_LogTemplateAssignment</span><span class="p">(</span><span class="n">module_name</span><span class="o">=</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="n">_LogTemplateAttribute</span><span class="p">(</span><span class="n">module_name</span><span class="o">=</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calls</span> <span class="o">=</span> <span class="n">_LogTemplateCall</span><span class="p">(</span><span class="n">module_name</span><span class="o">=</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">codetext</span> <span class="o">=</span> <span class="n">_LogTemplateCodeText</span><span class="p">(</span><span class="n">module_name</span><span class="o">=</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constants</span> <span class="o">=</span> <span class="n">_LogTemplateConstant</span><span class="p">(</span><span class="n">module_name</span><span class="o">=</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">functiondefs</span> <span class="o">=</span> <span class="n">_LogTemplateFunctionDef</span><span class="p">(</span><span class="n">module_name</span><span class="o">=</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imports</span> <span class="o">=</span> <span class="n">_LogTemplateImport</span><span class="p">(</span><span class="n">module_name</span><span class="o">=</span><span class="n">module_name</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_LogTemplateBase">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateBase">[docs]</a>
+<span class="k">class</span> <span class="nc">_LogTemplateBase</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Private template logging base class.</span>
+
+<span class="sd">    This class provides the :meth:`_populate` method to the sub-classes,</span>
+<span class="sd">    which is used to build the log entry.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        module_name (str): Name of the module being logged. This name is</span>
+<span class="sd">            written to the &#39;module&#39; field of the log file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_BASE</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{severity}</span><span class="s1">,</span><span class="si">{module}</span><span class="s1">,</span><span class="si">{line_start}</span><span class="s1">,</span><span class="si">{line_end}</span><span class="s1">,</span><span class="si">{title}</span><span class="s1">,&quot;</span><span class="si">{text}</span><span class="s1">&quot;&#39;</span>
+    <span class="n">_TITLE</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log templates base class initialiser.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">module_name</span>
+
+<div class="viewcode-block" id="_LogTemplateBase.entry_longstring">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateBase.entry_longstring">[docs]</a>
+    <span class="k">def</span> <span class="nf">entry_longstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate an entry for a long string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (object): AST node container from which the severity and</span>
+<span class="sd">                line numbers are obtained.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Long strings are truncated to the leading and trailing 25</span>
+<span class="sd">            characters to preserve brevity.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The complete, formatted entry to be written to the log</span>
+<span class="sd">            file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">trunc</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">[:</span><span class="mi">25</span><span class="p">])</span><span class="si">}</span><span class="s1">...</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="o">-</span><span class="mi">25</span><span class="p">:])</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;A </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2"> char string detected: </span><span class="si">{</span><span class="n">trunc</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Long string&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_LogTemplateBase._populate">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateBase._populate">[docs]</a>
+    <span class="k">def</span> <span class="nf">_populate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a node-specific log entry.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (object): AST node container from which the severity and</span>
+<span class="sd">                line numbers are obtained.</span>
+<span class="sd">            text (str): Text to be written to the &#39;text&#39; field of the</span>
+<span class="sd">                log file.</span>
+<span class="sd">            title (str, optional): Title to be written to the &#39;title&#39;</span>
+<span class="sd">                field of the log file. If provided, this argument</span>
+<span class="sd">                overrides the ``_TITLE`` attribute of the node-specific</span>
+<span class="sd">                logging class. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The complete, formatted entry to be written to the log</span>
+<span class="sd">            file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">title</span> <span class="k">if</span> <span class="n">title</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TITLE</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_BASE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">severity</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                 <span class="n">module</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
+                                 <span class="n">line_start</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">line</span><span class="p">,</span>
+                                 <span class="n">line_end</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">line_end</span><span class="p">,</span>
+                                 <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                                 <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="_LogTemplateArguments">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateArguments">[docs]</a>
+<span class="k">class</span> <span class="nc">_LogTemplateArguments</span><span class="p">(</span><span class="n">_LogTemplateBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;``Constant`` node class specific logging template class.&quot;&quot;&quot;</span>
+
+    <span class="n">_TITLE</span> <span class="o">=</span> <span class="s1">&#39;Argument&#39;</span>
+
+<div class="viewcode-block" id="_LogTemplateArguments.entry">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateArguments.entry">[docs]</a>
+    <span class="k">def</span> <span class="nf">entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">containers</span><span class="o">.</span><span class="n">Constant</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa # pylint: disable=undefined-variable</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a node-specific log entry.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (containers.Constant): A :class:`badsnakes.libs.containers.Constant`</span>
+<span class="sd">                object containing the values from which the log entry is</span>
+<span class="sd">                derived.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The complete, formatted entry to be written to the log</span>
+<span class="sd">            file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; passed into the &#39;</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; function&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="_LogTemplateAssignment">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateAssignment">[docs]</a>
+<span class="k">class</span> <span class="nc">_LogTemplateAssignment</span><span class="p">(</span><span class="n">_LogTemplateBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;``Assignment`` node class specific logging template class.&quot;&quot;&quot;</span>
+
+    <span class="n">_TITLE</span> <span class="o">=</span> <span class="s1">&#39;Assignment&#39;</span>
+
+<div class="viewcode-block" id="_LogTemplateAssignment.entry">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateAssignment.entry">[docs]</a>
+    <span class="k">def</span> <span class="nf">entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">containers</span><span class="o">.</span><span class="n">Assign</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa # pylint: disable=undefined-variable</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a node-specific log entry.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (containers.Assign): A :class:`badsnakes.libs.containers.Assign`</span>
+<span class="sd">                object containing the values from which the log entry is</span>
+<span class="sd">                derived.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The complete, formatted entry to be written to the log</span>
+<span class="sd">            file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="_LogTemplateAttribute">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateAttribute">[docs]</a>
+<span class="k">class</span> <span class="nc">_LogTemplateAttribute</span><span class="p">(</span><span class="n">_LogTemplateBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;``Attribute`` node class specific logging template class.&quot;&quot;&quot;</span>
+
+    <span class="n">_TITLE</span> <span class="o">=</span> <span class="s1">&#39;Attribute&#39;</span>
+
+<div class="viewcode-block" id="_LogTemplateAttribute.entry">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateAttribute.entry">[docs]</a>
+    <span class="k">def</span> <span class="nf">entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">containers</span><span class="o">.</span><span class="n">Attribute</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa # pylint: disable=undefined-variable</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a node-specific log entry.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (containers.Attribute): A :class:`badsnakes.libs.containers.Attribute`</span>
+<span class="sd">                object containing the values from which the log entry is</span>
+<span class="sd">                derived.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The complete, formatted entry to be written to the log</span>
+<span class="sd">            file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Use of </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> detected&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="_LogTemplateCall">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateCall">[docs]</a>
+<span class="k">class</span> <span class="nc">_LogTemplateCall</span><span class="p">(</span><span class="n">_LogTemplateBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;``Call`` node class specific logging template class.&quot;&quot;&quot;</span>
+
+    <span class="n">_TITLE</span> <span class="o">=</span> <span class="s1">&#39;Function call&#39;</span>
+
+<div class="viewcode-block" id="_LogTemplateCall.entry">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateCall.entry">[docs]</a>
+    <span class="k">def</span> <span class="nf">entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">containers</span><span class="o">.</span><span class="n">Call</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa # pylint: disable=undefined-variable</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a node-specific log entry.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (containers.Call): A :class:`badsnakes.libs.containers.Call`</span>
+<span class="sd">                object containing the values from which the log entry is</span>
+<span class="sd">                derived.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The complete, formatted entry to be written to the log</span>
+<span class="sd">            file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">module</span> <span class="k">else</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="_LogTemplateCodeText">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateCodeText">[docs]</a>
+<span class="k">class</span> <span class="nc">_LogTemplateCodeText</span><span class="p">(</span><span class="n">_LogTemplateBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;``CodeText`` node class specific logging template class.&quot;&quot;&quot;</span>
+
+    <span class="n">_TITLE</span> <span class="o">=</span> <span class="s1">&#39;CodeText&#39;</span>
+
+<div class="viewcode-block" id="_LogTemplateCodeText.entry">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateCodeText.entry">[docs]</a>
+    <span class="k">def</span> <span class="nf">entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">containers</span><span class="o">.</span><span class="n">CodeText</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa # pylint: disable=undefined-variable</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a node-specific log entry.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (containers.CodeText): A :class:`badsnakes.libs.containers.CodeText`</span>
+<span class="sd">                object containing the values from which the log entry is</span>
+<span class="sd">                derived.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The complete, formatted entry to be written to the log</span>
+<span class="sd">            file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">reason</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="_LogTemplateConstant">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateConstant">[docs]</a>
+<span class="k">class</span> <span class="nc">_LogTemplateConstant</span><span class="p">(</span><span class="n">_LogTemplateBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;``Constant`` node class specific logging template class.&quot;&quot;&quot;</span>
+
+    <span class="n">_TITLE</span> <span class="o">=</span> <span class="s1">&#39;String search&#39;</span>
+
+<div class="viewcode-block" id="_LogTemplateConstant.entry">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateConstant.entry">[docs]</a>
+    <span class="k">def</span> <span class="nf">entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">containers</span><span class="o">.</span><span class="n">Constant</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa # pylint: disable=undefined-variable</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a node-specific log entry.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (containers.Constant): A :class:`badsnakes.libs.containers.Constant`</span>
+<span class="sd">                object containing the values from which the log entry is</span>
+<span class="sd">                derived.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The complete, formatted entry to be written to the log</span>
+<span class="sd">            file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">searchstr</span><span class="si">}</span><span class="s2">&#39; found in </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="_LogTemplateFunctionDef">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateFunctionDef">[docs]</a>
+<span class="k">class</span> <span class="nc">_LogTemplateFunctionDef</span><span class="p">(</span><span class="n">_LogTemplateBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;``FunctionDef`` node class specific logging template class.&quot;&quot;&quot;</span>
+
+    <span class="n">_TITLE</span> <span class="o">=</span> <span class="s1">&#39;Function definition&#39;</span>
+
+<div class="viewcode-block" id="_LogTemplateFunctionDef.entry">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateFunctionDef.entry">[docs]</a>
+    <span class="k">def</span> <span class="nf">entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">containers</span><span class="o">.</span><span class="n">FunctionDef</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa # pylint: disable=undefined-variable</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a node-specific log entry.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (containers.FunctionDef): A :class:`badsnakes.libs.containers.FunctionDef`</span>
+<span class="sd">                object containing the values from which the log entry is</span>
+<span class="sd">                derived.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The complete, formatted entry to be written to the log</span>
+<span class="sd">            file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Function named &#39;</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; detected&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="_LogTemplateImport">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateImport">[docs]</a>
+<span class="k">class</span> <span class="nc">_LogTemplateImport</span><span class="p">(</span><span class="n">_LogTemplateBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;``FunctionDef`` node class specific logging template class.&quot;&quot;&quot;</span>
+
+    <span class="n">_TITLE</span> <span class="o">=</span> <span class="s1">&#39;Import&#39;</span>
+
+<div class="viewcode-block" id="_LogTemplateImport.entry">
+<a class="viewcode-back" href="../../../logger.html#badsnakes.libs.logger._LogTemplateImport.entry">[docs]</a>
+    <span class="k">def</span> <span class="nf">entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">containers</span><span class="o">.</span><span class="n">Import</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa # pylint: disable=undefined-variable</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a node-specific log entry.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (containers.Import): A :class:`badsnakes.libs.containers.Import`</span>
+<span class="sd">                object containing the values from which the log entry is</span>
+<span class="sd">                derived.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The complete, formatted entry to be written to the log</span>
+<span class="sd">            file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">asname</span><span class="p">:</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="n">node</span><span class="o">.</span><span class="n">module</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;import </span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2"> as </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">asname</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;from </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s2"> import </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;import </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

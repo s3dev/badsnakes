@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>badsnakes.libs.utilities &mdash; badsnakes - v0.1.0 Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/s5defs-rules.css?v=0345028d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            badsnakes
+              <img src="../../../_static/s3dev_tri_white_sm.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../library.html">Libary API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact Us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">badsnakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">badsnakes.libs.utilities</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for badsnakes.libs.utilities</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:Purpose:   This module provides general utility-based functions to the</span>
+<span class="sd">            project.</span>
+
+<span class="sd">:Platform:  Linux/Windows | Python 3.10+</span>
+<span class="sd">:Developer: J Berendt</span>
+<span class="sd">:Email:     development@s3dev.uk</span>
+
+<span class="sd">:Comments:  n/a</span>
+
+<span class="sd">:Examples:</span>
+
+<span class="sd">    Test if a file is *binary*::</span>
+
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.utilities import utilities</span>
+
+<span class="sd">        &gt;&gt;&gt; utilities.isbinary(path=&#39;/path/to/myfile.ext&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    Test if a file is *text*::</span>
+
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.utilities import utilities</span>
+
+<span class="sd">        &gt;&gt;&gt; utilities.istext(path=&#39;/path/to/myfile.py&#39;)</span>
+<span class="sd">        True</span>
+
+
+<span class="sd">    Test if a file is a *Python wheel*::</span>
+
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.utilities import utilities</span>
+
+<span class="sd">        &gt;&gt;&gt; utilities.iszip(path=&#39;/path/to/mypackage.whl&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<div class="viewcode-block" id="Utilities">
+<a class="viewcode-back" href="../../../utilities.html#badsnakes.libs.utilities.Utilities">[docs]</a>
+<span class="k">class</span> <span class="nc">Utilities</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generalised utilities for use throughout the project.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">_TEXTCHARS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">({</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">27</span><span class="p">}</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x100</span><span class="p">))</span> <span class="o">-</span> <span class="p">{</span><span class="mh">0x7f</span><span class="p">})</span>
+    <span class="n">_ZIPSIG</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x50\x4b\x03\x04</span><span class="s1">&#39;</span>
+    <span class="n">_ZIPSIG_EMPTY</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x50\x4b\x05\x06</span><span class="s1">&#39;</span>
+    <span class="n">_ZIPSIG_SPAN</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x50\x4b\x07\x08</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="Utilities.exclude_dirs">
+<a class="viewcode-back" href="../../../utilities.html#badsnakes.libs.utilities.Utilities.exclude_dirs">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">exclude_dirs</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">exclude</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Exclude the listed directories from the source.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            source (list[str]): List of source paths.</span>
+<span class="sd">            exclude (list[str]): List of directories to be excluded from</span>
+<span class="sd">                ``source``.</span>
+
+<span class="sd">        :Design:</span>
+<span class="sd">            The paths in ``exclude`` are expanded to their realpath, with</span>
+<span class="sd">            a trailing path separator explicitly added to ensure only</span>
+<span class="sd">            directory paths are matched.</span>
+
+<span class="sd">            For example, if the trailing path separator was not added,</span>
+<span class="sd">            ``.gitignore`` would be excluded if ``./.git`` was in</span>
+<span class="sd">            ``exclude`` paths. Adding the trailing path separator</span>
+<span class="sd">            prevents this.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[str]: A new list of paths where any ``source`` path</span>
+<span class="sd">            sharing a common base path with any ``exclude`` path has</span>
+<span class="sd">            been removed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="n">exclude</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">source</span> <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">e</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="Utilities.isbinary">
+<a class="viewcode-back" href="../../../utilities.html#badsnakes.libs.utilities.Utilities.isbinary">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">isbinary</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if a file is binary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str): Full path to the file to be tested.</span>
+<span class="sd">            size (int, optional): Number of bytes read at a time to</span>
+<span class="sd">                perform the test. As with :func:`io.RawIOBase.read`, if</span>
+<span class="sd">                size is unspecified or -1, all bytes until EOF are</span>
+<span class="sd">                returned. Defaults to 1024.</span>
+
+<span class="sd">        :Design:</span>
+<span class="sd">            For each chunk of the file, if any characters are left over</span>
+<span class="sd">            after removing all text characters, the file is classified</span>
+<span class="sd">            as &#39;binary&#39;, and ``True`` is returned immediately. For</span>
+<span class="sd">            efficiency, only (N) bytes of the files are read at a time,</span>
+<span class="sd">            as controlled by the ``size`` argument. Once a file is found</span>
+<span class="sd">            to be binary, the function returns immediately as there is</span>
+<span class="sd">            no need to continue reading.</span>
+
+<span class="sd">        :References:</span>
+
+<span class="sd">            - `How to detect if a file is binary &lt;so_ref1_&gt;`_</span>
+<span class="sd">            - `ASCII printable character reference &lt;so_ref2_&gt;`_</span>
+
+<span class="sd">            .. _so_ref1: https://stackoverflow.com/a/7392391/6340496</span>
+<span class="sd">            .. _so_ref2: https://stackoverflow.com/a/32184831/6340496</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if a file is binary, otherwise False if the file</span>
+<span class="sd">            is plain-text.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>  <span class="c1"># Non-files are considered binary.</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">chunk</span> <span class="o">:=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span> <span class="o">-</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_TEXTCHARS</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Utilities.istext">
+<a class="viewcode-back" href="../../../utilities.html#badsnakes.libs.utilities.Utilities.istext">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">istext</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if a file is plain-text.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str): Full path to the file to be tested.</span>
+<span class="sd">            size (int, optional): Number of bytes read to perform</span>
+<span class="sd">                the test. As with :func:`io.RawIOBase.read`, if size is</span>
+<span class="sd">                unspecified or -1, all bytes until EOF are returned.</span>
+<span class="sd">                Defaults to 1024.</span>
+
+<span class="sd">        :Design:</span>
+<span class="sd">            This function simply calls the :meth:`isbinary` method and</span>
+<span class="sd">            inverts the return value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if a file is plain-text, otherwise false if the</span>
+<span class="sd">            file is binary.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">isbinary</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Utilities.iszip">
+<a class="viewcode-back" href="../../../utilities.html#badsnakes.libs.utilities.Utilities.iszip">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">iszip</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Determine if a file is a ``ZIP`` archive.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str): Full path to the file to be tested.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            A file is tested to be a ``ZIP`` archive by checking the</span>
+<span class="sd">            `first four bytes &lt;zip-format_&gt;`_ of the file itself, *not*</span>
+<span class="sd">            using the file extension.</span>
+
+<span class="sd">            It is up to the caller to handle empty or spanned ZIP</span>
+<span class="sd">            archives appropriately.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the first four bytes of the file match any of</span>
+<span class="sd">            the below. Otherwise, False.</span>
+
+<span class="sd">            - ``\x50\x4b\x03\x04``: &#39;Standard&#39; archive</span>
+<span class="sd">            - ``\x50\x4b\x05\x06``: Empty archive</span>
+<span class="sd">            - ``\x50\x4b\x07\x08``: Spanned archive</span>
+
+<span class="sd">        .. _zip-format: https://en.wikipedia.org/wiki/ZIP_(file_format)#Local_file_header</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_ZIPSIG</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_ZIPSIG_EMPTY</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_ZIPSIG_SPAN</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="n">utilities</span> <span class="o">=</span> <span class="n">Utilities</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+
+Samples
+=======
+As the ./samples directory contains actual malware samples, the directory
+must be archived *and* passworded when not in active use.
+
+The password shall be: infected
+
+Zipping
+-------
+The ./samples directory can be zipped by running:
+
+    $ ./zipsamples.sh
+
+Unzipping
+---------
+To unzip the samples.zip file, run the following, and enter the password
+when prompted:
+
+    $ unzip ./samples.zip
+

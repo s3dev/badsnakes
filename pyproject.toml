@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "badsnakes"
-description = "A toolset to identify malware in Python projects."
+description = "A toolset to help identify malware in Python projects."
 authors = [{name = "The Developers", email = "development@s3dev.uk"}]
 classifiers = [
-               "Development Status :: 1 - Planning",
+               "Development Status :: 4 - Beta",
                "Intended Audience :: Developers",
                "Intended Audience :: Education",
                "Intended Audience :: End Users/Desktop",
@@ -15,14 +15,11 @@ classifiers = [
                "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
                "Operating System :: POSIX :: Linux",
                "Operating System :: Microsoft :: Windows",
-               "Programming Language :: Python :: 3.7",
-               "Programming Language :: Python :: 3.8",
-               "Programming Language :: Python :: 3.9",
                "Programming Language :: Python :: 3.10",
                "Programming Language :: Python :: 3.11",
                "Programming Language :: Python :: 3.12",
                "Programming Language :: Python :: Implementation :: CPython",
-                "Topic :: Security",
+               "Topic :: Security",
                "Topic :: Software Development",
                "Topic :: Software Development :: Libraries",
                "Topic :: Utilities",
@@ -32,9 +29,13 @@ dynamic = ["version"]
 keywords = ["library", "utility", "utilities", "security", "malware detection"]
 license = {text = "GNU GPL-3"}
 readme = {file = "README.md", content-type = "text/markdown"}
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 
 [project.urls]
+# TODO: Update this when the docs are ready.
+Documentation = "https://github.com/s3dev/badsnakes"
+Homepage = "https://github.com/s3dev/badsnakes"
+Repository = "https://github.com/s3dev/badsnakes"
 
 [tool.setuptools.dynamic]
 version = {attr = "badsnakes.__version__"}
@@ -43,3 +44,7 @@ version = {attr = "badsnakes.__version__"}
 where = ["."]
 include = ["badsnakes"]
 exclude = []
+
+[project.scripts]
+badsnakes = "badsnakes.badsnakes:main"
+

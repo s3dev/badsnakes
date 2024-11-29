@@ -1,0 +1,506 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>badsnakes.libs.extractor &mdash; badsnakes - v0.1.0 Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/s5defs-rules.css?v=0345028d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            badsnakes
+              <img src="../../../_static/s3dev_tri_white_sm.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../library.html">Libary API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact Us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">badsnakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">badsnakes.libs.extractor</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for badsnakes.libs.extractor</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:Purpose:   This module provides abstract syntax tree node visitation</span>
+<span class="sd">            and attribute extraction functionality.</span>
+
+<span class="sd">:Platform:  Linux/Windows | Python 3.10+</span>
+<span class="sd">:Developer: J Berendt</span>
+<span class="sd">:Email:     development@s3dev.uk</span>
+
+<span class="sd">:Comments:  n/a</span>
+
+<span class="sd">:Example:</span>
+<span class="sd">    Example code use::</span>
+
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.parser import Parser</span>
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.extractor import Extractor</span>
+
+<span class="sd">        &gt;&gt;&gt; p = Parser()</span>
+<span class="sd">        &gt;&gt;&gt; e = Extractor()</span>
+<span class="sd">        &gt;&gt;&gt; p.parse(path=&#39;hello.py&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; e.extract(node=p.ast_)</span>
+
+<span class="sd">        # Display the extracted nodes.</span>
+<span class="sd">        &gt;&gt;&gt; e.display()</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># pylint: disable=import-error</span>
+
+<span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="c1"># locals</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.containers</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Assign</span><span class="p">,</span>
+                                       <span class="n">Attribute</span><span class="p">,</span>
+                                       <span class="n">Call</span><span class="p">,</span>
+                                       <span class="n">Constant</span><span class="p">,</span>
+                                       <span class="n">FunctionDef</span><span class="p">,</span>
+                                       <span class="n">Import</span><span class="p">)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Extractor">
+<a class="viewcode-back" href="../../../extractor.html#badsnakes.libs.extractor.Extractor">[docs]</a>
+<span class="k">class</span> <span class="nc">Extractor</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">NodeVisitor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inspect, extract and store relevant AST node attributes.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Node visitor class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span> <span class="o">=</span> <span class="p">[]</span>         <span class="c1"># Storage for ast.Constant used as function arguments.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assigns</span> <span class="o">=</span> <span class="p">[]</span>      <span class="c1"># Storage for ast.Assign</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span> <span class="o">=</span> <span class="p">[]</span>        <span class="c1"># Storage for ast.Attribute</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calls</span> <span class="o">=</span> <span class="p">[]</span>        <span class="c1"># Storage for ast.Call</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_constants</span> <span class="o">=</span> <span class="p">[]</span>    <span class="c1"># Storage for ast.Constant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_funcdefs</span> <span class="o">=</span> <span class="p">[]</span>     <span class="c1"># Storage for ast.FunctionDef</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_imports</span> <span class="o">=</span> <span class="p">[]</span>      <span class="c1"># Storage for ast.Import and ast.ImportFrom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_docs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>      <span class="c1"># Extracted docstrings used to filter constants.</span>
+
+<div class="viewcode-block" id="Extractor.display">
+<a class="viewcode-back" href="../../../extractor.html#badsnakes.libs.extractor.Extractor.display">[docs]</a>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display the extracted contents.</span>
+
+<span class="sd">        The extracted attributes for each of the following AST nodes are</span>
+<span class="sd">        displayed here:</span>
+
+<span class="sd">            - ast.Assign</span>
+<span class="sd">            - ast.Attribute</span>
+<span class="sd">            - ast.Call</span>
+<span class="sd">            - ast.Constants</span>
+<span class="sd">            - ast.FunctionDef</span>
+<span class="sd">            - ast.Import</span>
+<span class="sd">            - ast.ImportFrom</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str, optional): Name of the Python module being</span>
+<span class="sd">                displayed. Defaults to None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Extracted attributes from: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+        <span class="c1"># This is intentionally verbose for easy readability and maintenance.</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="n">sep</span><span class="p">,</span>
+              <span class="n">title</span><span class="p">,</span>
+              <span class="n">sep</span><span class="p">,</span>
+              <span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Function arguments:&#39;</span><span class="p">,</span>
+              <span class="o">*</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">),</span>
+              <span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Assignments:&#39;</span><span class="p">,</span>
+              <span class="o">*</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assigns</span><span class="p">),</span>
+              <span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Attributes:&#39;</span><span class="p">,</span>
+              <span class="o">*</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="p">),</span>
+              <span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Function calls:&#39;</span><span class="p">,</span>
+              <span class="o">*</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calls</span><span class="p">),</span>
+              <span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Constants:&#39;</span><span class="p">,</span>
+              <span class="o">*</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constants</span><span class="p">),</span>
+              <span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Function definitions:&#39;</span><span class="p">,</span>
+              <span class="o">*</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_funcdefs</span><span class="p">),</span>
+              <span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Imports:&#39;</span><span class="p">,</span>
+              <span class="o">*</span><span class="p">(</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imports</span><span class="p">),</span>
+              <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.extract">
+<a class="viewcode-back" href="../../../extractor.html#badsnakes.libs.extractor.Extractor.extract">[docs]</a>
+    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">ast</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract and store relevant attributes from a parsed AST.</span>
+
+<span class="sd">        This method is an alias for the :meth:`ast.NodeVisitor.visit`</span>
+<span class="sd">        which is called directly, after the docstrings have been</span>
+<span class="sd">        extracted.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.Module): Starting node to be visited from which</span>
+<span class="sd">                attributes are to be extracted.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_extract_docstrings</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.visit_Assign">
+<a class="viewcode-back" href="../../../extractor.html#badsnakes.libs.extractor.Extractor.visit_Assign">[docs]</a>
+    <span class="k">def</span> <span class="nf">visit_Assign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">ast</span><span class="o">.</span><span class="n">Assign</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract attributes of interest from ``ast.Assign`` nodes.</span>
+
+<span class="sd">        Generally, the assignments are used by the analyser to detect</span>
+<span class="sd">        (very) long strings, or suspicious module or function aliasing.</span>
+
+<span class="sd">        For example:</span>
+
+<span class="sd">            - [A very very long string which may be base64 encoded code]</span>
+<span class="sd">            - A URL including &#39;http&#39;</span>
+<span class="sd">            - cexe = exec</span>
+<span class="sd">            - lave = eval</span>
+<span class="sd">            - _i = __import__</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.Assign): A node of type ``ast.Assign``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Capture assigned values. (e.g.: callables, constants, tuple assignments)</span>
+        <span class="k">for</span> <span class="n">target</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">targets</span><span class="p">,</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">]):</span>
+            <span class="c1"># Assignment of a callable. (e.g.: c = __import__(&#39;builtins&#39;).compile)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Call</span><span class="p">):</span>
+                    <span class="n">a</span> <span class="o">=</span> <span class="n">Assign</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;attr&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                               <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">attr</span><span class="p">,</span>
+                               <span class="n">line</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span>
+                               <span class="n">line_end</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_assigns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="c1"># Assignment of a &#39;normal&#39; constant. (e.g.: x = &#39;a string&#39;)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Constant</span><span class="p">):</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">Assign</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                           <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                           <span class="n">line</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span>
+                           <span class="n">line_end</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_assigns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Tuple</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;elts&#39;</span><span class="p">):</span>
+                    <span class="c1"># Assignment from tuple unpacking. (e.g.: a, b = &#39;thingA&#39;, &#39;thingB&#39;)</span>
+                    <span class="k">for</span> <span class="n">t_elt</span><span class="p">,</span> <span class="n">v_elt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">elts</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">elts</span><span class="p">):</span>
+                        <span class="n">a</span> <span class="o">=</span> <span class="n">Assign</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">t_elt</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                                   <span class="n">value</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">v_elt</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                                   <span class="n">line</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span>
+                                   <span class="n">line_end</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_assigns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Assignment from tuple packing. (e.g.: a = (&#39;thingA&#39;, &#39;thingB&#39;))</span>
+                    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">elts</span><span class="p">:</span>
+                        <span class="n">a</span> <span class="o">=</span> <span class="n">Assign</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                         <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;attr&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span>
+                                   <span class="n">value</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                                   <span class="n">line</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span>
+                                   <span class="n">line_end</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_assigns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generic_visit</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.visit_Attribute">
+<a class="viewcode-back" href="../../../extractor.html#badsnakes.libs.extractor.Extractor.visit_Attribute">[docs]</a>
+    <span class="k">def</span> <span class="nf">visit_Attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">ast</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract attributes of interest from ``ast.Attribute`` nodes.</span>
+
+<span class="sd">        For example:</span>
+
+<span class="sd">            - ``__builtins__.__getattribute__``</span>
+<span class="sd">            - ``ctypes.windll``</span>
+<span class="sd">            - ``os.system``</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.Attribute): A node of type ``ast.Attribute``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                          <span class="n">value</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">attr</span><span class="p">,</span>
+                          <span class="n">line</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span>
+                          <span class="n">line_end</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generic_visit</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.visit_Call">
+<a class="viewcode-back" href="../../../extractor.html#badsnakes.libs.extractor.Extractor.visit_Call">[docs]</a>
+    <span class="k">def</span> <span class="nf">visit_Call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">ast</span><span class="o">.</span><span class="n">Call</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract attributes of interest from ``ast.Call`` nodes.</span>
+
+<span class="sd">        Generally, function calls are used by the analyser to detect</span>
+<span class="sd">        calls to functions which are generally considered unsafe, or</span>
+<span class="sd">        used for suspicious activity.</span>
+
+<span class="sd">        Additionally, any arguments into these function calls are stored</span>
+<span class="sd">        into the :attr:`_args` class attribute, to be later added to the</span>
+<span class="sd">        ``Module.arguments`` object.</span>
+
+<span class="sd">        For example:</span>
+
+<span class="sd">            - Calls ``compile``, ``exec`` or ``eval``</span>
+<span class="sd">            - Disguised imports using ``__import__``</span>
+<span class="sd">            - Calls to ``requests.post``</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.Call): A node of type ``ast.Call``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Function calls which are attributes of objects. (e.g.: str.join())</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">Call</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">attr</span><span class="p">,</span>
+                     <span class="n">module</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                     <span class="n">line</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span>
+                     <span class="n">line_end</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_calls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="c1"># Function calls. (e.g.: print(), or test1())</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">Call</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                     <span class="n">line</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span>
+                     <span class="n">line_end</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_calls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="c1"># Capture function call arguments.</span>
+            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Constant</span><span class="p">):</span>
+                    <span class="n">cst</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                   <span class="n">value</span><span class="o">=</span><span class="n">arg</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                   <span class="n">line</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span>
+                                   <span class="n">line_end</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cst</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generic_visit</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.visit_Constant">
+<a class="viewcode-back" href="../../../extractor.html#badsnakes.libs.extractor.Extractor.visit_Constant">[docs]</a>
+    <span class="k">def</span> <span class="nf">visit_Constant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">ast</span><span class="o">.</span><span class="n">Constant</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract attributes of interest from ``ast.Constant`` nodes.</span>
+
+<span class="sd">        Generally, the constants of interest here are *strings*. The</span>
+<span class="sd">        extracted strings will be compared against the blacklisted</span>
+<span class="sd">        strings to determine if any suspicious activities are being</span>
+<span class="sd">        attempted.</span>
+
+<span class="sd">        :Docstrings:</span>
+<span class="sd">            Often times, a docstring containing benign text such as a</span>
+<span class="sd">            semi-colon or the term &#39;execute&#39; can flag a module as</span>
+<span class="sd">            dangerous during a string search.</span>
+
+<span class="sd">            Because of this, the AST is walked to collect and store all</span>
+<span class="sd">            docstrings when :meth:`extract` method is called. A constant</span>
+<span class="sd">            node is only stored by this method for analysis if the</span>
+<span class="sd">            constant&#39;s value was *not* found in the stored docstrings.</span>
+<span class="sd">            For further rationale on this, please refer to the</span>
+<span class="sd">            :meth:`_extract_docstrings` method.</span>
+
+<span class="sd">        For example:</span>
+
+<span class="sd">            - Calls to cmd.exe or powershell</span>
+<span class="sd">            - References to Bitcoin or other payment demands</span>
+<span class="sd">            - Windows registry key paths</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.Constant): A node of type ``ast.Constant``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_docs</span><span class="p">:</span>  <span class="c1"># i.e.: Verify string is not a docstring.</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">line_end</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_constants</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generic_visit</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.visit_FunctionDef">
+<a class="viewcode-back" href="../../../extractor.html#badsnakes.libs.extractor.Extractor.visit_FunctionDef">[docs]</a>
+    <span class="k">def</span> <span class="nf">visit_FunctionDef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">ast</span><span class="o">.</span><span class="n">FunctionDef</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract attributes of interest from ``ast.FunctionDef`` nodes.</span>
+
+<span class="sd">        Generally, the analyser will use these nodes in search of</span>
+<span class="sd">        obfuscated function names, indicating suspicious activity.</span>
+
+<span class="sd">        For example:</span>
+
+<span class="sd">            - ``_``</span>
+<span class="sd">            - ``__``</span>
+<span class="sd">            - ``_0xb1``</span>
+<span class="sd">            - ``_00OO00OO``</span>
+<span class="sd">            - ``_01001001``</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.FunctionDef): A node of type ``ast.FunctionDef``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">FunctionDef</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">line_end</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_funcdefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generic_visit</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.visit_Import">
+<a class="viewcode-back" href="../../../extractor.html#badsnakes.libs.extractor.Extractor.visit_Import">[docs]</a>
+    <span class="k">def</span> <span class="nf">visit_Import</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">ast</span><span class="o">.</span><span class="n">Import</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract attributes of interest from ``ast.Import`` nodes.</span>
+
+<span class="sd">        Generally, the analyser will use these nodes in search of</span>
+<span class="sd">        module imports which may indicate suspicious activity.</span>
+
+<span class="sd">        For example:</span>
+
+<span class="sd">            - import requests</span>
+<span class="sd">            - import winreg</span>
+<span class="sd">            - import ctypes as ct</span>
+<span class="sd">            - import win32api as _win32api</span>
+<span class="sd">            - import win32con as _win32con</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.Import): A node of type ``ast.Import``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">Import</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">asname</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">asname</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">line_end</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_imports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generic_visit</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor.visit_ImportFrom">
+<a class="viewcode-back" href="../../../extractor.html#badsnakes.libs.extractor.Extractor.visit_ImportFrom">[docs]</a>
+    <span class="k">def</span> <span class="nf">visit_ImportFrom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">ast</span><span class="o">.</span><span class="n">ImportFrom</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract attributes of interest from ``ast.ImportFrom`` nodes.</span>
+
+<span class="sd">        Generally, the analyser will use these nodes in search of</span>
+<span class="sd">        module imports which may indicate suspicious activity.</span>
+
+<span class="sd">        For example:</span>
+
+<span class="sd">            - from win32api import SetFileAttributes</span>
+<span class="sd">            - from win32con import SRCAND, FILE_ATTRIBUTE_HIDDEN</span>
+<span class="sd">            - from win32file import CreateFileW, WriteFile, CloseHandle</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.ImportFrom): A node of type ``ast.ImportFrom``.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">Import</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="n">node</span><span class="o">.</span><span class="n">module</span><span class="p">,</span>
+                       <span class="n">name</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                       <span class="n">asname</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">asname</span><span class="p">,</span>
+                       <span class="n">line</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span>
+                       <span class="n">line_end</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_imports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generic_visit</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Extractor._extract_docstrings">
+<a class="viewcode-back" href="../../../extractor.html#badsnakes.libs.extractor.Extractor._extract_docstrings">[docs]</a>
+    <span class="k">def</span> <span class="nf">_extract_docstrings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">ast</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect all docstrings in the module and store.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            node (ast.Module): Top-level AST node to be searched.</span>
+
+<span class="sd">        The extracted (uncleaned) docstrings are stored into the</span>
+<span class="sd">        :attr:`_docs` attribute. A constant is only tested if the value</span>
+<span class="sd">        is *not* in the ``_docs`` attribute.</span>
+
+<span class="sd">        :Rationale:</span>
+<span class="sd">            Extracting and storing docstrings lets us put simple strings</span>
+<span class="sd">            such as ``&#39;;&#39;`` and ``&#39;()&#39;`` in ``config.toml`` under the</span>
+<span class="sd">            ``[analyser.constant.dangerous]`` and</span>
+<span class="sd">            ``[analyser.constant.suspect]`` tables without having a</span>
+<span class="sd">            false-positive trigger for the string being somewhere in the</span>
+<span class="sd">            docstring.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fns</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+               <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">ClassDef</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">FunctionDef</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Module</span><span class="p">))]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_docs</span> <span class="o">=</span> <span class="p">{</span><span class="n">ast</span><span class="o">.</span><span class="n">get_docstring</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fns</span><span class="p">}</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

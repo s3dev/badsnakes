@@ -14,8 +14,8 @@ for d in ${dirs}; do
 done
 
 # Update requirements file.
-printf "Updating the requirements file, ignoring './tests' ...\n"
-preqs . --replace --ignore_dirs tests
+printf "Updating the requirements file, ignoring './tests' and './meta' ...\n"
+preqs . --replace --ignore_dirs tests meta
 
 # Create the package and wheel file.
 printf "\nCreating the source distribution ...\n"

@@ -1,0 +1,256 @@
+==============
+Planning Notes
+==============
+
+Important
+=========
+Important things that should be noted and remembered.
+
+- ppk's testing functionality must be moved into this library for
+  entralised analysis.
+- ppk must be updated to use this library for its tests.
+
+
+Research
+========
+- implementation of utility to determine if a file is binary. (done)
+- Can ast be used to inspect the module? (yes)
+- Can dis be used to inspect the bytecode? (no)
+- Can inspect be used to inspect the code structure? (no)
+- How can (very) long strings be detected? (done: ast)
+
+
+Analysis
+========
+These are malware indicators the library should use for detecting malware
+or suspect code.
+
+- pypi: no github link
+- pypi: user with only 1 project
+- pypi: newly created user
+- pypi: use the vulerabilities key in the JSON
+- code: test for blacklisted strings/functions (yes: ast)
+        - in strings (yes)
+        - as function calls (yes)
+        - as attributes (yes)
+        - from assignments (yes)
+        - from imports (yes)
+- code: use of __import__ (yes)
+- code: use of __builtins__ (yes)
+- code: can very long strings (>150 chars) (suspect b64) be detected?
+        - assignments (yes)
+        - argument (b64 strings passed directly into a function) (yes)
+- code: single line modules with no defined functions or imports
+- code: high percentage of long lines (>100 chars) (long / total) > 0.25
+- code: use of semi-colons (symbols / lines) > 0.25
+
+
+Notes
+=====
+General notes and ideas regarding the functionality or techniques to be
+used.
+
+- comments should be excluded from the analysis (yes)
+- only search plain text files
+- can ast be used to interact the module? (yes)
+- can dis be used to interact with the bytecode? (no)
+- can the inspect module be used to parse the code? (no)
+- report the severity of the detection: display the findings
+- when detecting if a file is plaintext or binary, only read the
+  first N bytes. (yes)
+
+
+Capabilities (requirements)
+===========================
+The library should be capable of the following, and dynamically route the
+code based on the input.
+
+- installed library
+  - analysing a single file
+  - analysing a wheel
+  - analysing a pickle file
+- command line interface
+  - analysing a single file
+  - analysing a wheel
+  - analysing a pickle file
+
+
+Checking Utilities
+==================
+The following items are the individual checks that must be implemented in
+badsnakes. The library will contain the callable implementation.
+
+Although there will be some builtin orchestration (e.g. wheel/pickle
+inspection) it will be up to a caller (e.g. ppk) to orchestrate and log
+the checks and results.
+
+- PyPI MD5
+- Snyk security
+- Code analysis
+- VirusTotal API (is this available?)
+
+
+Blacklist
+=========
+The following strings should be included in the blacklist.
+
+There are really two categories here, dangerous and suspect.
+The dangerous strings should report to the user as such as these can
+trigger unwanted downloads (payload) or result in arbitrary code
+execution. Whereas the suspect terms are perfectly valid and safe, when
+used properly, but can be exploited in malware.
+
+
+Arguments: Suspect
+------------------
+[long strings]
+
+Arguments: Dangerous
+--------------------
+_
+__
+builtin
+builtins
+exec
+eval
+compile
+
+
+Assignments: Suspect
+--------------------
+[long strings]
+http
+
+Assignments: Dangerous
+----------------------
+compile
+exec
+eval
+__builtin__ [module]
+__builtins__ [module]
+__import__
+__getattribute__
+
+
+Attributes: Suspect
+-------------------
+ctypes.windll
+winreg.HKEY_LOCAL_MACHINE
+winreg.KEY_WRITE
+winreg.SetValueEx
+winreg.CreateKeyEx
+win32api.SetFileAttributes
+
+Attributes: Dangerous
+---------------------
+socket.AF_INET
+socket.SOCK_STREAM
+
+
+Function calls: Suspect
+-----------------------
+[single character function names]
+b64decode
+ctypes.memset
+decompress
+encrypt
+os.system
+requests.get
+uuid.getnode
+
+Function calls: Dangerous
+-------------------------
+_
+__
+__import__
+__builtin__ [module]
+__builtins__ [module]
+BlockInput
+compile
+eval
+exec
+GetAsyncKeyState
+GetKeyState
+os.startfile
+requests.post
+
+
+Strings: Suspect
+----------------
+explorer.exe
+http
+User-Agent
+
+Strings: Dangerous
+------------------
+__import__
+__builtin__
+__builtins__
+attack
+bitcoin
+cmd.exe
+compile
+discord
+eval
+exec
+expand-archive
+icacls
+infect
+invoke-webrequest
+malware
+memcpy
+money
+ntoskrnl.exe
+payload
+payment
+pip install
+powershell
+powershell.exe
+pythonw.exe
+ransomeware
+schtasks
+SOFTWARE\Microsoft\Windows\CurrentVersion
+SOFTWARE\Microsoft\Windows NT\CurrentVersion
+SOFTWARE\Microsoft\PowerShell
+sold
+start-process
+sys.executable
+takeown
+taskkill
+vbe
+vbs
+webhook
+WindowsDefender
+
+
+Defined functions: Suspect
+--------------------------
+
+Defined functions: Dangerous
+----------------------------
+_
+__
+
+
+Imports: Suspect
+----------------
+os.system
+base64
+cryptograhpy.fernet.Fernet
+ctypes.memmove
+ctypes.memset
+requests
+socket
+urlopen
+win32api
+win32con
+win32crypt
+win32file
+win32gui
+win32ui
+winreg
+
+Imports: Dangerous
+------------------
+mss
+sys.executable

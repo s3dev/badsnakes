@@ -1,0 +1,18 @@
+Pylint Summary:
+------------------------
+badsnakes_badsnakes.plr: 10.00/10
+libs_analysers.plr: 10.00/10
+libs_argparser.plr: 10.00/10
+libs_changelog.plr:
+libs_collector.plr: 10.00/10
+libs_config.plr: 10.00/10
+libs_containers.plr: 10.00/10
+libs_enums.plr: 10.00/10
+libs_extractor.plr: 10.00/10
+libs_logger.plr: 10.00/10
+libs_module.plr: 10.00/10
+libs_parser.plr: 10.00/10
+libs_reporter.plr: 10.00/10
+libs_utilities.plr: 10.00/10
+------------------------
+Run date: Fri 3 Jan 16:13:27 GMT 2025

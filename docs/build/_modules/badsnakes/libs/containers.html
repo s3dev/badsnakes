@@ -1,0 +1,430 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>badsnakes.libs.containers &mdash; badsnakes - v0.1.0 Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/s5defs-rules.css?v=0345028d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            badsnakes
+              <img src="../../../_static/s3dev_tri_white_sm.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../library.html">Libary API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact Us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">badsnakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">badsnakes.libs.containers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for badsnakes.libs.containers</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:Purpose:   This module provides the container classes for the various</span>
+<span class="sd">            node types parsed from source code by the AST parser.</span>
+
+<span class="sd">:Platform:  Linux/Windows | Python 3.10+</span>
+<span class="sd">:Developer: J Berendt</span>
+<span class="sd">:Email:     development@s3dev.uk</span>
+
+<span class="sd">:Comments:  n/a</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># pylint: disable=import-error</span>
+
+<span class="kn">from</span> <span class="nn">badsnakes.libs.enums</span> <span class="kn">import</span> <span class="n">Severity</span>
+
+
+<div class="viewcode-block" id="_NodeBase">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers._NodeBase">[docs]</a>
+<span class="k">class</span> <span class="nc">_NodeBase</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Private base class inherited by each AST node type container.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str, optional): Node name. Defaults to None.</span>
+<span class="sd">        value (str | int, optional): Node value. Defaults to None.</span>
+<span class="sd">        line (int, optional): Starting line number. Defaults to None.</span>
+<span class="sd">        line_end (int, optional): Ending line number. Defaults to None.</span>
+
+<span class="sd">    :Implementation note:</span>
+<span class="sd">        Although many instances of this class will exist during an</span>
+<span class="sd">        extraction, ``__slots__`` has intentionally *not* been</span>
+<span class="sd">        implemented in either this class nor its children due to higher</span>
+<span class="sd">        memory usage.</span>
+
+<span class="sd">        When a class is inherited, the attributes are copied to its</span>
+<span class="sd">        children, thus requiring more memory. During development</span>
+<span class="sd">        research, using ``__slots__`` for this class *increased* memory</span>
+<span class="sd">        usage.</span>
+
+<span class="sd">    :Developer note:</span>
+<span class="sd">        Do not add any attributes to this class, nor the child classes</span>
+<span class="sd">        as they will propagate through into the container objects and</span>
+<span class="sd">        trigger errors on execution.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="o">*</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">line</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">line_end</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">severity</span><span class="p">:</span> <span class="n">Severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">OK</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Indicator base class initialiser.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line</span> <span class="o">=</span> <span class="n">line</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_end</span> <span class="o">=</span> <span class="n">line_end</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">severity</span>
+
+    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Greater than operator implementation, based on severity.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">((</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">severity</span> <span class="o">&gt;</span> <span class="n">other</span><span class="o">.</span><span class="n">severity</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Less than operator implementation, based on severity.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">((</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">severity</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">severity</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define how the object is displayed when printed.</span>
+
+<span class="sd">        Primarily this is used by the :meth:`visitor.Visitor.display`</span>
+<span class="sd">        method when displaying the extracted attributes to the terminal.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_log_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the generalised logging template for all containers.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">line_end</span><span class="si">}</span><span class="s1">,</span><span class="se">{{</span><span class="s1">title</span><span class="se">}}</span><span class="s1">,</span><span class="se">{{</span><span class="s1">text</span><span class="se">}}</span><span class="s1">&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_report_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the generalised reporting template for all containers.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">severity</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">]: L</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">line_end</span><span class="si">}</span><span class="s1"> - </span><span class="se">{{</span><span class="s1">title</span><span class="se">}}</span><span class="s1">: </span><span class="se">{{</span><span class="s1">text</span><span class="se">}}</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="_NodeBase.report_longstring">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers._NodeBase.report_longstring">[docs]</a>
+    <span class="k">def</span> <span class="nf">report_longstring</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display a formatted view for long strings.&quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_template</span>
+        <span class="n">trunc</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">[:</span><span class="mi">25</span><span class="p">])</span><span class="si">}</span><span class="s1">...</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="o">-</span><span class="mi">25</span><span class="p">:])</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">rpt</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Long string&#39;</span><span class="p">,</span>
+                         <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;A </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2"> char string detected: </span><span class="si">{</span><span class="n">trunc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">rpt</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_NodeBase.tolower">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers._NodeBase.tolower">[docs]</a>
+    <span class="k">def</span> <span class="nf">tolower</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the named attribute values to lower case.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">,</span> <span class="s1">&#39;asname&#39;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Assign">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.Assign">[docs]</a>
+<span class="k">class</span> <span class="nc">Assign</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container class for parsed assignment nodes: ``ast.Assign``.</span>
+
+<span class="sd">    :parameters:</span>
+<span class="sd">        Refer to the docstring for the :class:`_NodeBase` class for</span>
+<span class="sd">        argument descriptions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Assign.report">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.Assign.report">[docs]</a>
+    <span class="k">def</span> <span class="nf">report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display a formatted view for assignments.&quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_template</span>
+        <span class="n">rpt</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Assignment&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">rpt</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Attribute">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.Attribute">[docs]</a>
+<span class="k">class</span> <span class="nc">Attribute</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container class for parsed attribute nodes: ``ast.Attribute``.</span>
+
+<span class="sd">    :parameters:</span>
+<span class="sd">        Refer to the docstring for the :class:`_NodeBase` class for</span>
+<span class="sd">        argument descriptions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Attribute.report">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.Attribute.report">[docs]</a>
+    <span class="k">def</span> <span class="nf">report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display a formatted view for object attributes.&quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_template</span>
+        <span class="n">rpt</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Attribute&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Use of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> detected&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">rpt</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Call">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.Call">[docs]</a>
+<span class="k">class</span> <span class="nc">Call</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container class for parsed function call nodes: ``ast.Call``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        module (str): Name of the module being imported.</span>
+
+<span class="sd">    Refer to the docstring for the :class:`_NodeBase` class for</span>
+<span class="sd">    additional argument descriptions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call container class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">module</span>
+
+<div class="viewcode-block" id="Call.report">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.Call.report">[docs]</a>
+    <span class="k">def</span> <span class="nf">report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display a formatted view for function calls.&quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_template</span>
+        <span class="n">call</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">rpt</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Function call&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">call</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">rpt</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CodeText">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.CodeText">[docs]</a>
+<span class="k">class</span> <span class="nc">CodeText</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container class for textual code analysis.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        reason (str): Reason the code in the module was flagged.</span>
+
+<span class="sd">    Refer to the docstring for the :class:`_NodeBase` class for</span>
+<span class="sd">    additional argument descriptions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call container class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line_end</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reason</span> <span class="o">=</span> <span class="n">reason</span>
+
+<div class="viewcode-block" id="CodeText.report">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.CodeText.report">[docs]</a>
+    <span class="k">def</span> <span class="nf">report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display a formatted view for code text findings.&quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_template</span>
+        <span class="n">rpt</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Code text&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reason</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">rpt</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Constant">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.Constant">[docs]</a>
+<span class="k">class</span> <span class="nc">Constant</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container class for parsed constant nodes: ``ast.Constant``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        searchstr (str): Blacklisted keyword found in the constant.</span>
+
+<span class="sd">    Refer to the docstring for the :class:`_NodeBase` class for</span>
+<span class="sd">    additional argument descriptions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">searchstr</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call container class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">searchstr</span> <span class="o">=</span> <span class="n">searchstr</span>
+
+<div class="viewcode-block" id="Constant.report">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.Constant.report">[docs]</a>
+    <span class="k">def</span> <span class="nf">report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display a formatted view for constants.</span>
+
+<span class="sd">        This method accounts for both constants as strings and arguments</span>
+<span class="sd">        passed into function calls.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_template</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">searchstr</span><span class="p">:</span>
+            <span class="n">rpt</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;String search&#39;</span><span class="p">,</span>
+                             <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">searchstr</span><span class="si">}</span><span class="s2">&#39; found in </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rpt</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Argument&#39;</span><span class="p">,</span>
+                             <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; passed into the &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; function&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">rpt</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FunctionDef">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.FunctionDef">[docs]</a>
+<span class="k">class</span> <span class="nc">FunctionDef</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container class for parsed function definition nodes: ``ast.FunctionDef``.</span>
+
+<span class="sd">    :parameters:</span>
+<span class="sd">        Refer to the docstring for the :class:`_NodeBase` class for</span>
+<span class="sd">        argument descriptions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FunctionDef.report">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.FunctionDef.report">[docs]</a>
+    <span class="k">def</span> <span class="nf">report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display a formatted view for function definitions.&quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_template</span>
+        <span class="n">rpt</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Function definition&#39;</span><span class="p">,</span>
+                         <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Function named &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; detected&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">rpt</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Import">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.Import">[docs]</a>
+<span class="k">class</span> <span class="nc">Import</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container class for module import nodes: ``ast.Import``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        module (str): Name of the module being imported.</span>
+<span class="sd">        asname (str, optional): An import&#39;s alias if the library is</span>
+<span class="sd">            imported using ``import mylib as _mylib``. Defaults to None.</span>
+
+<span class="sd">    Refer to the docstring for the :class:`_NodeBase` class for</span>
+<span class="sd">    additional argument descriptions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">asname</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Import container class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asname</span> <span class="o">=</span> <span class="n">asname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">module</span>
+
+<div class="viewcode-block" id="Import.report">
+<a class="viewcode-back" href="../../../containers.html#badsnakes.libs.containers.Import.report">[docs]</a>
+    <span class="k">def</span> <span class="nf">report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display a formatted view for module imports.</span>
+
+<span class="sd">        This method accounts for the various ways modules and libraries</span>
+<span class="sd">        can be imported.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_report_template</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">asname</span><span class="p">:</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span>
+            <span class="n">rpt</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Import&#39;</span><span class="p">,</span>
+                              <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;import </span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2"> as </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">asname</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="n">rpt</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Import&#39;</span><span class="p">,</span>
+                              <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s2"> import </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rpt</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Import&#39;</span><span class="p">,</span>
+                              <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;import </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">rpt</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

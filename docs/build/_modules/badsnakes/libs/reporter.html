@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>badsnakes.libs.reporter &mdash; badsnakes - v0.1.0 Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/s5defs-rules.css?v=0345028d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            badsnakes
+              <img src="../../../_static/s3dev_tri_white_sm.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../library.html">Libary API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact Us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">badsnakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">badsnakes.libs.reporter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for badsnakes.libs.reporter</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:Purpose:   This module provides the *terminal-based* reporting</span>
+<span class="sd">            functionality for the project. File-based reporting is</span>
+<span class="sd">            handled by the :mod:`badsnakes.libs.logger` module.</span>
+
+<span class="sd">            There is a specific reporting class, based on the analysis</span>
+<span class="sd">            provided:</span>
+
+<span class="sd">                - :class:`ReporterModule`</span>
+<span class="sd">                - :class:`ReporterPickle`</span>
+<span class="sd">                - :class:`ReporterWheel`</span>
+
+<span class="sd">            All of these classes inherit their base functionality from</span>
+<span class="sd">            the private :class:`_ReporterBase` class.</span>
+
+<span class="sd">:Platform:  Linux/Windows | Python 3.10+</span>
+<span class="sd">:Developer: J Berendt</span>
+<span class="sd">:Email:     development@s3dev.uk</span>
+
+<span class="sd">:Comments:  This module&#39;s implementation is very simple in that it only</span>
+<span class="sd">            iterates a module&#39;s node classes and calls the ``.report()``</span>
+<span class="sd">            method on each container, which provides the *formatting*</span>
+<span class="sd">            for each message. The formatting is *not* controlled by this</span>
+<span class="sd">            module.</span>
+
+<span class="sd">            For example:</span>
+
+<span class="sd">                - :meth:`badsnakes.libs.containers.Assign.report`</span>
+<span class="sd">                - :meth:`badsnakes.libs.containers.Attribute.report`</span>
+<span class="sd">                - :meth:`badsnakes.libs.containers.Call.report`</span>
+<span class="sd">                - etc.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Enable type hinting</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+
+<div class="viewcode-block" id="_ReporterBase">
+<a class="viewcode-back" href="../../../reporter.html#badsnakes.libs.reporter._ReporterBase">[docs]</a>
+<span class="k">class</span> <span class="nc">_ReporterBase</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Currently not implemented.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="ReporterModule">
+<a class="viewcode-back" href="../../../reporter.html#badsnakes.libs.reporter.ReporterModule">[docs]</a>
+<span class="k">class</span> <span class="nc">ReporterModule</span><span class="p">(</span><span class="n">_ReporterBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Iterate all modules and report the findings for each node type.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        modules (list[module.Module] | tuple[module.Module]): A list</span>
+<span class="sd">            (or tuple) of :class:`badsnakes.libs.module.Module` objects</span>
+<span class="sd">            containing the findings to be reported.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">module</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">module</span><span class="o">.</span><span class="n">Module</span><span class="p">]):</span>  <span class="c1"># noqa # pylint: disable=undefined-variable</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Base reporter initialiser class.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mods</span> <span class="o">=</span> <span class="n">modules</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">modules</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="k">else</span> <span class="p">[</span><span class="n">modules</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_m</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Module currently being reported.</span>
+
+<div class="viewcode-block" id="ReporterModule.report">
+<a class="viewcode-back" href="../../../reporter.html#badsnakes.libs.reporter.ReporterModule.report">[docs]</a>
+    <span class="k">def</span> <span class="nf">report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Primary reporting callable.</span>
+
+<span class="sd">        This method iterates the modules provided on instantiation of the</span>
+<span class="sd">        :class:`ReporterModule` class, and reports the</span>
+<span class="sd">        node-class-specific findings for each.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mods</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_m</span> <span class="o">=</span> <span class="n">m</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_display_title</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_report_suspect</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_report_dangerous</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_report_classification</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ReporterModule.report_classification_only">
+<a class="viewcode-back" href="../../../reporter.html#badsnakes.libs.reporter.ReporterModule.report_classification_only">[docs]</a>
+    <span class="k">def</span> <span class="nf">report_classification_only</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reporting callable for displaying the *classification only*.</span>
+
+<span class="sd">        This method iterates the modules provided on instantiation of the</span>
+<span class="sd">        :class:`ReporterModule` class, and reports each module&#39;s</span>
+<span class="sd">        classification.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mods</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_m</span> <span class="o">=</span> <span class="n">m</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_report_classification_only</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ReporterModule._display_title">
+<a class="viewcode-back" href="../../../reporter.html#badsnakes.libs.reporter.ReporterModule._display_title">[docs]</a>
+    <span class="k">def</span> <span class="nf">_display_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display a formatted version of the current module&#39;s name.&quot;&quot;&quot;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; Module: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">name_and_parent</span><span class="si">}</span><span class="s1"> &#39;</span>
+        <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ReporterModule._report_classification">
+<a class="viewcode-back" href="../../../reporter.html#badsnakes.libs.reporter.ReporterModule._report_classification">[docs]</a>
+    <span class="k">def</span> <span class="nf">_report_classification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report the current module&#39;s overall classification.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Module classification:&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">classification</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ReporterModule._report_classification_only">
+<a class="viewcode-back" href="../../../reporter.html#badsnakes.libs.reporter.ReporterModule._report_classification_only">[docs]</a>
+    <span class="k">def</span> <span class="nf">_report_classification_only</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report the current module&#39;s overall classification.</span>
+
+<span class="sd">        This method differs from the :meth:`_report_classification` in</span>
+<span class="sd">        that this method also displays the module name, as the</span>
+<span class="sd">        :meth:`report_classification_only` method does not print the</span>
+<span class="sd">        module name in a title banner.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Module: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">name_and_parent</span><span class="si">}</span><span class="s1">, Classification: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">classification</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ReporterModule._report_dangerous">
+<a class="viewcode-back" href="../../../reporter.html#badsnakes.libs.reporter.ReporterModule._report_dangerous">[docs]</a>
+    <span class="k">def</span> <span class="nf">_report_dangerous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;For each node class, report the *dangerous* findings.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">nc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">nodeclasses</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">analyser</span><span class="o">.</span><span class="n">dangerous</span><span class="p">:</span>
+                <span class="n">i</span><span class="o">.</span><span class="n">report</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">analyser</span><span class="o">.</span><span class="n">dangerous_longstring</span><span class="p">:</span>
+                <span class="n">i</span><span class="o">.</span><span class="n">report_longstring</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ReporterModule._report_suspect">
+<a class="viewcode-back" href="../../../reporter.html#badsnakes.libs.reporter.ReporterModule._report_suspect">[docs]</a>
+    <span class="k">def</span> <span class="nf">_report_suspect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;For each node class, report the *suspect* findings.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">nc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">nodeclasses</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">analyser</span><span class="o">.</span><span class="n">suspect</span><span class="p">:</span>
+                <span class="n">i</span><span class="o">.</span><span class="n">report</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">analyser</span><span class="o">.</span><span class="n">suspect_longstring</span><span class="p">:</span>
+                <span class="n">i</span><span class="o">.</span><span class="n">report_longstring</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ReporterPickle">
+<a class="viewcode-back" href="../../../reporter.html#badsnakes.libs.reporter.ReporterPickle">[docs]</a>
+<span class="k">class</span> <span class="nc">ReporterPickle</span><span class="p">(</span><span class="n">_ReporterBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Report findings for a given pickle file.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: Currently not implemented. Available for</span>
+<span class="sd">            future development.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pickle analysis reporter class initialiser.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Pickle analysis is not implemented (yet).&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ReporterWheel">
+<a class="viewcode-back" href="../../../reporter.html#badsnakes.libs.reporter.ReporterWheel">[docs]</a>
+<span class="k">class</span> <span class="nc">ReporterWheel</span><span class="p">(</span><span class="n">_ReporterBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Report findings for all plaintext files in a given wheel.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: Currently not implemented. Available for</span>
+<span class="sd">            future development.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wheel analysis reporter class initialiser.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Wheel analysis is not implemented (yet).&#39;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

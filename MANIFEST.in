@@ -1,0 +1,3 @@
+# Directories to exclude
+recursive-exclude meta *
+

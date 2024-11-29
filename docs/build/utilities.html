@@ -1,0 +1,317 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module: utilities.py &mdash; badsnakes - v0.1.0 Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/s5defs-rules.css?v=0345028d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Change Log" href="changelog.html" />
+    <link rel="prev" title="Module: reporter.py" href="reporter.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            badsnakes
+              <img src="_static/s3dev_tri_white_sm.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library.html">Libary API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library.html#module-documentation">Module Documentation</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="analysers.html">Module: analysers.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="badsnakes.html">Module: badsnakes.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="collector.html">Module: collector.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html">Module: config.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="containers.html">Module: containers.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enums.html">Module: enums.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractor.html">Module: extractor.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logger.html">Module: logger.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="module.html">Module: module.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parser.html">Module: parser.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reporter.html">Module: reporter.py</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Module: utilities.py</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact Us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">badsnakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="library.html">Libary API Documentation</a></li>
+      <li class="breadcrumb-item active">Module: utilities.py</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-badsnakes.libs.utilities">
+<span id="module-utilities-py"></span><h1>Module: utilities.py<a class="headerlink" href="#module-badsnakes.libs.utilities" title="Link to this heading"></a></h1>
+<dl class="field-list">
+<dt class="field-odd">Purpose<span class="colon">:</span></dt>
+<dd class="field-odd"><p>This module provides general utility-based functions to the
+project.</p>
+</dd>
+<dt class="field-even">Platform<span class="colon">:</span></dt>
+<dd class="field-even"><p>Linux/Windows | Python 3.10+</p>
+</dd>
+<dt class="field-odd">Developer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>J Berendt</p>
+</dd>
+<dt class="field-even">Email<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="mailto:development&#37;&#52;&#48;s3dev&#46;uk">development<span>&#64;</span>s3dev<span>&#46;</span>uk</a></p>
+</dd>
+<dt class="field-odd">Comments<span class="colon">:</span></dt>
+<dd class="field-odd"><p>n/a</p>
+</dd>
+<dt class="field-even">Examples<span class="colon">:</span></dt>
+<dd class="field-even"><p>Test if a file is <em>binary</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">badsnakes.libs.utilities</span> <span class="kn">import</span> <span class="n">utilities</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">utilities</span><span class="o">.</span><span class="n">isbinary</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/path/to/myfile.ext&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Test if a file is <em>text</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">badsnakes.libs.utilities</span> <span class="kn">import</span> <span class="n">utilities</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">utilities</span><span class="o">.</span><span class="n">istext</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/path/to/myfile.py&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Test if a file is a <em>Python wheel</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">badsnakes.libs.utilities</span> <span class="kn">import</span> <span class="n">utilities</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">utilities</span><span class="o">.</span><span class="n">iszip</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/path/to/mypackage.whl&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.utilities.Utilities">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.utilities.</span></span><span class="sig-name descname"><span class="pre">Utilities</span></span><a class="reference internal" href="_modules/badsnakes/libs/utilities.html#Utilities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.utilities.Utilities" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Generalised utilities for use throughout the project.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.utilities.Utilities.exclude_dirs">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exclude_dirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/badsnakes/libs/utilities.html#Utilities.exclude_dirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.utilities.Utilities.exclude_dirs" title="Link to this definition"></a></dt>
+<dd><p>Exclude the listed directories from the source.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of source paths.</p></li>
+<li><p><strong>exclude</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of directories to be excluded from
+<code class="docutils literal notranslate"><span class="pre">source</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Design<span class="colon">:</span></dt>
+<dd class="field-even"><p>The paths in <code class="docutils literal notranslate"><span class="pre">exclude</span></code> are expanded to their realpath, with
+a trailing path separator explicitly added to ensure only
+directory paths are matched.</p>
+<p>For example, if the trailing path separator was not added,
+<code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> would be excluded if <code class="docutils literal notranslate"><span class="pre">./.git</span></code> was in
+<code class="docutils literal notranslate"><span class="pre">exclude</span></code> paths. Adding the trailing path separator
+prevents this.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A new list of paths where any <code class="docutils literal notranslate"><span class="pre">source</span></code> path
+sharing a common base path with any <code class="docutils literal notranslate"><span class="pre">exclude</span></code> path has
+been removed.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.utilities.Utilities.isbinary">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isbinary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1024</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/utilities.html#Utilities.isbinary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.utilities.Utilities.isbinary" title="Link to this definition"></a></dt>
+<dd><p>Determine if a file is binary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Full path to the file to be tested.</p></li>
+<li><p><strong>size</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of bytes read at a time to
+perform the test. As with <code class="xref py py-func docutils literal notranslate"><span class="pre">io.RawIOBase.read()</span></code>, if
+size is unspecified or -1, all bytes until EOF are
+returned. Defaults to 1024.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Design<span class="colon">:</span></dt>
+<dd class="field-even"><p>For each chunk of the file, if any characters are left over
+after removing all text characters, the file is classified
+as ‘binary’, and <code class="docutils literal notranslate"><span class="pre">True</span></code> is returned immediately. For
+efficiency, only (N) bytes of the files are read at a time,
+as controlled by the <code class="docutils literal notranslate"><span class="pre">size</span></code> argument. Once a file is found
+to be binary, the function returns immediately as there is
+no need to continue reading.</p>
+</dd>
+<dt class="field-odd">References<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://stackoverflow.com/a/7392391/6340496">How to detect if a file is binary</a></p></li>
+<li><p><a class="reference external" href="https://stackoverflow.com/a/32184831/6340496">ASCII printable character reference</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if a file is binary, otherwise False if the file
+is plain-text.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.utilities.Utilities.istext">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">istext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1024</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/utilities.html#Utilities.istext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.utilities.Utilities.istext" title="Link to this definition"></a></dt>
+<dd><p>Determine if a file is plain-text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Full path to the file to be tested.</p></li>
+<li><p><strong>size</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of bytes read to perform
+the test. As with <code class="xref py py-func docutils literal notranslate"><span class="pre">io.RawIOBase.read()</span></code>, if size is
+unspecified or -1, all bytes until EOF are returned.
+Defaults to 1024.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Design<span class="colon">:</span></dt>
+<dd class="field-even"><p>This function simply calls the <a class="reference internal" href="#badsnakes.libs.utilities.Utilities.isbinary" title="badsnakes.libs.utilities.Utilities.isbinary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">isbinary()</span></code></a> method and
+inverts the return value.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if a file is plain-text, otherwise false if the
+file is binary.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.utilities.Utilities.iszip">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iszip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/utilities.html#Utilities.iszip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.utilities.Utilities.iszip" title="Link to this definition"></a></dt>
+<dd><p>Determine if a file is a <code class="docutils literal notranslate"><span class="pre">ZIP</span></code> archive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Full path to the file to be tested.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A file is tested to be a <code class="docutils literal notranslate"><span class="pre">ZIP</span></code> archive by checking the
+<a class="reference external" href="https://en.wikipedia.org/wiki/ZIP_(file_format)#Local_file_header">first four bytes</a> of the file itself, <em>not</em>
+using the file extension.</p>
+<p>It is up to the caller to handle empty or spanned ZIP
+archives appropriately.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>True if the first four bytes of the file match any of
+the below. Otherwise, False.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">\x50\x4b\x03\x04</span></code>: ‘Standard’ archive</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\x50\x4b\x05\x06</span></code>: Empty archive</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\x50\x4b\x07\x08</span></code>: Spanned archive</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="badsnakes.libs.utilities.utilities">
+<span class="sig-prename descclassname"><span class="pre">badsnakes.libs.utilities.</span></span><span class="sig-name descname"><span class="pre">utilities</span></span><a class="headerlink" href="#badsnakes.libs.utilities.utilities" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="#badsnakes.libs.utilities.Utilities" title="badsnakes.libs.utilities.Utilities"><code class="xref py py-class docutils literal notranslate"><span class="pre">Utilities</span></code></a></p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reporter.html" class="btn btn-neutral float-left" title="Module: reporter.py" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="changelog.html" class="btn btn-neutral float-right" title="Change Log" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,546 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>badsnakes.libs.collector &mdash; badsnakes - v0.1.0 Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/s5defs-rules.css?v=0345028d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            badsnakes
+              <img src="../../../_static/s3dev_tri_white_sm.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../library.html">Libary API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact Us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">badsnakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">badsnakes.libs.collector</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for badsnakes.libs.collector</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:Purpose:   This module provides file collection functionality to the</span>
+<span class="sd">            project.</span>
+
+<span class="sd">            Specifically, this module is called by</span>
+<span class="sd">            :class:`badsnakes.badsnakes.BadSnakes.main` to populate the</span>
+<span class="sd">            &#39;files list&#39; which holds all files to be analysed.</span>
+
+<span class="sd">            The CLI argument ``PATH`` is passed into this module, which</span>
+<span class="sd">            then traverses either the list of files, the directory or</span>
+<span class="sd">            extracts the wheel, in efforts to determine the files which</span>
+<span class="sd">            should be analysed. These files are passed back to the caller</span>
+<span class="sd">            via the :attr:`files` property.</span>
+
+<span class="sd">:Platform:  Linux/Windows | Python 3.10+</span>
+<span class="sd">:Developer: J Berendt</span>
+<span class="sd">:Email:     development@s3dev.uk</span>
+
+<span class="sd">:Comments:  n/a</span>
+
+<span class="sd">:Examples:</span>
+
+<span class="sd">    Collect plain-text files from a given *directory*::</span>
+
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.collector import Collector</span>
+
+<span class="sd">        &gt;&gt;&gt; c = Collector(paths=[&#39;/path/to/files&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; c.collect()</span>
+<span class="sd">        &gt;&gt;&gt; c.files</span>
+
+<span class="sd">        [[&#39;/path/to/files/project.py&#39;,</span>
+<span class="sd">          &#39;/path/to/files/script.sh&#39;]]</span>
+
+
+<span class="sd">    Collect plain-text files from a Python *wheel*::</span>
+
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.collector import Collector</span>
+
+<span class="sd">        &gt;&gt;&gt; c = Collector(paths=[&#39;/path/to/project-0.7.3-py3-none-any.whl&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; c.collect()</span>
+<span class="sd">        &gt;&gt;&gt; c.files</span>
+
+<span class="sd">        [[&#39;/tmp/tmpqnm6yka2/project/module00.py&#39;,</span>
+<span class="sd">          &#39;/tmp/tmpqnm6yka2/project/module01.py&#39;,</span>
+<span class="sd">          &#39;/tmp/tmpqnm6yka2/project/module02.py&#39;,</span>
+<span class="sd">          ...,</span>
+<span class="sd">          &#39;/tmp/tmpqnm6yka2/project/script.sh&#39;,</span>
+<span class="sd">          &#39;/tmp/tmpqnm6yka2/project/file.txt&#39;,</span>
+<span class="sd">          ...,</span>
+<span class="sd">          &#39;/tmp/tmpqnm6yka2/project/module08.py&#39;,</span>
+<span class="sd">          &#39;/tmp/tmpqnm6yka2/project/module09.py&#39;,</span>
+<span class="sd">          &#39;/tmp/tmpqnm6yka2/project/module10.py&#39;]]</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># pylint: disable=import-error</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+<span class="c1"># locals</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.config</span> <span class="kn">import</span> <span class="n">systemcfg</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.utilities</span> <span class="kn">import</span> <span class="n">utilities</span>
+
+
+<div class="viewcode-block" id="MixedTypesError">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector.MixedTypesError">[docs]</a>
+<span class="k">class</span> <span class="nc">MixedTypesError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom error class raised for mixed ``PATH`` type errors.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="_CollectorBase">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector._CollectorBase">[docs]</a>
+<span class="k">class</span> <span class="nc">_CollectorBase</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Private base class providing file collection functionality.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): Full path to the module, directory or wheel for</span>
+<span class="sd">            collection.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collector base class initialiser.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Accessor to the list of collected files.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span>
+
+<div class="viewcode-block" id="_CollectorBase.collect">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector._CollectorBase.collect">[docs]</a>
+    <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect all files for this class-type.&quot;&quot;&quot;</span></div>
+</div>
+
+        <span class="c1"># Dummy method to be overridden by the specialising class.</span>
+
+
+<div class="viewcode-block" id="_CollectorDirectory">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector._CollectorDirectory">[docs]</a>
+<span class="k">class</span> <span class="nc">_CollectorDirectory</span><span class="p">(</span><span class="n">_CollectorBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collect all files for analysis from the given directory.</span>
+
+<span class="sd">    This *private* class is not part of the public interface. Please call the</span>
+<span class="sd">    :class:`Collector` class instead.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="_CollectorDirectory.collect">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector._CollectorDirectory.collect">[docs]</a>
+    <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect all files for this class-type.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str, optional): Directory path. This argument was</span>
+<span class="sd">                originally implemented for use by :class:`_CollectorWheel`</span>
+<span class="sd">                to enable directory traversal using existing logic.</span>
+<span class="sd">                Defaults to None.</span>
+
+<span class="sd">        :Logic:</span>
+
+<span class="sd">            1) Using ``glob.glob`` recursively, all files (including</span>
+<span class="sd">               hidden files) are collected.</span>
+
+<span class="sd">            2) Next, using ``filter`` remove any files which match the</span>
+<span class="sd">               exclusion pattern and are not plain-text. See *Tip* below.</span>
+
+<span class="sd">            3) Map ``os.path.realpath`` to all files to expand the</span>
+<span class="sd">               filepaths.</span>
+
+<span class="sd">        .. tip::</span>
+
+<span class="sd">            The excluded directories are maintained by the list in</span>
+<span class="sd">            ``config.toml`` under the ``system.exclude_dirs`` key.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="k">if</span> <span class="n">path</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="n">systemcfg</span><span class="p">[</span><span class="s1">&#39;exclude_dirs&#39;</span><span class="p">]</span>
+        <span class="n">rexp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;**&#39;</span><span class="p">),</span> <span class="n">include_hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">files_</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="ow">not</span> <span class="n">rexp</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="ow">and</span> <span class="n">utilities</span><span class="o">.</span><span class="n">istext</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">files</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">,</span> <span class="n">files_</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="_CollectorWheel">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector._CollectorWheel">[docs]</a>
+<span class="k">class</span> <span class="nc">_CollectorWheel</span><span class="p">(</span><span class="n">_CollectorBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collect all files for analysis from a Python wheel.</span>
+
+<span class="sd">    This *private* class is not part of the public interface. Please call the</span>
+<span class="sd">    :class:`Collector` class instead.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): Full path to the wheel file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wheel collector class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span> <span class="o">=</span> <span class="kc">None</span>   <span class="c1"># Used to keep the tmpdir object alive.</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tmpdir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Accessor to the temporary directory object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span>
+
+<div class="viewcode-block" id="_CollectorWheel.collect">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector._CollectorWheel.collect">[docs]</a>
+    <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unzip a wheel file and collect files.</span>
+
+<span class="sd">        :Logic:</span>
+
+<span class="sd">            1) Create a temporary directory object (using ``tempfile``).</span>
+
+<span class="sd">            2) Using ``zipfile``, unzip the wheel into the temporary</span>
+<span class="sd">               directory.</span>
+
+<span class="sd">            3) Create an instance of the :class:`_CollectorDirectory`</span>
+<span class="sd">               class and pass the path to the temp directory into the</span>
+<span class="sd">               class for file collection.</span>
+
+<span class="sd">            4) Store the list of collected files into the :attr:`_files`</span>
+<span class="sd">               attribute.</span>
+
+<span class="sd">        :Temp Directory:</span>
+<span class="sd">            The :class:`tempfile.TemporaryDirectory` object created by</span>
+<span class="sd">            this method is *not* explicitly closed, as the directory must</span>
+<span class="sd">            exist for analysing the files. Therefore, the temp directory</span>
+<span class="sd">            is removed when the ``tmpdir`` object has been destroyed,</span>
+<span class="sd">            generally on program completion.</span>
+
+<span class="sd">            For this reason, the object must be kept &#39;alive&#39; in the class</span>
+<span class="sd">            instance, and therefore *cannot* be a local variable. To keep</span>
+<span class="sd">            the object alive, the class&#39; instance of the temp directory</span>
+<span class="sd">            object is appended to a list in the parent class.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=consider-using-f-string</span>
+        <span class="c1"># pylint: disable=consider-using-with</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span>  <span class="c1"># No with to keep the object alive.</span>
+        <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zf</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">zf</span><span class="o">.</span><span class="n">filelist</span><span class="p">:</span>
+                <span class="n">zf</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">member</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Unpacked wheel files (from </span><span class="si">%s</span><span class="s1">):&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="s1">&#39;- </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">,</span>
+                                             <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;**&#39;</span><span class="p">),</span>
+                                                  <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                  <span class="n">include_hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">))))</span>
+        <span class="n">_c</span> <span class="o">=</span> <span class="n">_CollectorDirectory</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">_c</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="n">_c</span><span class="o">.</span><span class="n">files</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Collector">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector.Collector">[docs]</a>
+<span class="k">class</span> <span class="nc">Collector</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Primary file collection interface class.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        paths (list): A list of file paths or directories from the</span>
+<span class="sd">            argument parser.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        On instantiation, all elements in the ``paths`` list argument are</span>
+<span class="sd">        expanded to their realpath and tested to ensure they exist.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;File collector class initialiser.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span> <span class="o">=</span> <span class="n">paths</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="k">else</span> <span class="p">[</span><span class="n">paths</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="p">[]</span>    <span class="c1"># Files to be processed.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdirs</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Used to keep the wheel&#39;s temp dir object alive.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_checks</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Accessor to the list of Python files to be analysed.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This property is a *list of lists*.</span>
+
+<span class="sd">            Each outer list represents a wheel or a directory, with each</span>
+<span class="sd">            inner list representing the files contained therein.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span>
+
+<div class="viewcode-block" id="Collector.collect">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector.Collector.collect">[docs]</a>
+    <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect files for analysis from the provided paths.</span>
+
+<span class="sd">        :Criteria:</span>
+<span class="sd">            Using the private :meth:`_identify` method, the file</span>
+<span class="sd">            collection is routed to the appropriate file collector based</span>
+<span class="sd">            on the type of path provided to the ``paths`` argument on</span>
+<span class="sd">            instantiation.</span>
+
+<span class="sd">            - **Directory**: All paths in the :attr:`_paths` attribute</span>
+<span class="sd">              must be directories.</span>
+
+<span class="sd">            - **Module**: All paths in the :attr:`_paths` attribute must</span>
+<span class="sd">              be plain-text files.</span>
+
+<span class="sd">            - **Wheel**: All paths in the :attr:`_paths` attributes must</span>
+<span class="sd">              be Python wheels, or zip files.</span>
+
+<span class="sd">            Only files of the same type (directory, module or wheel) can</span>
+<span class="sd">            be collected at the same time, otherwise a ``ValueError`` is</span>
+<span class="sd">            raised.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            MixedTypesError: Raised if the :attr:`_paths` attribute contains</span>
+<span class="sd">                a mix of the types listed above.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identify</span><span class="p">():</span>
+            <span class="k">case</span> <span class="s1">&#39;dir&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_collect_from_directory</span><span class="p">()</span>
+            <span class="k">case</span> <span class="s1">&#39;modules&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_collect_from_files</span><span class="p">()</span>
+            <span class="k">case</span> <span class="s1">&#39;wheel&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_collect_from_wheel</span><span class="p">()</span>
+            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Invalid file types (or mix of file types) provided. &#39;</span>
+                       <span class="s1">&#39;All files provided must be of the same type (module, wheel or directory).&#39;</span><span class="p">)</span>
+                <span class="c1"># raise ValueError(msg)</span>
+                <span class="k">raise</span> <span class="n">MixedTypesError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Collector._checks">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector.Collector._checks">[docs]</a>
+    <span class="k">def</span> <span class="nf">_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform pre-collection checks.</span>
+
+<span class="sd">        :Checks:</span>
+<span class="sd">            - All files exist.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: Raised if any file in ``paths`` does not</span>
+<span class="sd">                exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File not found: </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Collector._collect_from_directory">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector.Collector._collect_from_directory">[docs]</a>
+    <span class="k">def</span> <span class="nf">_collect_from_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect all plain-text files from a directory.</span>
+
+<span class="sd">        Before this method is called, all paths are tested to ensure</span>
+<span class="sd">        they are directories.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Collecting files from a directory ...&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">dir_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">_CollectorDirectory</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">dir_</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">files</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Collector._collect_from_files">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector.Collector._collect_from_files">[docs]</a>
+    <span class="k">def</span> <span class="nf">_collect_from_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect all plain-text files.</span>
+
+<span class="sd">        As the realpath conversion and file exists check have already</span>
+<span class="sd">        been performed, this method can simply append the :attr:`_paths`</span>
+<span class="sd">        argument to :attr:`_files`, for the caller&#39;s use.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Collecting files from modules ...&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Collector._collect_from_wheel">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector.Collector._collect_from_wheel">[docs]</a>
+    <span class="k">def</span> <span class="nf">_collect_from_wheel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect all plain-text files from wheels.</span>
+
+<span class="sd">        Before this method is called, all paths are tested to ensure</span>
+<span class="sd">        they are wheels (or .zip files).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Collecting files from wheels ...&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">wheel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">_CollectorWheel</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">wheel</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">tmpdir</span><span class="p">)</span>  <span class="c1"># Keep the tmpdir object alive.</span></div>
+
+
+<div class="viewcode-block" id="Collector._identify">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector.Collector._identify">[docs]</a>
+    <span class="k">def</span> <span class="nf">_identify</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify the type of collection to take place.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: One of the following strings are returned, based on the</span>
+<span class="sd">            content of the ``paths`` argument:</span>
+
+<span class="sd">                - Directory: &#39;dir&#39;</span>
+<span class="sd">                - Python modules: &#39;modules&#39;</span>
+<span class="sd">                - Wheel: &#39;wheel&#39;</span>
+<span class="sd">                - Anything else: &#39;invalid&#39;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># These tests are ordered by fastest to slowest.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isdir</span><span class="p">():</span>
+            <span class="k">return</span> <span class="s1">&#39;dir&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iswheel</span><span class="p">():</span>
+            <span class="k">return</span> <span class="s1">&#39;wheel&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_istext</span><span class="p">():</span>
+            <span class="k">return</span> <span class="s1">&#39;modules&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;invalid&#39;</span></div>
+
+
+<div class="viewcode-block" id="Collector._isdir">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector.Collector._isdir">[docs]</a>
+    <span class="k">def</span> <span class="nf">_isdir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if *all* elements of ``paths`` are directories.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if *all* paths are directories, otherwise False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Collector._istext">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector.Collector._istext">[docs]</a>
+    <span class="k">def</span> <span class="nf">_istext</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if *all* elements of ``paths`` are plain-text files.</span>
+
+<span class="sd">       Returns:</span>
+<span class="sd">            bool: True if *all* elements of ``paths`` are plain-text</span>
+<span class="sd">            files, otherwise False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># return not any(map(utilities.isbinary, self._paths))</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">utilities</span><span class="o">.</span><span class="n">istext</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Collector._iswheel">
+<a class="viewcode-back" href="../../../collector.html#badsnakes.libs.collector.Collector._iswheel">[docs]</a>
+    <span class="k">def</span> <span class="nf">_iswheel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if *all* elements of ``paths`` are Python wheels.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            A file is tested as a wheel by checking the first four bytes</span>
+<span class="sd">            of the file itself, *not* using the file extension. As such</span>
+<span class="sd">            a ``.zip`` file will pass this test as well.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if *all* elements of ``paths`` are Python wheels</span>
+<span class="sd">            (or ZIP archives), otherwise False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">)):</span>  <span class="c1"># Required to raise mixed-types error.</span>
+            <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">utilities</span><span class="o">.</span><span class="n">iszip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

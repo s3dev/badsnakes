@@ -1,0 +1,1078 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>badsnakes.libs.analysers &mdash; badsnakes - v0.1.0 Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/s5defs-rules.css?v=0345028d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            badsnakes
+              <img src="../../../_static/s3dev_tri_white_sm.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../library.html">Libary API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact Us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">badsnakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">badsnakes.libs.analysers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for badsnakes.libs.analysers</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:Purpose:   This module provides the AST node analysers for the project.</span>
+
+<span class="sd">            The analyser classes in this module iterate over the</span>
+<span class="sd">            AST-node-specific :mod:`badsnakes.libs.containers` objects</span>
+<span class="sd">            which store the details extracted from each AST node. Using</span>
+<span class="sd">            the values defined in ``config.toml`` the ``severity`` flag</span>
+<span class="sd">            in each container object is set according to the severity of</span>
+<span class="sd">            the node analysis.</span>
+
+<span class="sd">:Platform:  Linux/Windows | Python 3.10+</span>
+<span class="sd">:Developer: J Berendt</span>
+<span class="sd">:Email:     development@s3dev.uk</span>
+
+<span class="sd">:Comments:  n/a</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># pylint: disable=import-error</span>
+<span class="c1"># pylint: disable=no-member  # Cannot add &#39;_key&#39; to base.</span>
+
+<span class="c1"># Enable type hinting</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="c1"># locals</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.enums</span> <span class="kn">import</span> <span class="n">Severity</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.config</span> <span class="kn">import</span> <span class="n">analysercfg</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.containers</span> <span class="kn">import</span> <span class="n">CodeText</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="_BaseAnalyser">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers._BaseAnalyser">[docs]</a>
+<span class="k">class</span> <span class="nc">_BaseAnalyser</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base analyser class.</span>
+
+<span class="sd">    This class contains base functionality which is designed to be</span>
+<span class="sd">    inherited and specialised as required by the node-type-specific</span>
+<span class="sd">    classes.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Base code analyser class initialiser.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="p">[]</span>            <span class="c1"># Dangerous items.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_d_lstr</span> <span class="o">=</span> <span class="p">[]</span>       <span class="c1"># Dangerous long strings.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="p">[]</span>            <span class="c1"># Suspect items.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s_lstr</span> <span class="o">=</span> <span class="p">[]</span>       <span class="c1"># Suspect long strings.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span> <span class="o">=</span> <span class="kc">None</span>      <span class="c1"># AST node extractions to be analysed.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cfg</span> <span class="o">=</span> <span class="n">analysercfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key</span><span class="p">)</span>   <span class="c1"># Set the node-specific config.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cfg</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_d</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cfg</span><span class="p">[</span><span class="s1">&#39;dangerous&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kwds&#39;</span><span class="p">))</span>  <span class="c1"># Set node-specific keywords.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_o</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cfg</span><span class="p">[</span><span class="s1">&#39;ok&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kwds&#39;</span><span class="p">))</span>         <span class="c1"># Set node-specific keywords.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_s</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cfg</span><span class="p">[</span><span class="s1">&#39;suspect&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kwds&#39;</span><span class="p">))</span>    <span class="c1"># Set node-specific keywords.</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dangerous</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Public accessor to the AST nodes flagged as *dangerous*.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dangerous_longstring</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Public accessor to long strings flagged as *dangerous*.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d_lstr</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">suspect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Public accessor to the AST nodes flagged as *suspect*.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">suspect_longstring</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Public accessor to long strings flagged as *suspect*.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s_lstr</span>
+
+<div class="viewcode-block" id="_BaseAnalyser.analyse">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers._BaseAnalyser.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the analyser against this module.</span>
+
+<span class="sd">        For most AST nodes, the analyser first performs a &#39;quick search&#39;</span>
+<span class="sd">        to determine if any of the listed keywords from the config file</span>
+<span class="sd">        are found in the AST extraction. If no keywords are present, no</span>
+<span class="sd">        further analysis is performed. If keywords are present, the</span>
+<span class="sd">        extracted statements are analysed further and flagged</span>
+<span class="sd">        accordingly.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nodes (list): A list of :mod:`badsnakes.libs.containers`</span>
+<span class="sd">                objects containing the values extracted from the AST</span>
+<span class="sd">                nodes.</span>
+
+<span class="sd">        :Implementation note:</span>
+<span class="sd">            The call to :meth:`_suspect` must be made *before* the call</span>
+<span class="sd">            to :meth:`_dangerous`.</span>
+
+<span class="sd">            There is a check in some :meth:`_dangerous` methods which</span>
+<span class="sd">            test if the AST node has already been flagged as &#39;suspect&#39;.</span>
+<span class="sd">            If so, a copy of the node class container is made so as not</span>
+<span class="sd">            to re-classify suspect statements as dangerous; a copy of the</span>
+<span class="sd">            container will be classified as dangerous. Obviously, this</span>
+<span class="sd">            will result is double-reporting, but that&#39;s OK.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span> <span class="o">=</span> <span class="n">nodes</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_quick_search</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_suspect</span><span class="p">()</span>  <span class="c1"># Must be called *before* _dangerous.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dangerous</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="_BaseAnalyser._dangerous">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers._BaseAnalyser._dangerous">[docs]</a>
+    <span class="k">def</span> <span class="nf">_dangerous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for dangerous code elements for this node type.</span>
+
+<span class="sd">        Any statements flagged as dangerous are written to the</span>
+<span class="sd">        :attr:`_d` attribute.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This is a *generalised* dangerous search method which looks</span>
+<span class="sd">            at the ``node.value`` attribute only.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cfg</span><span class="p">[</span><span class="s1">&#39;dangerous&#39;</span><span class="p">][</span><span class="s1">&#39;long_strings&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_d_lstr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_long_strings</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">,</span>
+                                                   <span class="n">category</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">DANGEROUS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>  <span class="c1"># If already SUSPECT, do not overwrite.</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">:</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">DANGEROUS</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no_dangerous_items_found</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="_BaseAnalyser._find_long_strings">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers._BaseAnalyser._find_long_strings">[docs]</a>
+    <span class="k">def</span> <span class="nf">_find_long_strings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                           <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+                           <span class="n">category</span><span class="p">:</span> <span class="n">Severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">SUSPECT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for long strings in the node values.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            items (list): A list of :mod:`badsnakes.libs.containers`</span>
+<span class="sd">                objects containing the node classes to be analysed.</span>
+<span class="sd">            category (Severity, optional): The</span>
+<span class="sd">                :class:`~badsnakes.libs.enums.Severity` class enum to be</span>
+<span class="sd">                assigned to flagged strings.</span>
+<span class="sd">                Defaults to ``Severity.SUSPECT``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: A list of badsnakes container objects containing long</span>
+<span class="sd">            string values.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">))</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">analysercfg</span><span class="p">[</span><span class="s1">&#39;max_string_length&#39;</span><span class="p">]):</span>
+                <span class="n">i</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">category</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="_BaseAnalyser._no_dangerous_items_found">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers._BaseAnalyser._no_dangerous_items_found">[docs]</a>
+    <span class="k">def</span> <span class="nf">_no_dangerous_items_found</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report that no dangerous items were found in the quick search.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: No dangerous items found in quick search. Not analysing.&#39;</span><span class="p">,</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_key</span><span class="o">.</span><span class="n">title</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="_BaseAnalyser._no_suspect_items_found">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers._BaseAnalyser._no_suspect_items_found">[docs]</a>
+    <span class="k">def</span> <span class="nf">_no_suspect_items_found</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report that no suspect items were found in the quick search.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: No suspect items found in quick search. Not analysing.&#39;</span><span class="p">,</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">_key</span><span class="o">.</span><span class="n">title</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="_BaseAnalyser._quick_search">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers._BaseAnalyser._quick_search">[docs]</a>
+    <span class="k">def</span> <span class="nf">_quick_search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search through extracted attributes for blacklisted items.</span>
+
+<span class="sd">        A set of blacklisted items for this node type is compared against</span>
+<span class="sd">        a set of extracted attributes for this node type. Further analysis</span>
+<span class="sd">        is only carried out if there is an intersection in the two sets.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This is a *generalised* quick search method which looks at</span>
+<span class="sd">            the ``node.value`` attribute only.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+            <span class="n">found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="p">(</span><span class="n">found</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_s</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_o</span>  <span class="c1"># Subtract whitelist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="p">(</span><span class="n">found</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_d</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_o</span>  <span class="c1"># Subtract whitelist</span></div>
+
+
+<div class="viewcode-block" id="_BaseAnalyser._suspect">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers._BaseAnalyser._suspect">[docs]</a>
+    <span class="k">def</span> <span class="nf">_suspect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for suspect code elements for this node type.</span>
+
+<span class="sd">        Any statements flagged as suspect are written to the</span>
+<span class="sd">        :attr:`_s` attribute.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This is a *generalised* dangerous search method which looks</span>
+<span class="sd">            at the ``node.value`` attribute only.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cfg</span><span class="p">[</span><span class="s1">&#39;suspect&#39;</span><span class="p">][</span><span class="s1">&#39;long_strings&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s_lstr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_long_strings</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">SUSPECT</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no_suspect_items_found</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">results</span></div>
+</div>
+
+
+
+<span class="c1"># %% Specialised analyser classes</span>
+
+<div class="viewcode-block" id="ArgumentAnalyser">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.ArgumentAnalyser">[docs]</a>
+<span class="k">class</span> <span class="nc">ArgumentAnalyser</span><span class="p">(</span><span class="n">_BaseAnalyser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised analyser class for the *Argument* node class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="s1">&#39;argument&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="AssignmentAnalyser">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.AssignmentAnalyser">[docs]</a>
+<span class="k">class</span> <span class="nc">AssignmentAnalyser</span><span class="p">(</span><span class="n">_BaseAnalyser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised analyser class for the *Assignment* node class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="s1">&#39;assignment&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="AttributeAnalyser">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.AttributeAnalyser">[docs]</a>
+<span class="k">class</span> <span class="nc">AttributeAnalyser</span><span class="p">(</span><span class="n">_BaseAnalyser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised analyser class for the *Attribute* node class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="s1">&#39;attribute&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AttributeAnalyser._dangerous">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.AttributeAnalyser._dangerous">[docs]</a>
+    <span class="k">def</span> <span class="nf">_dangerous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for dangerous code elements for this node type.</span>
+
+<span class="sd">        Any statements flagged as dangerous are written to the</span>
+<span class="sd">        :attr:`_d` attribute.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.name`` and ``node.value`` attributes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>  <span class="c1"># If already SUSPECT, do not overwrite.</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                <span class="k">if</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">:</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">DANGEROUS</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no_dangerous_items_found</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="AttributeAnalyser._quick_search">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.AttributeAnalyser._quick_search">[docs]</a>
+    <span class="k">def</span> <span class="nf">_quick_search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search through extracted attributes for blacklisted items.</span>
+
+<span class="sd">        A set of blacklisted items for this node type is compared against</span>
+<span class="sd">        a set of extracted attributes for this node type. Further analysis</span>
+<span class="sd">        is only carried out if there is an intersection in the two sets.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.name`` and ``node.value`` attributes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+            <span class="n">found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">found</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_s</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="n">found</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_d</span></div>
+
+
+<div class="viewcode-block" id="AttributeAnalyser._suspect">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.AttributeAnalyser._suspect">[docs]</a>
+    <span class="k">def</span> <span class="nf">_suspect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for suspect code elements for this node type.</span>
+
+<span class="sd">        Any statements flagged as suspect are written to the</span>
+<span class="sd">        :attr:`_s` attribute.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.name`` and ``node.value`` attributes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">SUSPECT</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no_suspect_items_found</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">results</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CallAnalyser">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CallAnalyser">[docs]</a>
+<span class="k">class</span> <span class="nc">CallAnalyser</span><span class="p">(</span><span class="n">_BaseAnalyser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised analyser class for the *Call* node class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="s1">&#39;call&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CallAnalyser._dangerous">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CallAnalyser._dangerous">[docs]</a>
+    <span class="k">def</span> <span class="nf">_dangerous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for dangerous code elements for this node type.</span>
+
+<span class="sd">        Any statements flagged as dangerous (which are not in the</span>
+<span class="sd">        whitelist) are written to the :attr:`_d` attribute.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.name`` and ``[node.module].[node.name]``</span>
+<span class="sd">            attributes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>  <span class="c1"># If already SUSPECT, do not overwrite.</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">((</span><span class="n">n</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="ow">or</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_o</span><span class="p">):</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">DANGEROUS</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no_dangerous_items_found</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="CallAnalyser._quick_search">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CallAnalyser._quick_search">[docs]</a>
+    <span class="k">def</span> <span class="nf">_quick_search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search through extracted attributes for blacklisted items.</span>
+
+<span class="sd">        A set of blacklisted items for this node type is compared against</span>
+<span class="sd">        a set of extracted attributes for this node type. Further analysis</span>
+<span class="sd">        is only carried out if there is an intersection in the two sets.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.name`` and (``node.module`` and ``node.name``)</span>
+<span class="sd">            attributes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+            <span class="n">found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">found</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_s</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="n">found</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_d</span></div>
+
+
+<div class="viewcode-block" id="CallAnalyser._suspect">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CallAnalyser._suspect">[docs]</a>
+    <span class="k">def</span> <span class="nf">_suspect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for suspect code elements for this node type.</span>
+
+<span class="sd">        Any statements flagged as suspect are written to the</span>
+<span class="sd">        :attr:`_s` attribute.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.module`` and ``node.name`` attributes.</span>
+
+<span class="sd">            Both the [.function] name and the [module.function] are</span>
+<span class="sd">            tested. Additionally, if a function name is only a single</span>
+<span class="sd">            character in length, it is flagged.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
+                    <span class="ow">or</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
+                    <span class="c1"># _ is reserved for the DANGEROUS category although 1 char in length.</span>
+                    <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;_&#39;</span><span class="p">)):</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">SUSPECT</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no_suspect_items_found</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">results</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CodeTextAnalyser">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CodeTextAnalyser">[docs]</a>
+<span class="k">class</span> <span class="nc">CodeTextAnalyser</span><span class="p">(</span><span class="n">_BaseAnalyser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyse the textual code itself for suspect activity.</span>
+
+<span class="sd">    This analyser class is different from the other analysers in this</span>
+<span class="sd">    module as the checks performed are based on the textual code base,</span>
+<span class="sd">    rather than on parsed AST node extractions.</span>
+
+<span class="sd">    :Checks:</span>
+<span class="sd">        The checks performed by this class are:</span>
+
+<span class="sd">            - Modules with no defined functions or imports.</span>
+<span class="sd">            - High percentage of long lines, relative to the number of</span>
+<span class="sd">              lines in a module.</span>
+<span class="sd">            - A high percentage of semi-colons, relative to the number of</span>
+<span class="sd">              lines in a module.</span>
+
+<span class="sd">        As these techniques are often used by threat actors to obfuscate</span>
+<span class="sd">        code, these checks should pass for well-written / PEP oriented</span>
+<span class="sd">        Python code, and are expected to trigger for suspect or poorly</span>
+<span class="sd">        written code.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># The analyse method uses &#39;module&#39; rather than &#39;nodes&#39;. Done for clarity.</span>
+    <span class="c1"># pylint: disable=arguments-renamed</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="s1">&#39;code&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nlines</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_m</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="CodeTextAnalyser.analyse">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CodeTextAnalyser.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">:</span> <span class="n">Module</span><span class="p">):</span>  <span class="c1"># noqa # pylint: disable=undefined-variable</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the code text analyser against this module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            module (module.Module): A :class:`~badsnakes.libs.module.Module`</span>
+<span class="sd">                class containing the stream of textual code to be</span>
+<span class="sd">                analysed, and ``module.nodeclasses`` object for further</span>
+<span class="sd">                inspection.</span>
+
+<span class="sd">        :Code analysis:</span>
+
+<span class="sd">            - Suspect:</span>
+
+<span class="sd">                - Single line modules</span>
+<span class="sd">                - Modules with no defined functions or imports</span>
+<span class="sd">                - Modules with a high percentage of long lines</span>
+
+<span class="sd">            - Dangerous:</span>
+
+<span class="sd">                - A &#39;frequent&#39; use of semi-colons, relative to the</span>
+<span class="sd">                  number of lines in the module</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Bypass analysis if the module AST could not be parsed. The user</span>
+        <span class="c1"># will have been warned by the parser if there was an issue.</span>
+        <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">ast_</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_m</span> <span class="o">=</span> <span class="n">module</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_line_count</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_test_high_pct_long_lines</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_test_high_pct_semi_colons</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_test_no_function_defs_no_imports</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_test_single_line_module</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_items</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="CodeTextAnalyser._get_line_count">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CodeTextAnalyser._get_line_count">[docs]</a>
+    <span class="k">def</span> <span class="nf">_get_line_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Count the lines of *code* in the module.</span>
+
+<span class="sd">        The number of lines is determined by traversing the top level of</span>
+<span class="sd">        the AST and storing the ``node.lineno`` and ``node.end_lineno``</span>
+<span class="sd">        attributes into a set (to prevent duplication), then summing</span>
+<span class="sd">        the difference in last-first+1, to get the total number of</span>
+<span class="sd">        *coded* lines in a module.</span>
+
+<span class="sd">        This approach is used as this skips comments and blank lines and</span>
+<span class="sd">        only accounts the actual lines of code.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=protected-access</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">ast_</span><span class="o">.</span><span class="n">body</span><span class="p">:</span>  <span class="c1"># Only traverse the module&#39;s top-level.</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s1">&#39;lineno&#39;</span><span class="p">):</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">n</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">n</span><span class="o">.</span><span class="n">end_lineno</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nlines</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="n">f</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CodeTextAnalyser._no_function_defs">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CodeTextAnalyser._no_function_defs">[docs]</a>
+    <span class="k">def</span> <span class="nf">_no_function_defs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if the code has no function definitions.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the</span>
+<span class="sd">            :attr:`badsnakes.libs.module.Module._NodeFunctionDefs.items`</span>
+<span class="sd">            list is empty, otherwise False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">nodeclasses</span><span class="o">.</span><span class="n">functiondefs</span><span class="o">.</span><span class="n">items</span></div>
+
+
+<div class="viewcode-block" id="CodeTextAnalyser._no_imports">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CodeTextAnalyser._no_imports">[docs]</a>
+    <span class="k">def</span> <span class="nf">_no_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if the code has no imports.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the</span>
+<span class="sd">            :attr:`badsnakes.libs.module.Module._NodeImports.items`</span>
+<span class="sd">            list is empty, otherwise False.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">nodeclasses</span><span class="o">.</span><span class="n">imports</span><span class="o">.</span><span class="n">items</span></div>
+
+
+<div class="viewcode-block" id="CodeTextAnalyser._set_items">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CodeTextAnalyser._set_items">[docs]</a>
+    <span class="k">def</span> <span class="nf">_set_items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the ``.items`` attribute with the results.</span>
+
+<span class="sd">        Typically, the module object will set the items on build with</span>
+<span class="sd">        container object populated by the extractor. However, as code</span>
+<span class="sd">        text analysis operates differently, the items are set here using</span>
+<span class="sd">        the containers populated on analysis.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">nodeclasses</span><span class="o">.</span><span class="n">codetext</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CodeTextAnalyser._test_high_pct_long_lines">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CodeTextAnalyser._test_high_pct_long_lines">[docs]</a>
+    <span class="k">def</span> <span class="nf">_test_high_pct_long_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if the code has a high percentage of long lines.</span>
+
+<span class="sd">        The maximum line length is defined in ``config.toml`` along with</span>
+<span class="sd">        the percentage used by the test.</span>
+
+<span class="sd">        :Logic:</span>
+<span class="sd">            - Rewind the code stream to the beginning.</span>
+<span class="sd">            - Create a filter object containing lines whose length is</span>
+<span class="sd">              greater than the maximum allowed, and obtain the length</span>
+<span class="sd">              of the result.</span>
+<span class="sd">            - Divide the result by the number of lines in the module and</span>
+<span class="sd">              test if the ratio is greater than or equal to the allowed</span>
+<span class="sd">              limit.</span>
+<span class="sd">            - If the result of the test is True, a</span>
+<span class="sd">              :class:`badsnakes.libs.containers.CodeText` container is</span>
+<span class="sd">              appended to the :attr:`_s` suspect attribute with the</span>
+<span class="sd">              relevant details.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            For an overview of how a module&#39;s lines are counted, refer</span>
+<span class="sd">            to the docstring for the :meth:`_get_line_count` method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=line-too-long  # N: 101</span>
+        <span class="c1"># pylint: disable=unnecessary-comprehension  # More compact</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span><span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">analysercfg</span><span class="p">[</span><span class="s1">&#39;max_line_length&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">code</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nlines</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">analysercfg</span><span class="p">[</span><span class="s1">&#39;pct_long_lines&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CodeText</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="s1">&#39;High percentage of long lines.&#39;</span><span class="p">,</span>
+                                    <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">SUSPECT</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="CodeTextAnalyser._test_high_pct_semi_colons">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CodeTextAnalyser._test_high_pct_semi_colons">[docs]</a>
+    <span class="k">def</span> <span class="nf">_test_high_pct_semi_colons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test for the use of semi-colons relative to line count.</span>
+
+<span class="sd">        This test is designed to detect semi-colons which are used as</span>
+<span class="sd">        *statement separators* in the code itself, as the</span>
+<span class="sd">        :class:`ConstantAnalyser` class detects</span>
+<span class="sd">        semi-colons in strings.</span>
+
+<span class="sd">        The percentage of semi-colons relative to the number of lines is</span>
+<span class="sd">        defined in the ``config.toml`` file.</span>
+
+<span class="sd">        :Logic:</span>
+<span class="sd">            - Rewind the code stream to the beginning.</span>
+<span class="sd">            - Iterate through the code stream and count the number of</span>
+<span class="sd">              semi-colons on each line, and sum the results.</span>
+<span class="sd">            - Divide the summed result by the number of lines in the</span>
+<span class="sd">              module and test if the ratio is greater than or equal to</span>
+<span class="sd">              the allowed limit.</span>
+<span class="sd">            - If the result of the test is True, a</span>
+<span class="sd">              :class:`badsnakes.libs.containers.CodeText` container is</span>
+<span class="sd">              appended to the :attr:`_d` dangerous attribute with the</span>
+<span class="sd">              relevant details.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            For an overview of how a module&#39;s lines are counted, refer</span>
+<span class="sd">            to the docstring for the :meth:`_get_line_count` method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">code</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nlines</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">analysercfg</span><span class="p">[</span><span class="s1">&#39;pct_semi_colons&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CodeText</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="s1">&#39;High percentage of semi-colons.&#39;</span><span class="p">,</span>
+                                    <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">DANGEROUS</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="CodeTextAnalyser._test_no_function_defs_no_imports">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CodeTextAnalyser._test_no_function_defs_no_imports">[docs]</a>
+    <span class="k">def</span> <span class="nf">_test_no_function_defs_no_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if the code has no function definitions or imports.</span>
+
+<span class="sd">        :Logic:</span>
+<span class="sd">            - Test if a call to the :meth:`_no_function_defs` and</span>
+<span class="sd">              :meth:`_no_imports` methods are True.</span>
+<span class="sd">            - If True, a :class:`badsnakes.libs.containers.CodeText`</span>
+<span class="sd">              container is appended to the :attr:`_s` suspect attribute</span>
+<span class="sd">              with the relevant details.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_function_defs</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_imports</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CodeText</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="s1">&#39;No function definitions and no imports.&#39;</span><span class="p">,</span>
+                                    <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">SUSPECT</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="CodeTextAnalyser._test_single_line_module">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.CodeTextAnalyser._test_single_line_module">[docs]</a>
+    <span class="k">def</span> <span class="nf">_test_single_line_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if a module only contains a single line of code.</span>
+
+<span class="sd">        Generally, this is an indication of a runner script, or a long</span>
+<span class="sd">        statement (or string) used to obfuscate malicious code.</span>
+
+<span class="sd">        :Logic:</span>
+<span class="sd">            - If the :attr:`_nlines` attribute is less than two, a</span>
+<span class="sd">              :class:`badsnakes.libs.containers.CodeText` container is</span>
+<span class="sd">              appended to the :attr:`_s` suspect attribute with the</span>
+<span class="sd">              relevant details.</span>
+
+<span class="sd">        :Rationale:</span>
+<span class="sd">            For rationale on how lines of code are counted, refer to the</span>
+<span class="sd">            docstring for the :meth:`_get_line_count` method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nlines</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CodeText</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_nlines</span><span class="p">,</span>
+                                    <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;Single line module.&#39;</span><span class="p">,</span>
+                                    <span class="n">severity</span><span class="o">=</span><span class="n">Severity</span><span class="o">.</span><span class="n">SUSPECT</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ConstantAnalyser">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.ConstantAnalyser">[docs]</a>
+<span class="k">class</span> <span class="nc">ConstantAnalyser</span><span class="p">(</span><span class="n">_BaseAnalyser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised analyser class for the *Constant* node class.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        All function/method docstrings have been *excluded* from the</span>
+<span class="sd">        containers enabling the search for simple strings such as</span>
+<span class="sd">        ``&#39;;&#39;`` and ``&#39;()&#39;`` in constants, without the presence of these</span>
+<span class="sd">        strings in the docstring flagging a false-positive.</span>
+
+<span class="sd">        The docstring extraction is performed by the</span>
+<span class="sd">        :meth:`extractor._extract_docstrings` method.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># Used to catch strings with () and no spaces. For example:</span>
+    <span class="c1"># - &#39;()&#39;</span>
+    <span class="c1"># - &#39;fn()&#39;</span>
+    <span class="c1"># - &#39;fn1();fn2()&#39;</span>
+    <span class="c1">#</span>
+    <span class="c1"># But not:</span>
+    <span class="c1"># - &#39;A string instructing user to call this fn() instead.&#39;</span>
+    <span class="c1">#</span>
+    <span class="n">_RE_PAREN</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\S*\(\)\S*$&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="s1">&#39;constant&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ConstantAnalyser._dangerous">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.ConstantAnalyser._dangerous">[docs]</a>
+    <span class="k">def</span> <span class="nf">_dangerous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for dangerous code elements for this node type.</span>
+
+<span class="sd">        Any statements flagged as dangerous are written to the</span>
+<span class="sd">        :attr:`_d` attribute.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.value`` attribute.</span>
+
+<span class="sd">            The constants tests do *not* rely on the quick search, as we</span>
+<span class="sd">            are searching for blacklisted strings *in* constants</span>
+<span class="sd">            (strings). Therefore, as each constant is iterated a full</span>
+<span class="sd">            blacklist search is occurring.</span>
+
+<span class="sd">            Granted, it&#39;s not efficient - but we must be thorough.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>  <span class="c1"># If already SUSPECT, do not overwrite.</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="c1"># Test if the blacklisted string is any part of the constant.</span>
+            <span class="c1"># This block is intentionally verbose (rather than using any())</span>
+            <span class="c1"># so the search string can be added to the container.</span>
+            <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">value</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_d</span><span class="p">:</span>
+                    <span class="c1"># Consider whitelisted strings.</span>
+                    <span class="c1"># For example, exec in &#39;execution&#39; string is OK.</span>
+                    <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">n</span><span class="o">.</span><span class="n">value</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">d</span> <span class="ow">in</span> <span class="n">ok</span> <span class="k">for</span> <span class="n">ok</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_o</span><span class="p">):</span>
+                        <span class="n">n</span><span class="o">.</span><span class="n">searchstr</span> <span class="o">=</span> <span class="n">d</span>
+                        <span class="n">n</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">DANGEROUS</span>
+                        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                        <span class="k">break</span>  <span class="c1"># Only need to capture the first hit.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="ConstantAnalyser._suspect">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.ConstantAnalyser._suspect">[docs]</a>
+    <span class="k">def</span> <span class="nf">_suspect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for suspect code elements for this node type.</span>
+
+<span class="sd">        Any statements flagged as suspect are written to the</span>
+<span class="sd">        :attr:`_s` attribute.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.value`` attribute.</span>
+
+<span class="sd">            The constants tests do *not* rely on the quick search, as we</span>
+<span class="sd">            are searching for blacklisted strings *in* constants</span>
+<span class="sd">            (strings). Therefore, as each constant is iterated a full</span>
+<span class="sd">            blacklist search is occurring.</span>
+
+<span class="sd">            Granted, it&#39;s not efficient - but we must be thorough.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+            <span class="c1"># Test if the blacklisted string is any part of the constant.</span>
+            <span class="c1"># This block is intentionally verbose (rather than using any())</span>
+            <span class="c1"># so the search string can be added to the container.</span>
+            <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">value</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RE_PAREN</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">searchstr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RE_PAREN</span><span class="o">.</span><span class="n">pattern</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">SUSPECT</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_s</span><span class="p">:</span>
+                        <span class="c1"># Test if kwd is *any part* of the string.</span>
+                        <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">n</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                            <span class="n">n</span><span class="o">.</span><span class="n">searchstr</span> <span class="o">=</span> <span class="n">s</span>
+                            <span class="n">n</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">SUSPECT</span>
+                            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                            <span class="k">break</span>  <span class="c1"># Only need to capture the first hit.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">results</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FunctionDefAnalyser">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.FunctionDefAnalyser">[docs]</a>
+<span class="k">class</span> <span class="nc">FunctionDefAnalyser</span><span class="p">(</span><span class="n">_BaseAnalyser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised analyser class for the *FunctionDef* node class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="s1">&#39;functiondef&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="FunctionDefAnalyser._dangerous">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.FunctionDefAnalyser._dangerous">[docs]</a>
+    <span class="k">def</span> <span class="nf">_dangerous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for dangerous code elements for this node type.</span>
+
+<span class="sd">        Any statements flagged as dangerous are written to the</span>
+<span class="sd">        :attr:`_d` attribute.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.name`` attribute.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>  <span class="c1"># If already SUSPECT, do not overwrite.</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">:</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">DANGEROUS</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no_dangerous_items_found</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="FunctionDefAnalyser._quick_search">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.FunctionDefAnalyser._quick_search">[docs]</a>
+    <span class="k">def</span> <span class="nf">_quick_search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search through extracted attributes for blacklisted items.</span>
+
+<span class="sd">        A set of blacklisted items for this node type is compared against</span>
+<span class="sd">        a set of extracted attributes for this node type. Further analysis</span>
+<span class="sd">        is only carried out if there is an intersection in the two sets.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.name`` attribute.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+            <span class="n">found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">found</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_s</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="n">found</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_d</span></div>
+
+
+<div class="viewcode-block" id="FunctionDefAnalyser._suspect">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.FunctionDefAnalyser._suspect">[docs]</a>
+    <span class="k">def</span> <span class="nf">_suspect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for suspect code elements for this node type.</span>
+
+<span class="sd">        Any statements flagged as suspect are written to the</span>
+<span class="sd">        :attr:`_s` attribute.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.name`` attribute.</span>
+
+<span class="sd">            As all function names are tested (specifically in search of</span>
+<span class="sd">            single character function names) the quick search is</span>
+<span class="sd">            bypassed.</span>
+
+<span class="sd">            Additionally, any function names containing ``&#39;0x&#39;`` in the</span>
+<span class="sd">            name are flagged as this suggests an attempt at obfuscation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
+                <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+                <span class="ow">or</span> <span class="s1">&#39;0x&#39;</span> <span class="ow">in</span> <span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+                <span class="n">n</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">SUSPECT</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">results</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ImportAnalyser">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.ImportAnalyser">[docs]</a>
+<span class="k">class</span> <span class="nc">ImportAnalyser</span><span class="p">(</span><span class="n">_BaseAnalyser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised analyser class for the *Import* node class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="s1">&#39;import&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ImportAnalyser._dangerous">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.ImportAnalyser._dangerous">[docs]</a>
+    <span class="k">def</span> <span class="nf">_dangerous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for dangerous code elements for this node type.</span>
+
+<span class="sd">        Any statements flagged as dangerous are written to the</span>
+<span class="sd">        :attr:`_d` attribute.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.module`` and (``node.module``.``node.name``)</span>
+<span class="sd">            attributes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>  <span class="c1"># If already SUSPECT, do not overwrite.</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="ow">or</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">:</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">DANGEROUS</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no_dangerous_items_found</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="ImportAnalyser._quick_search">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.ImportAnalyser._quick_search">[docs]</a>
+    <span class="k">def</span> <span class="nf">_quick_search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search through extracted attributes for blacklisted items.</span>
+
+<span class="sd">        A set of blacklisted items for this node type is compared against</span>
+<span class="sd">        a set of extracted attributes for this node type. Further analysis</span>
+<span class="sd">        is only carried out if there is an intersection in the two sets.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.module`` and (``node.module``.``node.name``)</span>
+<span class="sd">            attributes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+            <span class="n">found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">module</span><span class="p">)</span>
+            <span class="n">found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">found</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_s</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="n">found</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwds_d</span></div>
+
+
+<div class="viewcode-block" id="ImportAnalyser._suspect">
+<a class="viewcode-back" href="../../../analysers.html#badsnakes.libs.analysers.ImportAnalyser._suspect">[docs]</a>
+    <span class="k">def</span> <span class="nf">_suspect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for suspect code elements for this node type.</span>
+
+<span class="sd">        Any statements flagged as suspect are written to the</span>
+<span class="sd">        :attr:`_s` attribute.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method is specific to the node type, which looks at</span>
+<span class="sd">            the ``node.module`` and (``node.module``.``node.name``)</span>
+<span class="sd">            attributes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="ow">or</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">module</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">:</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">SUSPECT</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no_suspect_items_found</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">results</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

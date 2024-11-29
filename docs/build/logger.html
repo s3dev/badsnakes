@@ -1,0 +1,969 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module: logger.py &mdash; badsnakes - v0.1.0 Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/s5defs-rules.css?v=0345028d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Module: module.py" href="module.html" />
+    <link rel="prev" title="Module: extractor.py" href="extractor.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            badsnakes
+              <img src="_static/s3dev_tri_white_sm.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library.html">Libary API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library.html#module-documentation">Module Documentation</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="analysers.html">Module: analysers.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="badsnakes.html">Module: badsnakes.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="collector.html">Module: collector.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html">Module: config.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="containers.html">Module: containers.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enums.html">Module: enums.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractor.html">Module: extractor.py</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Module: logger.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="module.html">Module: module.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parser.html">Module: parser.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reporter.html">Module: reporter.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html">Module: utilities.py</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact Us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">badsnakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="library.html">Libary API Documentation</a></li>
+      <li class="breadcrumb-item active">Module: logger.py</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-badsnakes.libs.logger">
+<span id="module-logger-py"></span><h1>Module: logger.py<a class="headerlink" href="#module-badsnakes.libs.logger" title="Link to this heading"></a></h1>
+<dl class="field-list">
+<dt class="field-odd">Purpose<span class="colon">:</span></dt>
+<dd class="field-odd"><p>This module provides the <em>file-based</em> reporting
+functionality for the project. Terminal-based reporting is
+handled by the <a class="reference internal" href="reporter.html#module-badsnakes.libs.reporter" title="badsnakes.libs.reporter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.reporter</span></code></a> module.</p>
+<p>Each <code class="docutils literal notranslate"><span class="pre">_LogTemplate*</span></code> class is responsible for the
+formatting of each AST node class. Whereas the primary caller
+<a class="reference internal" href="#badsnakes.libs.logger.Logger" title="badsnakes.libs.logger.Logger"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code></a> class controls the file creation and writing
+functionalities.</p>
+</dd>
+<dt class="field-even">Platform<span class="colon">:</span></dt>
+<dd class="field-even"><p>Linux/Windows | Python 3.10+</p>
+</dd>
+<dt class="field-odd">Developer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>J Berendt</p>
+</dd>
+<dt class="field-even">Email<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="mailto:development&#37;&#52;&#48;s3dev&#46;uk">development<span>&#64;</span>s3dev<span>&#46;</span>uk</a></p>
+</dd>
+<dt class="field-odd">Comments<span class="colon">:</span></dt>
+<dd class="field-odd"><p>n/a</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><p>Create a log file for a given module, or modules:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">badsnakes</span> <span class="kn">import</span> <span class="n">Module</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">badsnakes.libs.logger</span> <span class="kn">import</span> <span class="n">Logger</span>
+
+<span class="go"># Analyse a Python module.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Module</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/path/to/millworker.py&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">analyse</span><span class="p">()</span>
+
+<span class="go"># Create the log file.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/path/to/millworker.log&#39;</span><span class="p">,</span> <span class="n">modules</span><span class="o">=</span><span class="p">[</span><span class="n">m</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.logger.Logger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.logger.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><span class="pre">module.Module</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><span class="pre">module.Module</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#Logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger.Logger" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Write module findings to a log file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Full path to the log file to be created.</p></li>
+<li><p><strong>modules</strong> (<em>list</em><em>[</em><a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><em>module.Module</em></a><em>] </em><em>| </em><em>tuple</em><em>[</em><a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><em>module.Module</em></a><em>]</em>) – A list or
+tuple containing <a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">badsnakes.libs.module.Module</span></code></a>
+objects containing findings to be written to a log file.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger.Logger.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#Logger.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger.Logger.write" title="Link to this definition"></a></dt>
+<dd><p>Write log entries for all modules.</p>
+<dl class="field-list">
+<dt class="field-odd">Logic<span class="colon">:</span></dt>
+<dd class="field-odd"><p>For each module passed on instantiation, create a logging
+template parent-class, based on the module’s name.</p>
+<p>Suspect findings are written first, followed by dangerous
+findings.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger.Logger._setup">
+<span class="sig-name descname"><span class="pre">_setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#Logger._setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger.Logger._setup" title="Link to this definition"></a></dt>
+<dd><p>Create the new log file, if it does not already exist.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger.Logger._write">
+<span class="sig-name descname"><span class="pre">_write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#Logger._write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger.Logger._write" title="Link to this definition"></a></dt>
+<dd><p>Generalised log entry writer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – Delimited text string to be written to the log.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger.Logger._write_dangerous">
+<span class="sig-name descname"><span class="pre">_write_dangerous</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><span class="pre">module.Module</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#Logger._write_dangerous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger.Logger._write_dangerous" title="Link to this definition"></a></dt>
+<dd><p>Write a module’s <em>dangerous</em> findings to the log file.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>module</strong> (<a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><em>module.Module</em></a>) – Module for which the log entries are
+to be written.</p>
+</dd>
+<dt class="field-even">Logic<span class="colon">:</span></dt>
+<dd class="field-even"><p>For each AST node class, obtain the associated log template
+sub-class from <a class="reference internal" href="#badsnakes.libs.logger._LogTemplates" title="badsnakes.libs.logger._LogTemplates"><code class="xref py py-class docutils literal notranslate"><span class="pre">_LogTemplates</span></code></a>, using the node class’
+<code class="docutils literal notranslate"><span class="pre">.name</span></code> property.</p>
+<p>Using the AST-specific log template, write the dangerous
+findings to the log file created on logger instantiation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger.Logger._write_suspect">
+<span class="sig-name descname"><span class="pre">_write_suspect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><span class="pre">module.Module</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#Logger._write_suspect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger.Logger._write_suspect" title="Link to this definition"></a></dt>
+<dd><p>Write a module’s <em>suspect</em> findings to the log file.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>module</strong> (<a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><em>module.Module</em></a>) – Module for which the log entries are
+to be written.</p>
+</dd>
+<dt class="field-even">Logic<span class="colon">:</span></dt>
+<dd class="field-even"><p>For each AST node class, obtain the associated log template
+sub-class from <a class="reference internal" href="#badsnakes.libs.logger._LogTemplates" title="badsnakes.libs.logger._LogTemplates"><code class="xref py py-class docutils literal notranslate"><span class="pre">_LogTemplates</span></code></a>, using the node class’
+<code class="docutils literal notranslate"><span class="pre">.name</span></code> property.</p>
+<p>Using the AST-specific log template, write the suspect
+findings to the log file created on logger instantiation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplates">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.logger.</span></span><span class="sig-name descname"><span class="pre">_LogTemplates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplates" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Private wrapper class for all logging templates.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.logger.</span></span><span class="sig-name descname"><span class="pre">_LogTemplateBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateBase" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Private template logging base class.</p>
+<p>This class provides the <a class="reference internal" href="#badsnakes.libs.logger._LogTemplateBase._populate" title="badsnakes.libs.logger._LogTemplateBase._populate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_populate()</span></code></a> method to the sub-classes,
+which is used to build the log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>module_name</strong> (<em>str</em>) – Name of the module being logged. This name is
+written to the ‘module’ field of the log file.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateBase.entry_longstring">
+<span class="sig-name descname"><span class="pre">entry_longstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateBase.entry_longstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateBase.entry_longstring" title="Link to this definition"></a></dt>
+<dd><p>Generate an entry for a long string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Long strings are truncated to the leading and trailing 25
+characters to preserve brevity.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateBase._populate">
+<span class="sig-name descname"><span class="pre">_populate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateBase._populate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateBase._populate" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text to be written to the ‘text’ field of the
+log file.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Title to be written to the ‘title’
+field of the log file. If provided, this argument
+overrides the <code class="docutils literal notranslate"><span class="pre">_TITLE</span></code> attribute of the node-specific
+logging class. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateArguments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.logger.</span></span><span class="sig-name descname"><span class="pre">_LogTemplateArguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateArguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateArguments" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.logger._LogTemplateBase" title="badsnakes.libs.logger._LogTemplateBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_LogTemplateBase</span></code></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">Constant</span></code> node class specific logging template class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateArguments.entry">
+<span class="sig-name descname"><span class="pre">entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="containers.html#badsnakes.libs.containers.Constant" title="badsnakes.libs.containers.Constant"><span class="pre">containers.Constant</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateArguments.entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateArguments.entry" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference internal" href="containers.html#badsnakes.libs.containers.Constant" title="badsnakes.libs.containers.Constant"><em>containers.Constant</em></a>) – A <a class="reference internal" href="containers.html#badsnakes.libs.containers.Constant" title="badsnakes.libs.containers.Constant"><code class="xref py py-class docutils literal notranslate"><span class="pre">badsnakes.libs.containers.Constant</span></code></a>
+object containing the values from which the log entry is
+derived.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateArguments._populate">
+<span class="sig-name descname"><span class="pre">_populate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateArguments._populate" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text to be written to the ‘text’ field of the
+log file.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Title to be written to the ‘title’
+field of the log file. If provided, this argument
+overrides the <code class="docutils literal notranslate"><span class="pre">_TITLE</span></code> attribute of the node-specific
+logging class. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateArguments.entry_longstring">
+<span class="sig-name descname"><span class="pre">entry_longstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateArguments.entry_longstring" title="Link to this definition"></a></dt>
+<dd><p>Generate an entry for a long string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Long strings are truncated to the leading and trailing 25
+characters to preserve brevity.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateAssignment">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.logger.</span></span><span class="sig-name descname"><span class="pre">_LogTemplateAssignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateAssignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateAssignment" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.logger._LogTemplateBase" title="badsnakes.libs.logger._LogTemplateBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_LogTemplateBase</span></code></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">Assignment</span></code> node class specific logging template class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateAssignment.entry">
+<span class="sig-name descname"><span class="pre">entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="containers.html#badsnakes.libs.containers.Assign" title="badsnakes.libs.containers.Assign"><span class="pre">containers.Assign</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateAssignment.entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateAssignment.entry" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference internal" href="containers.html#badsnakes.libs.containers.Assign" title="badsnakes.libs.containers.Assign"><em>containers.Assign</em></a>) – A <a class="reference internal" href="containers.html#badsnakes.libs.containers.Assign" title="badsnakes.libs.containers.Assign"><code class="xref py py-class docutils literal notranslate"><span class="pre">badsnakes.libs.containers.Assign</span></code></a>
+object containing the values from which the log entry is
+derived.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateAssignment._populate">
+<span class="sig-name descname"><span class="pre">_populate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateAssignment._populate" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text to be written to the ‘text’ field of the
+log file.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Title to be written to the ‘title’
+field of the log file. If provided, this argument
+overrides the <code class="docutils literal notranslate"><span class="pre">_TITLE</span></code> attribute of the node-specific
+logging class. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateAssignment.entry_longstring">
+<span class="sig-name descname"><span class="pre">entry_longstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateAssignment.entry_longstring" title="Link to this definition"></a></dt>
+<dd><p>Generate an entry for a long string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Long strings are truncated to the leading and trailing 25
+characters to preserve brevity.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateAttribute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.logger.</span></span><span class="sig-name descname"><span class="pre">_LogTemplateAttribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateAttribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateAttribute" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.logger._LogTemplateBase" title="badsnakes.libs.logger._LogTemplateBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_LogTemplateBase</span></code></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">Attribute</span></code> node class specific logging template class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateAttribute.entry">
+<span class="sig-name descname"><span class="pre">entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="containers.html#badsnakes.libs.containers.Attribute" title="badsnakes.libs.containers.Attribute"><span class="pre">containers.Attribute</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateAttribute.entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateAttribute.entry" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference internal" href="containers.html#badsnakes.libs.containers.Attribute" title="badsnakes.libs.containers.Attribute"><em>containers.Attribute</em></a>) – A <a class="reference internal" href="containers.html#badsnakes.libs.containers.Attribute" title="badsnakes.libs.containers.Attribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">badsnakes.libs.containers.Attribute</span></code></a>
+object containing the values from which the log entry is
+derived.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateAttribute._populate">
+<span class="sig-name descname"><span class="pre">_populate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateAttribute._populate" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text to be written to the ‘text’ field of the
+log file.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Title to be written to the ‘title’
+field of the log file. If provided, this argument
+overrides the <code class="docutils literal notranslate"><span class="pre">_TITLE</span></code> attribute of the node-specific
+logging class. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateAttribute.entry_longstring">
+<span class="sig-name descname"><span class="pre">entry_longstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateAttribute.entry_longstring" title="Link to this definition"></a></dt>
+<dd><p>Generate an entry for a long string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Long strings are truncated to the leading and trailing 25
+characters to preserve brevity.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateCall">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.logger.</span></span><span class="sig-name descname"><span class="pre">_LogTemplateCall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateCall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateCall" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.logger._LogTemplateBase" title="badsnakes.libs.logger._LogTemplateBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_LogTemplateBase</span></code></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">Call</span></code> node class specific logging template class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateCall.entry">
+<span class="sig-name descname"><span class="pre">entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="containers.html#badsnakes.libs.containers.Call" title="badsnakes.libs.containers.Call"><span class="pre">containers.Call</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateCall.entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateCall.entry" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference internal" href="containers.html#badsnakes.libs.containers.Call" title="badsnakes.libs.containers.Call"><em>containers.Call</em></a>) – A <a class="reference internal" href="containers.html#badsnakes.libs.containers.Call" title="badsnakes.libs.containers.Call"><code class="xref py py-class docutils literal notranslate"><span class="pre">badsnakes.libs.containers.Call</span></code></a>
+object containing the values from which the log entry is
+derived.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateCall._populate">
+<span class="sig-name descname"><span class="pre">_populate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateCall._populate" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text to be written to the ‘text’ field of the
+log file.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Title to be written to the ‘title’
+field of the log file. If provided, this argument
+overrides the <code class="docutils literal notranslate"><span class="pre">_TITLE</span></code> attribute of the node-specific
+logging class. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateCall.entry_longstring">
+<span class="sig-name descname"><span class="pre">entry_longstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateCall.entry_longstring" title="Link to this definition"></a></dt>
+<dd><p>Generate an entry for a long string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Long strings are truncated to the leading and trailing 25
+characters to preserve brevity.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateCodeText">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.logger.</span></span><span class="sig-name descname"><span class="pre">_LogTemplateCodeText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateCodeText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateCodeText" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.logger._LogTemplateBase" title="badsnakes.libs.logger._LogTemplateBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_LogTemplateBase</span></code></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">CodeText</span></code> node class specific logging template class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateCodeText.entry">
+<span class="sig-name descname"><span class="pre">entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="containers.html#badsnakes.libs.containers.CodeText" title="badsnakes.libs.containers.CodeText"><span class="pre">containers.CodeText</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateCodeText.entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateCodeText.entry" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference internal" href="containers.html#badsnakes.libs.containers.CodeText" title="badsnakes.libs.containers.CodeText"><em>containers.CodeText</em></a>) – A <a class="reference internal" href="containers.html#badsnakes.libs.containers.CodeText" title="badsnakes.libs.containers.CodeText"><code class="xref py py-class docutils literal notranslate"><span class="pre">badsnakes.libs.containers.CodeText</span></code></a>
+object containing the values from which the log entry is
+derived.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateCodeText._populate">
+<span class="sig-name descname"><span class="pre">_populate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateCodeText._populate" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text to be written to the ‘text’ field of the
+log file.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Title to be written to the ‘title’
+field of the log file. If provided, this argument
+overrides the <code class="docutils literal notranslate"><span class="pre">_TITLE</span></code> attribute of the node-specific
+logging class. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateCodeText.entry_longstring">
+<span class="sig-name descname"><span class="pre">entry_longstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateCodeText.entry_longstring" title="Link to this definition"></a></dt>
+<dd><p>Generate an entry for a long string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Long strings are truncated to the leading and trailing 25
+characters to preserve brevity.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateConstant">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.logger.</span></span><span class="sig-name descname"><span class="pre">_LogTemplateConstant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateConstant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateConstant" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.logger._LogTemplateBase" title="badsnakes.libs.logger._LogTemplateBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_LogTemplateBase</span></code></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">Constant</span></code> node class specific logging template class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateConstant.entry">
+<span class="sig-name descname"><span class="pre">entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="containers.html#badsnakes.libs.containers.Constant" title="badsnakes.libs.containers.Constant"><span class="pre">containers.Constant</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateConstant.entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateConstant.entry" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference internal" href="containers.html#badsnakes.libs.containers.Constant" title="badsnakes.libs.containers.Constant"><em>containers.Constant</em></a>) – A <a class="reference internal" href="containers.html#badsnakes.libs.containers.Constant" title="badsnakes.libs.containers.Constant"><code class="xref py py-class docutils literal notranslate"><span class="pre">badsnakes.libs.containers.Constant</span></code></a>
+object containing the values from which the log entry is
+derived.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateConstant._populate">
+<span class="sig-name descname"><span class="pre">_populate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateConstant._populate" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text to be written to the ‘text’ field of the
+log file.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Title to be written to the ‘title’
+field of the log file. If provided, this argument
+overrides the <code class="docutils literal notranslate"><span class="pre">_TITLE</span></code> attribute of the node-specific
+logging class. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateConstant.entry_longstring">
+<span class="sig-name descname"><span class="pre">entry_longstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateConstant.entry_longstring" title="Link to this definition"></a></dt>
+<dd><p>Generate an entry for a long string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Long strings are truncated to the leading and trailing 25
+characters to preserve brevity.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateFunctionDef">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.logger.</span></span><span class="sig-name descname"><span class="pre">_LogTemplateFunctionDef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateFunctionDef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateFunctionDef" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.logger._LogTemplateBase" title="badsnakes.libs.logger._LogTemplateBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_LogTemplateBase</span></code></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">FunctionDef</span></code> node class specific logging template class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateFunctionDef.entry">
+<span class="sig-name descname"><span class="pre">entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="containers.html#badsnakes.libs.containers.FunctionDef" title="badsnakes.libs.containers.FunctionDef"><span class="pre">containers.FunctionDef</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateFunctionDef.entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateFunctionDef.entry" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference internal" href="containers.html#badsnakes.libs.containers.FunctionDef" title="badsnakes.libs.containers.FunctionDef"><em>containers.FunctionDef</em></a>) – A <a class="reference internal" href="containers.html#badsnakes.libs.containers.FunctionDef" title="badsnakes.libs.containers.FunctionDef"><code class="xref py py-class docutils literal notranslate"><span class="pre">badsnakes.libs.containers.FunctionDef</span></code></a>
+object containing the values from which the log entry is
+derived.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateFunctionDef._populate">
+<span class="sig-name descname"><span class="pre">_populate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateFunctionDef._populate" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text to be written to the ‘text’ field of the
+log file.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Title to be written to the ‘title’
+field of the log file. If provided, this argument
+overrides the <code class="docutils literal notranslate"><span class="pre">_TITLE</span></code> attribute of the node-specific
+logging class. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateFunctionDef.entry_longstring">
+<span class="sig-name descname"><span class="pre">entry_longstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateFunctionDef.entry_longstring" title="Link to this definition"></a></dt>
+<dd><p>Generate an entry for a long string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Long strings are truncated to the leading and trailing 25
+characters to preserve brevity.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateImport">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.logger.</span></span><span class="sig-name descname"><span class="pre">_LogTemplateImport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateImport"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateImport" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.logger._LogTemplateBase" title="badsnakes.libs.logger._LogTemplateBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_LogTemplateBase</span></code></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">FunctionDef</span></code> node class specific logging template class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateImport.entry">
+<span class="sig-name descname"><span class="pre">entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="containers.html#badsnakes.libs.containers.Import" title="badsnakes.libs.containers.Import"><span class="pre">containers.Import</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/logger.html#_LogTemplateImport.entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateImport.entry" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<a class="reference internal" href="containers.html#badsnakes.libs.containers.Import" title="badsnakes.libs.containers.Import"><em>containers.Import</em></a>) – A <a class="reference internal" href="containers.html#badsnakes.libs.containers.Import" title="badsnakes.libs.containers.Import"><code class="xref py py-class docutils literal notranslate"><span class="pre">badsnakes.libs.containers.Import</span></code></a>
+object containing the values from which the log entry is
+derived.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateImport._populate">
+<span class="sig-name descname"><span class="pre">_populate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateImport._populate" title="Link to this definition"></a></dt>
+<dd><p>Generate a node-specific log entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text to be written to the ‘text’ field of the
+log file.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Title to be written to the ‘title’
+field of the log file. If provided, this argument
+overrides the <code class="docutils literal notranslate"><span class="pre">_TITLE</span></code> attribute of the node-specific
+logging class. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.logger._LogTemplateImport.entry_longstring">
+<span class="sig-name descname"><span class="pre">entry_longstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.logger._LogTemplateImport.entry_longstring" title="Link to this definition"></a></dt>
+<dd><p>Generate an entry for a long string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> (<em>object</em>) – AST node container from which the severity and
+line numbers are obtained.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Long strings are truncated to the leading and trailing 25
+characters to preserve brevity.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The complete, formatted entry to be written to the log
+file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="extractor.html" class="btn btn-neutral float-left" title="Module: extractor.py" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="module.html" class="btn btn-neutral float-right" title="Module: module.py" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

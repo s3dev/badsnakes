@@ -1,0 +1,285 @@
+#
+# Project configuration file.
+#
+# Notes:
+#   - Please keep the kwds array elements in alphabetical order, as this
+#     eases visibility and maintenance.
+#   - All strings must be lower case as attributes are converted to
+#     lower case after extraction.
+#
+
+#
+# Project-level configuration items.
+#
+
+[project]
+name = "badsnakes"
+desc = "A toolset to help identify malware in Python projects."
+log_level = 30  # Warning
+
+#
+# System-level configuration items.
+#
+
+[system]
+exclude_dirs = ["\\.git", "__pycache__"]
+
+
+#
+# Analyser configuration items.
+#
+
+[analyser]
+max_string_length = 250
+max_line_length = 150
+pct_long_lines = 0.25
+pct_semi_colons = 0.10
+
+[analyser.argument]
+
+[analyser.argument.dangerous]
+long_strings = false
+kwds = [
+        "_",
+        "__",
+        "builtin",
+        "builtins",
+        "exec",
+        "eval",
+        "compile",
+       ]
+
+[analyser.argument.ok]
+kwds = []
+
+[analyser.argument.suspect]
+long_strings = true
+kwds = []
+
+[analyser.assignment]
+
+[analyser.assignment.dangerous]
+long_strings = false
+kwds = [
+        "compile",
+        "exec",
+        "eval",
+        "__builtin__",
+        "__builtins__",
+        "__import__",
+        "__getattribute__",
+       ]
+
+[analyser.assignment.ok]
+kwds = []
+
+[analyser.assignment.suspect]
+long_strings = true
+kwds = [
+        "http",
+       ]
+
+[analyser.attribute]
+
+[analyser.attribute.dangerous]
+kwds = [
+        "socket.af_inet",       # IPv4
+        "socket.af_inet6",      # IPv6
+        "socket.sock_dgram",    # UDP
+        "socket.sock_stream",   # TCP
+       ]
+
+[analyser.attribute.ok]
+kwds = []
+
+[analyser.attribute.suspect]
+kwds = [
+        "ctypes.windll",
+        "signal.sigkill",
+        "signal.sigterm",
+        "winreg.hkey_local_machine",
+        "winreg.key_write",
+        "winreg.setvalueex",
+        "winreg.createkeyex",
+        "win32api.setfileattributes",
+       ]
+
+[analyser.call]
+
+[analyser.call.dangerous]
+kwds = [
+        "_",
+        "__",
+        "__import__",
+        "__builtin__",
+        "__builtins__",
+        "__builtin__.__getattribute__",
+        "__builtins__.__getattribute__",
+        "blockinput",
+        "compile",
+        "eval",
+        "exec",
+        "getasynckeystate",
+        "getkeystate",
+        "os.startfile",
+        "requests.post",
+        "recv",                 # Method of a socket.socket (which will be aliased).
+        "sendfile",             # Catch os.sendfile and socket.sendfile
+        "uuid.getnode",
+        "winreg.key_write",
+        "winreg.setvalueex",
+        "winreg.createkeyex",
+        "win32api.setfileattributes",
+       ]
+
+[analyser.call.ok]
+kwds = [
+        "df.eval",              # Whitelisted as it calls 'eval'.
+        "pd.eval",              # Whitelisted as it calls 'eval'.
+        "re.compile",           # Whitelisted as it calls 'compile'.
+       ]
+
+[analyser.call.suspect]
+kwds = [
+        "b64decode",
+        "ctypes.memmove",
+        "ctypes.memset",
+        "ctypes.windll",
+        "decompress",
+        "encrypt",
+        "os.system",
+        "requests.get",
+        "win32_process",
+        "winreg.hkey_local_machine",
+       ]
+
+[analyser.constant]
+
+[analyser.constant.dangerous]
+# No long string detection as docstrings are constants.
+kwds = [
+        "__import__",
+        "__builtin__",
+        "__builtins__",
+        "attack",
+        "bitcoin",
+        "cmd.exe",
+        "chcp",
+        "compile",
+        "discord",
+        "eval",
+        "exec",
+        "expand-archive",
+        "icacls",
+        "infect",
+        "invoke-webrequest",
+        "malware",
+        "memcpy",
+        "money",
+        "ntoskrnl.exe",
+        "payment",
+        "pip install",
+        "powershell",
+        "powershell.exe",
+        "pythonw.exe",
+        "ransomeware",
+        "schtasks",
+        "software\\microsoft\\windows\\currentversion",
+        "software\\microsoft\\windows nt\\currentversion",
+        "software\\microsoft\\powershell",
+        "sold",
+        "start-process",
+        "sys.executable",
+        "takeown",
+        "taskkill",
+        "userinitmprlogonscript",
+        "vbe",
+        "vbs",
+        "webhook",
+        "windowsdefender",
+       ]
+
+[analyser.constant.ok]
+kwds = [
+        "compiled",
+        "execution",
+        "ast.literal_eval",
+       ]
+
+[analyser.constant.suspect]
+# No long string detection as docstrings are constants.
+kwds = [
+        ";",
+        ".bat",
+        ".cmd",
+        "\\x",
+        "explorer.exe",
+        "http",
+        "payload",
+        "user-agent",
+       ]
+
+[analyser.functiondef]
+
+[analyser.functiondef.dangerous]
+kwds = [
+        "_",
+        "__",
+       ]
+
+[analyser.functiondef.ok]
+kwds = []
+
+[analyser.functiondef.suspect]
+kwds = []
+
+[analyser.import]
+
+[analyser.import.dangerous]
+kwds = [
+        "discord",
+        "mss",
+        "os.sendfile",
+        "rsa",
+        "socket.af_inet",
+        "socket.af_inet6",
+        "socket.recv",
+        "socket.send",
+        "socket.sendfile",
+        "socket.sock_dgram",
+        "socket.sock_stream",
+        "sys.executable",
+        "uuid.getnode",
+       ]
+
+[analyser.import.ok]
+kwds = []
+
+[analyser.import.suspect]
+kwds = [
+        "base64",
+        "cryptography.fernet.fernet",
+        "ctypes",
+        "ctypes.memmove",
+        "ctypes.memset",
+        "dns",
+        "os.system",
+        "paramiko",
+        "requests",
+        "scapy",
+        "signal",
+        "socket",
+        "socket.socket",
+        "ssl",
+        "struct",
+        "telnetlib",
+        "urlopen",
+        "win32api",
+        "win32con",
+        "win32crypt",
+        "win32file",
+        "win32gui",
+        "win32ui",
+        "winreg",
+        "wmi",
+       ]

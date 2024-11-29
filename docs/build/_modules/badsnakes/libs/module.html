@@ -1,0 +1,685 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>badsnakes.libs.module &mdash; badsnakes - v0.1.0 Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/s5defs-rules.css?v=0345028d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            badsnakes
+              <img src="../../../_static/s3dev_tri_white_sm.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../library.html">Libary API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contact.html">Contact Us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">badsnakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">badsnakes.libs.module</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for badsnakes.libs.module</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:Purpose:   This module implements the :class:`Module` class object which</span>
+<span class="sd">            provides the primary parsing, extraction, analysis and</span>
+<span class="sd">            results container for the project.</span>
+
+<span class="sd">            The :class:`Module` class is the object which stores the</span>
+<span class="sd">            relevant statements extracted from the AST and their analysis</span>
+<span class="sd">            results. Each AST node class contained in the</span>
+<span class="sd">            :class:`_NodeClasses` class (accessed via the</span>
+<span class="sd">            :attr:`Module.nodeclasses` property) contains an iterator</span>
+<span class="sd">            which enables the node classes to be called in a controlled</span>
+<span class="sd">            loop and analysed.</span>
+
+<span class="sd">:Platform:  Linux/Windows | Python 3.10+</span>
+<span class="sd">:Developer: J Berendt</span>
+<span class="sd">:Email:     development@s3dev.uk</span>
+
+<span class="sd">:Comments:  n/a</span>
+
+<span class="sd">:Example:</span>
+<span class="sd">            To perform analysis on a Python module::</span>
+
+<span class="sd">                &gt;&gt;&gt; from badsnakes import Module</span>
+
+<span class="sd">                # Create and analyse</span>
+<span class="sd">                &gt;&gt;&gt; m = Module(path=&#39;spam.py&#39;)</span>
+<span class="sd">                &gt;&gt;&gt; m.analyse()</span>
+
+<span class="sd">                # Display the raw findings (debugging)</span>
+<span class="sd">                &gt;&gt;&gt; m.display()</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># pylint: disable=import-error</span>
+
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># locals</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.analysers</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ArgumentAnalyser</span><span class="p">,</span>
+                                      <span class="n">AttributeAnalyser</span><span class="p">,</span>
+                                      <span class="n">AssignmentAnalyser</span><span class="p">,</span>
+                                      <span class="n">CallAnalyser</span><span class="p">,</span>
+                                      <span class="n">CodeTextAnalyser</span><span class="p">,</span>
+                                      <span class="n">ConstantAnalyser</span><span class="p">,</span>
+                                      <span class="n">FunctionDefAnalyser</span><span class="p">,</span>
+                                      <span class="n">ImportAnalyser</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.enums</span> <span class="kn">import</span> <span class="n">Severity</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.extractor</span> <span class="kn">import</span> <span class="n">Extractor</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.parser</span> <span class="kn">import</span> <span class="n">Parser</span>
+
+
+<div class="viewcode-block" id="Module">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module.Module">[docs]</a>
+<span class="k">class</span> <span class="nc">Module</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Primary container class for the Python module.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): Full path to the module to be parsed and analysed.</span>
+
+<span class="sd">    The :attr:`nodeclasses` property provides access to each of the</span>
+<span class="sd">    relevant AST node class types which were parsed from the source code.</span>
+<span class="sd">    When populated, each node class will be a list of</span>
+<span class="sd">    :mod:`badsnakes.libs.containers` objects containing the analyser and</span>
+<span class="sd">    detail extracted from each node.</span>
+
+<span class="sd">    On class instantiation, during initialisation, the following takes</span>
+<span class="sd">    place:</span>
+
+<span class="sd">        - Create instances of the following tools:</span>
+
+<span class="sd">          - :class:`_NodeClasses`</span>
+<span class="sd">          - :class:`~badsnakes.libs.parser.Parser`</span>
+<span class="sd">          - :class:`~badsnakes.libs.extractor.Extractor`</span>
+
+<span class="sd">        - Call the :meth:`_init` method of this call to perform the</span>
+<span class="sd">          following tasks:</span>
+
+<span class="sd">          - Set the module&#39;s filepath and filename.</span>
+<span class="sd">          - Call the following methods to prepare for analysis:</span>
+
+<span class="sd">            - :meth:`_parse`</span>
+<span class="sd">            - :meth:`_extract`</span>
+<span class="sd">            - :meth:`_build`</span>
+
+<span class="sd">    Once complete, the module has been prepared for analysis and</span>
+<span class="sd">    reporting.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_clf&#39;</span><span class="p">,</span> <span class="s1">&#39;_name&#39;</span><span class="p">,</span> <span class="s1">&#39;_path&#39;</span><span class="p">,</span> <span class="s1">&#39;_extractor&#39;</span><span class="p">,</span> <span class="s1">&#39;_nc&#39;</span><span class="p">,</span> <span class="s1">&#39;_parser&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Module class initialiser.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clf</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">UNKNOWN</span>    <span class="c1"># Module classification.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="kc">None</span>               <span class="c1"># Python module filename.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extractor</span> <span class="o">=</span> <span class="n">Extractor</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span> <span class="o">=</span> <span class="n">_NodeClasses</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">Parser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Module class iterator.</span>
+
+<span class="sd">        When the :class:`Module` class is iterated, the</span>
+<span class="sd">        :attr:`nodeclasses` are returned.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ast_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Public accessor to the module&#39;s parsed syntax tree.</span>
+
+<span class="sd">        Syntax tree parsing is provided by the ``ast`` builtin. This</span>
+<span class="sd">        property is a direct accessor to the return value from the</span>
+<span class="sd">        :func:`ast.parse` method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">ast_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">classification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Accessor to the module&#39;s maximum severity classification.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clf</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">code</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Public accessor to the textual codebase.</span>
+
+<span class="sd">        As the code is a stream object, the cursor (memory pointer)</span>
+<span class="sd">        advances with each read access. Once exhausted, the code can be</span>
+<span class="sd">        &#39;rewound&#39; using the :meth:`rewind` method.</span>
+
+<span class="sd">        This property is an alias for the</span>
+<span class="sd">        :attr:`badsnakes.libs.parser.Parser.code` property.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            io.StringIO: The textual code as an ``io.StringIO`` object.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">code</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Public accessor to the current Python module&#39;s filename.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name_and_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Public accessor to the module&#39;s filename and parent directory.</span>
+
+<span class="sd">        The logger and reporter use this property to display the module</span>
+<span class="sd">        name and its parent directory, as this aids in clarity if a</span>
+<span class="sd">        module name is used multiple times.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nodeclasses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Public accessor to the AST node classes.</span>
+
+<span class="sd">        Use this property to access the analyser(s) and results.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Public accessor to the current Python module&#39;s path.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
+
+<div class="viewcode-block" id="Module.analyse">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module.Module.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the ``analyse`` method for all of the node classes.</span>
+
+<span class="sd">        A module is only analysed if 1) the module&#39;s AST could be parsed</span>
+<span class="sd">        and 2) if the ``ast.body`` list has more than 1 element.</span>
+
+<span class="sd">        Once the analysis is complete, the module classification is set.</span>
+<span class="sd">        The classification can be accessed through the</span>
+<span class="sd">        :attr:`classification` property.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Bypass analysis if the module AST could not be parsed.</span>
+        <span class="c1"># Or, if the body list only has 1 element. The user will have been</span>
+        <span class="c1"># warned by the parser if there was a parsing issue.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ast_</span><span class="p">,</span> <span class="s1">&#39;body&#39;</span><span class="p">,</span> <span class="p">[]))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">nc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="p">:</span>
+                <span class="n">nc</span><span class="o">.</span><span class="n">analyse</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_classification</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Likely not a Python code module, only 1 body element: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Module.display">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module.Module.display">[docs]</a>
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display the attributes extracted from the abstract syntax tree.</span>
+
+<span class="sd">        Generally, this is used as a debugging mechanism and not used for</span>
+<span class="sd">        production-based reporting.</span>
+
+<span class="sd">        This method is an alias for the</span>
+<span class="sd">        :meth:`badsnakes.libs.extractor.Extractor.display` method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extractor</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Module.display_syntax_tree">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module.Module.display_syntax_tree">[docs]</a>
+    <span class="k">def</span> <span class="nf">display_syntax_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display the syntax tree, as provided by ``ast``.</span>
+
+<span class="sd">        Generally, this is used as a debugging mechanism and not used for</span>
+<span class="sd">        production-based reporting.</span>
+
+<span class="sd">        This method is an alias for the</span>
+<span class="sd">        :meth:`badsnakes.libs.parser.Parser.display_syntax_tree` method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">display_syntax_tree</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Module.rewind">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module.Module.rewind">[docs]</a>
+    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rewind the :attr:`code` text stream to be beginning.</span>
+
+<span class="sd">        This method is an alias for the</span>
+<span class="sd">        :meth:`badsnakes.libs.parser.Parser.rewind` method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Module._build">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module.Module._build">[docs]</a>
+    <span class="k">def</span> <span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the node classes object for this module.</span>
+
+<span class="sd">        When this method is called, the extracted attributes from each</span>
+<span class="sd">        AST node are stored into the ``.items`` attribute of the</span>
+<span class="sd">        respective :attr:`nodeclasses` node subclass. Each subclass&#39;</span>
+<span class="sd">        ``.items`` attribute will contain a list of</span>
+<span class="sd">        :mod:`badsnakes.libs.containers` objects with the extracted</span>
+<span class="sd">        attributes for analysis.</span>
+
+<span class="sd">        Additionally, the attribute values for each node class are</span>
+<span class="sd">        converted to lower case, for robust string matching.</span>
+
+<span class="sd">        Node classes which are added:</span>
+
+<span class="sd">            - Argument</span>
+<span class="sd">            - Assignment</span>
+<span class="sd">            - Attribute</span>
+<span class="sd">            - Call</span>
+<span class="sd">            - Constant</span>
+<span class="sd">            - FunctionDef</span>
+<span class="sd">            - Import (and ImportFrom)</span>
+<span class="sd">            - CodeText</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=protected-access</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">arguments</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor</span><span class="o">.</span><span class="n">_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">assignments</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor</span><span class="o">.</span><span class="n">_assigns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor</span><span class="o">.</span><span class="n">_attrs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">calls</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor</span><span class="o">.</span><span class="n">_calls</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor</span><span class="o">.</span><span class="n">_constants</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">functiondefs</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor</span><span class="o">.</span><span class="n">_funcdefs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">imports</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractor</span><span class="o">.</span><span class="n">_imports</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">codetext</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>        <span class="c1"># CodeText items are set after analysis.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">codetext</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="bp">self</span>     <span class="c1"># CodeText analyser needs the module.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="o">.</span><span class="n">tolower</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Module._extract">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module.Module._extract">[docs]</a>
+    <span class="k">def</span> <span class="nf">_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract and store relevant attributes from a parsed AST.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">node</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">ast_</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Module._init">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module.Module._init">[docs]</a>
+    <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialiser for this :class:`Module` class&#39; instance.</span>
+
+<span class="sd">        On initialisation, the following methods are called once the</span>
+<span class="sd">        module&#39;s filepath and filename have been set:</span>
+
+<span class="sd">            - :meth:`_parse`</span>
+<span class="sd">            - :meth:`_extract`</span>
+<span class="sd">            - :meth:`_build`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parse</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extract</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Module._parse">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module.Module._parse">[docs]</a>
+    <span class="k">def</span> <span class="nf">_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse a Python module into an abstract syntax tree.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Module._set_classification">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module.Module._set_classification">[docs]</a>
+    <span class="k">def</span> <span class="nf">_set_classification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the severity classification for the module.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            A ``filter`` is used to remove any empty ``.items`` lists.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This is required, the linter is wrong.</span>
+        <span class="c1"># pylint: disable=nested-min-max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clf</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nc</span><span class="p">)))</span><span class="o">.</span><span class="n">severity</span></div>
+</div>
+
+
+
+<span class="c1"># %% Related private class implementations.</span>
+
+<div class="viewcode-block" id="_NodeClasses">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module._NodeClasses">[docs]</a>
+<span class="k">class</span> <span class="nc">_NodeClasses</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An iterable class which contains the AST node classes.</span>
+
+<span class="sd">    Each of the subclasses contains an :attr:`items` and :attr:`_analyser`</span>
+<span class="sd">    attribute. The ``.items`` attribute contains the AST node classes</span>
+<span class="sd">    which were parsed from the source code. The ``._analyser`` attribute</span>
+<span class="sd">    holds the node-specific analyser class which contains a ``.analyse``</span>
+<span class="sd">    function to carry out the analysis.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
+                 <span class="s1">&#39;arguments&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;assignments&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;attributes&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;calls&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;codetext&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;constants&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;functiondefs&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;imports&#39;</span><span class="p">,</span>
+                <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;_NodeClasses class initialiser.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">_NodeArguments</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assignments</span> <span class="o">=</span> <span class="n">_NodeAssignments</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="n">_NodeAttributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calls</span> <span class="o">=</span> <span class="n">_NodeCalls</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">codetext</span> <span class="o">=</span> <span class="n">_CodeText</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constants</span> <span class="o">=</span> <span class="n">_NodeConstants</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">functiondefs</span> <span class="o">=</span> <span class="n">_NodeFunctionDefs</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imports</span> <span class="o">=</span> <span class="n">_NodeImports</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable iteration through the defined node classes.</span>
+
+<span class="sd">        This iterator returns (yields) the embedded *instance* for each</span>
+<span class="sd">        AST node class.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__slots__</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+
+<div class="viewcode-block" id="_NodeClasses.tolower">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module._NodeClasses.tolower">[docs]</a>
+    <span class="k">def</span> <span class="nf">tolower</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert specific container attributes to lower case.</span>
+
+<span class="sd">        When container attributes are in lower case, this enables more</span>
+<span class="sd">        robust string searches, and enables the ``config.toml`` file to</span>
+<span class="sd">        contain only lower case strings, rather than several variations.</span>
+
+<span class="sd">        The method containing the actual implementation is</span>
+<span class="sd">        :meth:`badsnakes.libs.containers._NodeBase.tolower`. This method</span>
+<span class="sd">        is a simple wrapper to call this function on each node class.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">nc</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">items</span><span class="p">:</span>
+                <span class="n">i</span><span class="o">.</span><span class="n">tolower</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="_NodeBase">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module._NodeBase">[docs]</a>
+<span class="k">class</span> <span class="nc">_NodeBase</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all specialised AST node classes.</span>
+
+<span class="sd">    These classes contain an :attr:`items` attribute which is a list</span>
+<span class="sd">    holding the AST extraction containers for analysis, and the</span>
+<span class="sd">    specialised AST node class analyser.</span>
+
+<span class="sd">    The implementation for the analysers can be found in the</span>
+<span class="sd">    :mod:`analysers` module.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Node base class initialiser.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analyser</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Greater than operator implementation.</span>
+
+<span class="sd">        This method enables the comparison of node classes, based on the</span>
+<span class="sd">        ``severity`` attribute.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable iteration through a node class&#39; items.&quot;&quot;&quot;</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Less than operator implementation.</span>
+
+<span class="sd">        This method enables the comparison of node classes, based on the</span>
+<span class="sd">        ``severity`` attribute.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">items</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">analyser</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Public accessor to the node class&#39; analyser class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analyser</span>
+
+<div class="viewcode-block" id="_NodeBase.analyse">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module._NodeBase.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Callable for running the analyser for the specific node class.</span>
+
+<span class="sd">        The :attr:`items` attribute containing a list of AST node</span>
+<span class="sd">        container objects is passed into the node-class-specific</span>
+<span class="sd">        analyser by this method call.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analyser</span><span class="o">.</span><span class="n">analyse</span><span class="p">(</span><span class="n">nodes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="_CodeText">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module._CodeText">[docs]</a>
+<span class="k">class</span> <span class="nc">_CodeText</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised class for textual code analysis.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Code class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;codetext&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># The module.Module object for analysis.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analyser</span> <span class="o">=</span> <span class="n">CodeTextAnalyser</span><span class="p">()</span>
+
+<div class="viewcode-block" id="_CodeText.analyse">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module._CodeText.analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Callable for running the analyser for the code text.</span>
+
+<span class="sd">        The :attr:`items` attribute containing a list of AST node</span>
+<span class="sd">        container objects is passed into the node-class-specific</span>
+<span class="sd">        analyser by this method call.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analyser</span><span class="o">.</span><span class="n">analyse</span><span class="p">(</span><span class="n">module</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="_NodeArguments">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module._NodeArguments">[docs]</a>
+<span class="k">class</span> <span class="nc">_NodeArguments</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised node class for AST Argument nodes.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Argument node class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;arguments&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analyser</span> <span class="o">=</span> <span class="n">ArgumentAnalyser</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="_NodeAssignments">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module._NodeAssignments">[docs]</a>
+<span class="k">class</span> <span class="nc">_NodeAssignments</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised node class for AST Assignment nodes.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assignment node class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;assignments&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analyser</span> <span class="o">=</span> <span class="n">AssignmentAnalyser</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="_NodeAttributes">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module._NodeAttributes">[docs]</a>
+<span class="k">class</span> <span class="nc">_NodeAttributes</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised node class for AST Attribute nodes.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Attribute node class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;attributes&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analyser</span> <span class="o">=</span> <span class="n">AttributeAnalyser</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="_NodeCalls">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module._NodeCalls">[docs]</a>
+<span class="k">class</span> <span class="nc">_NodeCalls</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised node class for AST Call nodes.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call node class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;calls&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analyser</span> <span class="o">=</span> <span class="n">CallAnalyser</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="_NodeConstants">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module._NodeConstants">[docs]</a>
+<span class="k">class</span> <span class="nc">_NodeConstants</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised node class for AST Constant nodes.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constant node class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;constants&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analyser</span> <span class="o">=</span> <span class="n">ConstantAnalyser</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="_NodeFunctionDefs">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module._NodeFunctionDefs">[docs]</a>
+<span class="k">class</span> <span class="nc">_NodeFunctionDefs</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised node class for AST FunctionDef nodes.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constant node class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;functiondefs&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analyser</span> <span class="o">=</span> <span class="n">FunctionDefAnalyser</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="_NodeImports">
+<a class="viewcode-back" href="../../../module.html#badsnakes.libs.module._NodeImports">[docs]</a>
+<span class="k">class</span> <span class="nc">_NodeImports</span><span class="p">(</span><span class="n">_NodeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialised node class for AST Import and ImportFrom nodes.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constant node class initialiser.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;imports&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analyser</span> <span class="o">=</span> <span class="n">ImportAnalyser</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

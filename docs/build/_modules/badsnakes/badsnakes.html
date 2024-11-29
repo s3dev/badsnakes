@@ -1,0 +1,396 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>badsnakes.badsnakes &mdash; badsnakes - v0.1.0 Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/s5defs-rules.css?v=0345028d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            badsnakes
+              <img src="../../_static/s3dev_tri_white_sm.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../library.html">Libary API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contact.html">Contact Us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">badsnakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">badsnakes.badsnakes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for badsnakes.badsnakes</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:App:       badsnakes</span>
+<span class="sd">:Purpose:   The badsnakes project is designed to help detect malware in</span>
+<span class="sd">            Python projects.</span>
+
+<span class="sd">            The project accepts the following formats for analysis:</span>
+
+<span class="sd">                - Directories</span>
+<span class="sd">                - Python modules</span>
+<span class="sd">                - Python wheels</span>
+
+<span class="sd">:Platform:  Linux/Windows | Python 3.10+</span>
+<span class="sd">:Developer: J Berendt</span>
+<span class="sd">:Email:     development@s3dev.uk</span>
+
+<span class="sd">:Comments:  n/a</span>
+
+<span class="sd">:Examples:</span>
+
+<span class="sd">    Example for analysing a single module::</span>
+
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.module import Module</span>
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.reporter import ReporterModule</span>
+
+<span class="sd">        &gt;&gt;&gt; path = &#39;/path/to/project/module.py&#39;</span>
+
+<span class="sd">        &gt;&gt;&gt; # Analyse the module.</span>
+<span class="sd">        &gt;&gt;&gt; m = Module(path=path)</span>
+<span class="sd">        &gt;&gt;&gt; m.analyse()</span>
+
+<span class="sd">        &gt;&gt;&gt; # Report the findings.</span>
+<span class="sd">        &gt;&gt;&gt; r = ReporterModule(modules=[m])</span>
+<span class="sd">        &gt;&gt;&gt; r.report()</span>
+
+
+<span class="sd">    Example for analysing multiple modules::</span>
+
+<span class="sd">        &gt;&gt;&gt; import os</span>
+<span class="sd">        &gt;&gt;&gt; from glob import glob</span>
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.module import Module</span>
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.reporter import ReporterModule</span>
+
+<span class="sd">        &gt;&gt;&gt; modules = []</span>
+<span class="sd">        &gt;&gt;&gt; paths = glob(os.path.join(&#39;/.../site-packages/pip/_internal/&#39;, &#39;*.py&#39;))</span>
+
+<span class="sd">        &gt;&gt;&gt; # Call Module.analyse for each path and store each module object.</span>
+<span class="sd">        &gt;&gt;&gt; for path in paths:</span>
+<span class="sd">        &gt;&gt;&gt;    m = Module(path=path)</span>
+<span class="sd">        &gt;&gt;&gt;    m.analyse()</span>
+<span class="sd">        &gt;&gt;&gt;    modules.append(m)</span>
+
+<span class="sd">        &gt;&gt;&gt; # Report all findings at once.</span>
+<span class="sd">        &gt;&gt;&gt; r = ReporterModule(modules=modules)</span>
+<span class="sd">        &gt;&gt;&gt; r.report()</span>
+
+
+<span class="sd">    Example for analysing a Python wheel::</span>
+
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.collector import Collector</span>
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.module import Module</span>
+<span class="sd">        &gt;&gt;&gt; from badsnakes.libs.reporter import ReporterModule</span>
+
+<span class="sd">        &gt;&gt;&gt; modules = []</span>
+<span class="sd">        &gt;&gt;&gt; path = &#39;../dist/badsnakes-0.1.0-py3-none-any.whl&#39;</span>
+
+<span class="sd">        &gt;&gt;&gt; # Collect all non-binary files from thw wheel.</span>
+<span class="sd">        &gt;&gt;&gt; c = Collector(paths=path)</span>
+<span class="sd">        &gt;&gt;&gt; c.collect()</span>
+
+<span class="sd">        &gt;&gt;&gt; for pkg in c.files:</span>
+<span class="sd">        &gt;&gt;&gt;    # Call Module.analyse for each path and store each module object.</span>
+<span class="sd">        &gt;&gt;&gt;    for path in pkg:</span>
+<span class="sd">        &gt;&gt;&gt;        # Analyse the module.</span>
+<span class="sd">        &gt;&gt;&gt;        m = Module(path=path)</span>
+<span class="sd">        &gt;&gt;&gt;        m.analyse()</span>
+<span class="sd">        &gt;&gt;&gt;        modules.append(m)</span>
+
+<span class="sd">        &gt;&gt;&gt; # Report the findings.</span>
+<span class="sd">        &gt;&gt;&gt; r = ReporterModule(modules=modules)</span>
+<span class="sd">        &gt;&gt;&gt; r.report()</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># pylint: disable=wrong-import-position</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c1"># Update sys.path for project/relative imports.</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))))</span>
+<span class="c1"># imports</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dt</span>
+<span class="c1"># locals</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.argparser</span> <span class="kn">import</span> <span class="n">argparser</span> <span class="k">as</span> <span class="n">ap</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.collector</span> <span class="kn">import</span> <span class="n">Collector</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.containers</span> <span class="kn">import</span> <span class="n">Severity</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.enums</span> <span class="kn">import</span> <span class="n">ExCode</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.module</span> <span class="kn">import</span> <span class="n">Module</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.reporter</span> <span class="kn">import</span> <span class="n">ReporterModule</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.logger</span> <span class="kn">import</span> <span class="n">Logger</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.utilities</span> <span class="kn">import</span> <span class="n">utilities</span>
+
+
+<div class="viewcode-block" id="BadSnakes">
+<a class="viewcode-back" href="../../badsnakes.html#badsnakes.badsnakes.BadSnakes">[docs]</a>
+<span class="k">class</span> <span class="nc">BadSnakes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Primary project entry-point and controller class.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BadSnakes.__init__">
+<a class="viewcode-back" href="../../badsnakes.html#badsnakes.badsnakes.BadSnakes.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;BadSnakes class initialiser.</span>
+
+<span class="sd">        :Attrs:</span>
+<span class="sd">            - _clf: Maximum classification from all files analysed. This</span>
+<span class="sd">              is reported at the end.</span>
+<span class="sd">            - _files: List of files to be analysed. This same list is</span>
+<span class="sd">              used for all analysis types and is populated by the</span>
+<span class="sd">              :meth:`_collect_files` method.</span>
+<span class="sd">            - _modules: List of modules analysed. If logging is invoked,</span>
+<span class="sd">              this list of modules is given to the logger.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clf</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">UNKNOWN</span>    <span class="c1"># Maximum classification for all files.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="kc">None</span>              <span class="c1"># Files to be analysed.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_modules</span> <span class="o">=</span> <span class="p">[]</span>              <span class="c1"># Collection of modules analysed.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collector</span> <span class="o">=</span> <span class="kc">None</span>          <span class="c1"># Keep the wheel collector&#39;s tmpdir alive.</span>
+        <span class="n">ap</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BadSnakes.main">
+<a class="viewcode-back" href="../../badsnakes.html#badsnakes.badsnakes.BadSnakes.main">[docs]</a>
+    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start a badsnakes analysis.</span>
+
+<span class="sd">        :Tasks:</span>
+<span class="sd">            - Collect files to be analysed.</span>
+<span class="sd">            - Analyse each collected file.</span>
+<span class="sd">            - Report the overall (worst) classification.</span>
+<span class="sd">            - Create a log file, if instructed by the CLI by the</span>
+<span class="sd">              ``--log`` argument.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_collect_files</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">pkg</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_analyse</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_report_worst_classification</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_log</span><span class="p">()</span>
+        <span class="c1"># General project error handler.</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pragma: nocover</span>
+            <span class="nb">print</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">&#39;The following error occurred:</span><span class="se">\n\n</span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span>
+                             <span class="s1">&#39;Current file: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+                             <span class="s1">&#39;Processing aborted.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>
+                             <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(),</span>
+                             <span class="n">file</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># In the event of an empty package.</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">ExCode</span><span class="o">.</span><span class="n">ERR_MAIN</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BadSnakes._analyse">
+<a class="viewcode-back" href="../../badsnakes.html#badsnakes.badsnakes.BadSnakes._analyse">[docs]</a>
+    <span class="k">def</span> <span class="nf">_analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyse the provided module file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str): Full path to the file to be analysed.</span>
+
+<span class="sd">        :Tasks:</span>
+<span class="sd">            - Create a :class:`~badsnakes.libs.module.Module` object and</span>
+<span class="sd">              analyse.</span>
+<span class="sd">            - Report the findings (verbose/non-verbose).</span>
+<span class="sd">            - Set the maximum (worst) classification.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Analysing file: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">Module</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">analyse</span><span class="p">()</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">ReporterModule</span><span class="p">(</span><span class="n">modules</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
+        <span class="c1"># if args.verbose:</span>
+        <span class="k">if</span> <span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">report</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">report_classification_only</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clf</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_clf</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">classification</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_modules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BadSnakes._collect_files">
+<a class="viewcode-back" href="../../badsnakes.html#badsnakes.badsnakes.BadSnakes._collect_files">[docs]</a>
+    <span class="k">def</span> <span class="nf">_collect_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collect all files to be analysed.</span>
+
+<span class="sd">        This method is used to populate the :attr:`_files` attribute,</span>
+<span class="sd">        which contains the files to be analysed.</span>
+
+<span class="sd">        :Logic:</span>
+<span class="sd">            Create an instance of the</span>
+<span class="sd">            :class:`badsnakes.libs.collector.Collector` class and call</span>
+<span class="sd">            the :meth:`~badsnakes.libs.collector.Collector.collect`</span>
+<span class="sd">            method.</span>
+
+<span class="sd">            The Collector class is designed to 1) identify the input</span>
+<span class="sd">            type, and 2) return the associated file(s).</span>
+
+<span class="sd">            The list of files returned by the collector is assigned to</span>
+<span class="sd">            the :attr:`_files` attribute.</span>
+
+<span class="sd">            Finally, any paths listed by the ``--exclude_dirs`` argument</span>
+<span class="sd">            are removed from the :attr:`_files` list.</span>
+
+<span class="sd">        This method must store the collector into a class attribute to</span>
+<span class="sd">        preserve the life of the wheel collector&#39;s temporary directory</span>
+<span class="sd">        object.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># self._collector = Collector(paths=args.PATH)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collector</span> <span class="o">=</span> <span class="n">Collector</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">PATH</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collector</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collector</span><span class="o">.</span><span class="n">files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_directories</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BadSnakes._create_log">
+<a class="viewcode-back" href="../../badsnakes.html#badsnakes.badsnakes.BadSnakes._create_log">[docs]</a>
+    <span class="k">def</span> <span class="nf">_create_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a log file if instructed via the CLI.</span>
+
+<span class="sd">        If the ``--log`` argument was passed to the CLI, this method will</span>
+<span class="sd">        be triggered.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if args.log:</span>
+        <span class="k">if</span> <span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">log</span><span class="p">:</span>
+            <span class="n">dtme</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">T%H%M%S&#39;</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~/Desktop/&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;badsnakes_</span><span class="si">{</span><span class="n">dtme</span><span class="si">}</span><span class="s1">.log&#39;</span><span class="p">)</span>
+            <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">modules</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_modules</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">write</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BadSnakes._exclude_directories">
+<a class="viewcode-back" href="../../badsnakes.html#badsnakes.badsnakes.BadSnakes._exclude_directories">[docs]</a>
+    <span class="k">def</span> <span class="nf">_exclude_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove any paths starting in an ``--exclude_dirs`` path.&quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=consider-using-f-string</span>
+        <span class="c1"># if args.exclude_dirs:</span>
+        <span class="k">if</span> <span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">exclude_dirs</span><span class="p">:</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">:</span>
+                <span class="c1"># This is intentionally verbose to enable debug logging.</span>
+                <span class="c1"># keep = utilities.exclude_dirs(source=pkg, exclude=args.exclude_dirs)</span>
+                <span class="n">keep</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">exclude_dirs</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">pkg</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">exclude_dirs</span><span class="p">)</span>
+                <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keep</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Files excluded:&#39;</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="s1">&#39;- </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">keep</span><span class="p">))))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="n">files</span></div>
+
+
+<div class="viewcode-block" id="BadSnakes._report_worst_classification">
+<a class="viewcode-back" href="../../badsnakes.html#badsnakes.badsnakes.BadSnakes._report_worst_classification">[docs]</a>
+    <span class="k">def</span> <span class="nf">_report_worst_classification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Report the worst overall classification.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Overall (worst) classification: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_clf</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># %% Prevent from running on module import.</span>
+
+<span class="c1"># Enable running as either a script (dev/debugging) or as an executable.</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>  <span class="c1"># pragma: nocover</span>
+    <span class="n">bs</span> <span class="o">=</span> <span class="n">BadSnakes</span><span class="p">()</span>
+    <span class="n">bs</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>  <span class="c1"># pragma: nocover</span>
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../badsnakes.html#badsnakes.badsnakes.main">[docs]</a>
+    <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Entry-point exposed for the executable.</span>
+
+<span class="sd">        The ``&quot;badsnakes.badsnakes:main&quot;`` value is set in</span>
+<span class="sd">        ``pyproject.toml``&#39;s ``[project.scripts]`` table as the</span>
+<span class="sd">        entry-point for the installed executable.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=redefined-outer-name</span>
+        <span class="n">bs</span> <span class="o">=</span> <span class="n">BadSnakes</span><span class="p">()</span>
+        <span class="n">bs</span><span class="o">.</span><span class="n">main</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

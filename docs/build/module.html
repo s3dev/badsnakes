@@ -1,0 +1,606 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module: module.py &mdash; badsnakes - v0.1.0 Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/s5defs-rules.css?v=0345028d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Module: parser.py" href="parser.html" />
+    <link rel="prev" title="Module: logger.py" href="logger.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            badsnakes
+              <img src="_static/s3dev_tri_white_sm.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="library.html">Libary API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="library.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="library.html#module-documentation">Module Documentation</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="analysers.html">Module: analysers.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="badsnakes.html">Module: badsnakes.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="collector.html">Module: collector.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="config.html">Module: config.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="containers.html">Module: containers.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enums.html">Module: enums.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractor.html">Module: extractor.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logger.html">Module: logger.py</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Module: module.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parser.html">Module: parser.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reporter.html">Module: reporter.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html">Module: utilities.py</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact Us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">badsnakes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="library.html">Libary API Documentation</a></li>
+      <li class="breadcrumb-item active">Module: module.py</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-badsnakes.libs.module">
+<span id="module-module-py"></span><h1>Module: module.py<a class="headerlink" href="#module-badsnakes.libs.module" title="Link to this heading"></a></h1>
+<dl class="field-list">
+<dt class="field-odd">Purpose<span class="colon">:</span></dt>
+<dd class="field-odd"><p>This module implements the <a class="reference internal" href="#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a> class object which
+provides the primary parsing, extraction, analysis and
+results container for the project.</p>
+<p>The <a class="reference internal" href="#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a> class is the object which stores the
+relevant statements extracted from the AST and their analysis
+results. Each AST node class contained in the
+<a class="reference internal" href="#badsnakes.libs.module._NodeClasses" title="badsnakes.libs.module._NodeClasses"><code class="xref py py-class docutils literal notranslate"><span class="pre">_NodeClasses</span></code></a> class (accessed via the
+<a class="reference internal" href="#badsnakes.libs.module.Module.nodeclasses" title="badsnakes.libs.module.Module.nodeclasses"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Module.nodeclasses</span></code></a> property) contains an iterator
+which enables the node classes to be called in a controlled
+loop and analysed.</p>
+</dd>
+<dt class="field-even">Platform<span class="colon">:</span></dt>
+<dd class="field-even"><p>Linux/Windows | Python 3.10+</p>
+</dd>
+<dt class="field-odd">Developer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>J Berendt</p>
+</dd>
+<dt class="field-even">Email<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="mailto:development&#37;&#52;&#48;s3dev&#46;uk">development<span>&#64;</span>s3dev<span>&#46;</span>uk</a></p>
+</dd>
+<dt class="field-odd">Comments<span class="colon">:</span></dt>
+<dd class="field-odd"><p>n/a</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><p>To perform analysis on a Python module:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">badsnakes</span> <span class="kn">import</span> <span class="n">Module</span>
+
+<span class="go"># Create and analyse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Module</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;spam.py&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">analyse</span><span class="p">()</span>
+
+<span class="go"># Display the raw findings (debugging)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.module.</span></span><span class="sig-name descname"><span class="pre">Module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/module.html#Module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module.Module" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Primary container class for the Python module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Full path to the module to be parsed and analysed.</p>
+</dd>
+</dl>
+<p>The <a class="reference internal" href="#badsnakes.libs.module.Module.nodeclasses" title="badsnakes.libs.module.Module.nodeclasses"><code class="xref py py-attr docutils literal notranslate"><span class="pre">nodeclasses</span></code></a> property provides access to each of the
+relevant AST node class types which were parsed from the source code.
+When populated, each node class will be a list of
+<a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a> objects containing the analyser and
+detail extracted from each node.</p>
+<p>On class instantiation, during initialisation, the following takes
+place:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Create instances of the following tools:</p>
+<ul>
+<li><p><a class="reference internal" href="#badsnakes.libs.module._NodeClasses" title="badsnakes.libs.module._NodeClasses"><code class="xref py py-class docutils literal notranslate"><span class="pre">_NodeClasses</span></code></a></p></li>
+<li><p><a class="reference internal" href="parser.html#badsnakes.libs.parser.Parser" title="badsnakes.libs.parser.Parser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parser</span></code></a></p></li>
+<li><p><a class="reference internal" href="extractor.html#badsnakes.libs.extractor.Extractor" title="badsnakes.libs.extractor.Extractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Extractor</span></code></a></p></li>
+</ul>
+</li>
+<li><p>Call the <a class="reference internal" href="#badsnakes.libs.module.Module._init" title="badsnakes.libs.module.Module._init"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_init()</span></code></a> method of this call to perform the
+following tasks:</p>
+<ul>
+<li><p>Set the module’s filepath and filename.</p></li>
+<li><p>Call the following methods to prepare for analysis:</p>
+<ul>
+<li><p><a class="reference internal" href="#badsnakes.libs.module.Module._parse" title="badsnakes.libs.module.Module._parse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_parse()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#badsnakes.libs.module.Module._extract" title="badsnakes.libs.module.Module._extract"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_extract()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#badsnakes.libs.module.Module._build" title="badsnakes.libs.module.Module._build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_build()</span></code></a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p>Once complete, the module has been prepared for analysis and
+reporting.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module.ast_">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ast_</span></span><a class="headerlink" href="#badsnakes.libs.module.Module.ast_" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the module’s parsed syntax tree.</p>
+<p>Syntax tree parsing is provided by the <code class="docutils literal notranslate"><span class="pre">ast</span></code> builtin. This
+property is a direct accessor to the return value from the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ast.parse()</span></code> method.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module.classification">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">classification</span></span><a class="headerlink" href="#badsnakes.libs.module.Module.classification" title="Link to this definition"></a></dt>
+<dd><p>Accessor to the module’s maximum severity classification.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module.code">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">StringIO</span></em><a class="headerlink" href="#badsnakes.libs.module.Module.code" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the textual codebase.</p>
+<p>As the code is a stream object, the cursor (memory pointer)
+advances with each read access. Once exhausted, the code can be
+‘rewound’ using the <a class="reference internal" href="#badsnakes.libs.module.Module.rewind" title="badsnakes.libs.module.Module.rewind"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rewind()</span></code></a> method.</p>
+<p>This property is an alias for the
+<a class="reference internal" href="parser.html#badsnakes.libs.parser.Parser.code" title="badsnakes.libs.parser.Parser.code"><code class="xref py py-attr docutils literal notranslate"><span class="pre">badsnakes.libs.parser.Parser.code</span></code></a> property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The textual code as an <code class="docutils literal notranslate"><span class="pre">io.StringIO</span></code> object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>io.StringIO</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#badsnakes.libs.module.Module.name" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the current Python module’s filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module.name_and_parent">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name_and_parent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#badsnakes.libs.module.Module.name_and_parent" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the module’s filename and parent directory.</p>
+<p>The logger and reporter use this property to display the module
+name and its parent directory, as this aids in clarity if a
+module name is used multiple times.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module.nodeclasses">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nodeclasses</span></span><a class="headerlink" href="#badsnakes.libs.module.Module.nodeclasses" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the AST node classes.</p>
+<p>Use this property to access the analyser(s) and results.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module.path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#badsnakes.libs.module.Module.path" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the current Python module’s path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/module.html#Module.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module.Module.analyse" title="Link to this definition"></a></dt>
+<dd><p>Call the <code class="docutils literal notranslate"><span class="pre">analyse</span></code> method for all of the node classes.</p>
+<p>A module is only analysed if 1) the module’s AST could be parsed
+and 2) if the <code class="docutils literal notranslate"><span class="pre">ast.body</span></code> list has more than 1 element.</p>
+<p>Once the analysis is complete, the module classification is set.
+The classification can be accessed through the
+<a class="reference internal" href="#badsnakes.libs.module.Module.classification" title="badsnakes.libs.module.Module.classification"><code class="xref py py-attr docutils literal notranslate"><span class="pre">classification</span></code></a> property.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module.display">
+<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/module.html#Module.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module.Module.display" title="Link to this definition"></a></dt>
+<dd><p>Display the attributes extracted from the abstract syntax tree.</p>
+<p>Generally, this is used as a debugging mechanism and not used for
+production-based reporting.</p>
+<p>This method is an alias for the
+<a class="reference internal" href="extractor.html#badsnakes.libs.extractor.Extractor.display" title="badsnakes.libs.extractor.Extractor.display"><code class="xref py py-meth docutils literal notranslate"><span class="pre">badsnakes.libs.extractor.Extractor.display()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module.display_syntax_tree">
+<span class="sig-name descname"><span class="pre">display_syntax_tree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/module.html#Module.display_syntax_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module.Module.display_syntax_tree" title="Link to this definition"></a></dt>
+<dd><p>Display the syntax tree, as provided by <code class="docutils literal notranslate"><span class="pre">ast</span></code>.</p>
+<p>Generally, this is used as a debugging mechanism and not used for
+production-based reporting.</p>
+<p>This method is an alias for the
+<a class="reference internal" href="parser.html#badsnakes.libs.parser.Parser.display_syntax_tree" title="badsnakes.libs.parser.Parser.display_syntax_tree"><code class="xref py py-meth docutils literal notranslate"><span class="pre">badsnakes.libs.parser.Parser.display_syntax_tree()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module.rewind">
+<span class="sig-name descname"><span class="pre">rewind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/module.html#Module.rewind"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module.Module.rewind" title="Link to this definition"></a></dt>
+<dd><p>Rewind the <a class="reference internal" href="#badsnakes.libs.module.Module.code" title="badsnakes.libs.module.Module.code"><code class="xref py py-attr docutils literal notranslate"><span class="pre">code</span></code></a> text stream to be beginning.</p>
+<p>This method is an alias for the
+<a class="reference internal" href="parser.html#badsnakes.libs.parser.Parser.rewind" title="badsnakes.libs.parser.Parser.rewind"><code class="xref py py-meth docutils literal notranslate"><span class="pre">badsnakes.libs.parser.Parser.rewind()</span></code></a> method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module._build">
+<span class="sig-name descname"><span class="pre">_build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/module.html#Module._build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module.Module._build" title="Link to this definition"></a></dt>
+<dd><p>Build the node classes object for this module.</p>
+<p>When this method is called, the extracted attributes from each
+AST node are stored into the <code class="docutils literal notranslate"><span class="pre">.items</span></code> attribute of the
+respective <a class="reference internal" href="#badsnakes.libs.module.Module.nodeclasses" title="badsnakes.libs.module.Module.nodeclasses"><code class="xref py py-attr docutils literal notranslate"><span class="pre">nodeclasses</span></code></a> node subclass. Each subclass’
+<code class="docutils literal notranslate"><span class="pre">.items</span></code> attribute will contain a list of
+<a class="reference internal" href="containers.html#module-badsnakes.libs.containers" title="badsnakes.libs.containers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">badsnakes.libs.containers</span></code></a> objects with the extracted
+attributes for analysis.</p>
+<p>Additionally, the attribute values for each node class are
+converted to lower case, for robust string matching.</p>
+<p>Node classes which are added:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Argument</p></li>
+<li><p>Assignment</p></li>
+<li><p>Attribute</p></li>
+<li><p>Call</p></li>
+<li><p>Constant</p></li>
+<li><p>FunctionDef</p></li>
+<li><p>Import (and ImportFrom)</p></li>
+<li><p>CodeText</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module._extract">
+<span class="sig-name descname"><span class="pre">_extract</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/module.html#Module._extract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module.Module._extract" title="Link to this definition"></a></dt>
+<dd><p>Extract and store relevant attributes from a parsed AST.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module._init">
+<span class="sig-name descname"><span class="pre">_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/module.html#Module._init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module.Module._init" title="Link to this definition"></a></dt>
+<dd><p>Initialiser for this <a class="reference internal" href="#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a> class’ instance.</p>
+<p>On initialisation, the following methods are called once the
+module’s filepath and filename have been set:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="#badsnakes.libs.module.Module._parse" title="badsnakes.libs.module.Module._parse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_parse()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#badsnakes.libs.module.Module._extract" title="badsnakes.libs.module.Module._extract"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_extract()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#badsnakes.libs.module.Module._build" title="badsnakes.libs.module.Module._build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_build()</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module._parse">
+<span class="sig-name descname"><span class="pre">_parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/module.html#Module._parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module.Module._parse" title="Link to this definition"></a></dt>
+<dd><p>Parse a Python module into an abstract syntax tree.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module.Module._set_classification">
+<span class="sig-name descname"><span class="pre">_set_classification</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/module.html#Module._set_classification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module.Module._set_classification" title="Link to this definition"></a></dt>
+<dd><p>Set the severity classification for the module.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">filter</span></code> is used to remove any empty <code class="docutils literal notranslate"><span class="pre">.items</span></code> lists.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeClasses">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.module.</span></span><span class="sig-name descname"><span class="pre">_NodeClasses</span></span><a class="reference internal" href="_modules/badsnakes/libs/module.html#_NodeClasses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module._NodeClasses" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An iterable class which contains the AST node classes.</p>
+<p>Each of the subclasses contains an <code class="xref py py-attr docutils literal notranslate"><span class="pre">items</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">_analyser</span></code>
+attribute. The <code class="docutils literal notranslate"><span class="pre">.items</span></code> attribute contains the AST node classes
+which were parsed from the source code. The <code class="docutils literal notranslate"><span class="pre">._analyser</span></code> attribute
+holds the node-specific analyser class which contains a <code class="docutils literal notranslate"><span class="pre">.analyse</span></code>
+function to carry out the analysis.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeClasses.tolower">
+<span class="sig-name descname"><span class="pre">tolower</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/module.html#_NodeClasses.tolower"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module._NodeClasses.tolower" title="Link to this definition"></a></dt>
+<dd><p>Convert specific container attributes to lower case.</p>
+<p>When container attributes are in lower case, this enables more
+robust string searches, and enables the <code class="docutils literal notranslate"><span class="pre">config.toml</span></code> file to
+contain only lower case strings, rather than several variations.</p>
+<p>The method containing the actual implementation is
+<a class="reference internal" href="containers.html#badsnakes.libs.containers._NodeBase.tolower" title="badsnakes.libs.containers._NodeBase.tolower"><code class="xref py py-meth docutils literal notranslate"><span class="pre">badsnakes.libs.containers._NodeBase.tolower()</span></code></a>. This method
+is a simple wrapper to call this function on each node class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.module.</span></span><span class="sig-name descname"><span class="pre">_NodeBase</span></span><a class="reference internal" href="_modules/badsnakes/libs/module.html#_NodeBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module._NodeBase" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for all specialised AST node classes.</p>
+<p>These classes contain an <code class="xref py py-attr docutils literal notranslate"><span class="pre">items</span></code> attribute which is a list
+holding the AST extraction containers for analysis, and the
+specialised AST node class analyser.</p>
+<p>The implementation for the analysers can be found in the
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">analysers</span></code> module.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeBase.analyser">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analyser</span></span><a class="headerlink" href="#badsnakes.libs.module._NodeBase.analyser" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the node class’ analyser class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeBase.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/module.html#_NodeBase.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module._NodeBase.analyse" title="Link to this definition"></a></dt>
+<dd><p>Callable for running the analyser for the specific node class.</p>
+<p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">items</span></code> attribute containing a list of AST node
+container objects is passed into the node-class-specific
+analyser by this method call.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.module._CodeText">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.module.</span></span><span class="sig-name descname"><span class="pre">_CodeText</span></span><a class="reference internal" href="_modules/badsnakes/libs/module.html#_CodeText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module._CodeText" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.module._NodeBase" title="badsnakes.libs.module._NodeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_NodeBase</span></code></a></p>
+<p>Specialised class for textual code analysis.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module._CodeText.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/module.html#_CodeText.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module._CodeText.analyse" title="Link to this definition"></a></dt>
+<dd><p>Callable for running the analyser for the code text.</p>
+<p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">items</span></code> attribute containing a list of AST node
+container objects is passed into the node-class-specific
+analyser by this method call.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module._CodeText.analyser">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analyser</span></span><a class="headerlink" href="#badsnakes.libs.module._CodeText.analyser" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the node class’ analyser class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeArguments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.module.</span></span><span class="sig-name descname"><span class="pre">_NodeArguments</span></span><a class="reference internal" href="_modules/badsnakes/libs/module.html#_NodeArguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module._NodeArguments" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.module._NodeBase" title="badsnakes.libs.module._NodeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_NodeBase</span></code></a></p>
+<p>Specialised node class for AST Argument nodes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeArguments.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.module._NodeArguments.analyse" title="Link to this definition"></a></dt>
+<dd><p>Callable for running the analyser for the specific node class.</p>
+<p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">items</span></code> attribute containing a list of AST node
+container objects is passed into the node-class-specific
+analyser by this method call.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeArguments.analyser">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analyser</span></span><a class="headerlink" href="#badsnakes.libs.module._NodeArguments.analyser" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the node class’ analyser class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeAssignments">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.module.</span></span><span class="sig-name descname"><span class="pre">_NodeAssignments</span></span><a class="reference internal" href="_modules/badsnakes/libs/module.html#_NodeAssignments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module._NodeAssignments" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.module._NodeBase" title="badsnakes.libs.module._NodeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_NodeBase</span></code></a></p>
+<p>Specialised node class for AST Assignment nodes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeAssignments.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.module._NodeAssignments.analyse" title="Link to this definition"></a></dt>
+<dd><p>Callable for running the analyser for the specific node class.</p>
+<p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">items</span></code> attribute containing a list of AST node
+container objects is passed into the node-class-specific
+analyser by this method call.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeAssignments.analyser">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analyser</span></span><a class="headerlink" href="#badsnakes.libs.module._NodeAssignments.analyser" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the node class’ analyser class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeAttributes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.module.</span></span><span class="sig-name descname"><span class="pre">_NodeAttributes</span></span><a class="reference internal" href="_modules/badsnakes/libs/module.html#_NodeAttributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module._NodeAttributes" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.module._NodeBase" title="badsnakes.libs.module._NodeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_NodeBase</span></code></a></p>
+<p>Specialised node class for AST Attribute nodes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeAttributes.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.module._NodeAttributes.analyse" title="Link to this definition"></a></dt>
+<dd><p>Callable for running the analyser for the specific node class.</p>
+<p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">items</span></code> attribute containing a list of AST node
+container objects is passed into the node-class-specific
+analyser by this method call.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeAttributes.analyser">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analyser</span></span><a class="headerlink" href="#badsnakes.libs.module._NodeAttributes.analyser" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the node class’ analyser class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeCalls">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.module.</span></span><span class="sig-name descname"><span class="pre">_NodeCalls</span></span><a class="reference internal" href="_modules/badsnakes/libs/module.html#_NodeCalls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module._NodeCalls" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.module._NodeBase" title="badsnakes.libs.module._NodeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_NodeBase</span></code></a></p>
+<p>Specialised node class for AST Call nodes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeCalls.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.module._NodeCalls.analyse" title="Link to this definition"></a></dt>
+<dd><p>Callable for running the analyser for the specific node class.</p>
+<p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">items</span></code> attribute containing a list of AST node
+container objects is passed into the node-class-specific
+analyser by this method call.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeCalls.analyser">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analyser</span></span><a class="headerlink" href="#badsnakes.libs.module._NodeCalls.analyser" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the node class’ analyser class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeConstants">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.module.</span></span><span class="sig-name descname"><span class="pre">_NodeConstants</span></span><a class="reference internal" href="_modules/badsnakes/libs/module.html#_NodeConstants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module._NodeConstants" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.module._NodeBase" title="badsnakes.libs.module._NodeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_NodeBase</span></code></a></p>
+<p>Specialised node class for AST Constant nodes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeConstants.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.module._NodeConstants.analyse" title="Link to this definition"></a></dt>
+<dd><p>Callable for running the analyser for the specific node class.</p>
+<p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">items</span></code> attribute containing a list of AST node
+container objects is passed into the node-class-specific
+analyser by this method call.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeConstants.analyser">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analyser</span></span><a class="headerlink" href="#badsnakes.libs.module._NodeConstants.analyser" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the node class’ analyser class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeFunctionDefs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.module.</span></span><span class="sig-name descname"><span class="pre">_NodeFunctionDefs</span></span><a class="reference internal" href="_modules/badsnakes/libs/module.html#_NodeFunctionDefs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module._NodeFunctionDefs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.module._NodeBase" title="badsnakes.libs.module._NodeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_NodeBase</span></code></a></p>
+<p>Specialised node class for AST FunctionDef nodes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeFunctionDefs.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.module._NodeFunctionDefs.analyse" title="Link to this definition"></a></dt>
+<dd><p>Callable for running the analyser for the specific node class.</p>
+<p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">items</span></code> attribute containing a list of AST node
+container objects is passed into the node-class-specific
+analyser by this method call.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeFunctionDefs.analyser">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analyser</span></span><a class="headerlink" href="#badsnakes.libs.module._NodeFunctionDefs.analyser" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the node class’ analyser class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeImports">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.module.</span></span><span class="sig-name descname"><span class="pre">_NodeImports</span></span><a class="reference internal" href="_modules/badsnakes/libs/module.html#_NodeImports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.module._NodeImports" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#badsnakes.libs.module._NodeBase" title="badsnakes.libs.module._NodeBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_NodeBase</span></code></a></p>
+<p>Specialised node class for AST Import and ImportFrom nodes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeImports.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#badsnakes.libs.module._NodeImports.analyse" title="Link to this definition"></a></dt>
+<dd><p>Callable for running the analyser for the specific node class.</p>
+<p>The <code class="xref py py-attr docutils literal notranslate"><span class="pre">items</span></code> attribute containing a list of AST node
+container objects is passed into the node-class-specific
+analyser by this method call.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="badsnakes.libs.module._NodeImports.analyser">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">analyser</span></span><a class="headerlink" href="#badsnakes.libs.module._NodeImports.analyser" title="Link to this definition"></a></dt>
+<dd><p>Public accessor to the node class’ analyser class.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="logger.html" class="btn btn-neutral float-left" title="Module: logger.py" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="parser.html" class="btn btn-neutral float-right" title="Module: parser.py" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
