@@ -7,7 +7,7 @@ name = "badsnakes"
 description = "A toolset to help identify malware in Python projects."
 authors = [{name = "The Developers", email = "development@s3dev.uk"}]
 classifiers = [
-               "Development Status :: 4 - Beta",
+               "Development Status :: 5 - Production/Stable",
                "Intended Audience :: Developers",
                "Intended Audience :: Education",
                "Intended Audience :: End Users/Desktop",
@@ -32,8 +32,7 @@ readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.10"
 
 [project.urls]
-# TODO: Update this when the docs are ready.
-Documentation = "https://github.com/s3dev/badsnakes"
+Documentation = "https://badsnakes.readthedocs.io/en/latest/index.html"
 Homepage = "https://github.com/s3dev/badsnakes"
 Repository = "https://github.com/s3dev/badsnakes"
 

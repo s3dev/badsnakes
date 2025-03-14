@@ -392,11 +392,14 @@ class CodeTextAnalyser(_BaseAnalyser):
     :Checks:
         The checks performed by this class are:
 
-            - Modules with no defined functions or imports.
-            - High percentage of long lines, relative to the number of
-              lines in a module.
-            - A high percentage of semi-colons, relative to the number of
-              lines in a module.
+            - :meth:`_get_line_count`
+            - :meth:`_test_high_pct_long_lines`
+            - :meth:`_test_high_pct_semi_colons`
+            - :meth:`_test_no_function_defs_no_imports`
+            - :meth:`_test_single_line_module`
+
+        The docstring for each of the linked methods provides a
+        description of the analysis.
 
         As these techniques are often used by threat actors to obfuscate
         code, these checks should pass for well-written / PEP oriented
@@ -423,16 +426,9 @@ class CodeTextAnalyser(_BaseAnalyser):
 
         :Code analysis:
 
-            - Suspect:
-
-                - Single line modules
-                - Modules with no defined functions or imports
-                - Modules with a high percentage of long lines
-
-            - Dangerous:
-
-                - A 'frequent' use of semi-colons, relative to the
-                  number of lines in the module
+            Please refer to the docstring for the
+            :class:`~CodeTextAnalyser` for description of the various
+            analyses carried out.
 
         """
         # Bypass analysis if the module AST could not be parsed. The user

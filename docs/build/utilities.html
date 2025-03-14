@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Module: utilities.py &mdash; badsnakes - v0.1.0 Documentation</title>
+  <title>Module: utilities.py &mdash; badsnakes - v0.2.0 Documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="_static/documentation_options.js?v=1be0d999"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -143,6 +143,38 @@ project.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">badsnakes.libs.utilities.</span></span><span class="sig-name descname"><span class="pre">Utilities</span></span><a class="reference internal" href="_modules/badsnakes/libs/utilities.html#Utilities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.utilities.Utilities" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Generalised utilities for use throughout the project.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="badsnakes.libs.utilities.Utilities.derive_log_filename">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">derive_log_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'badsnakes'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/badsnakes/libs/utilities.html#Utilities.derive_log_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.utilities.Utilities.derive_log_filename" title="Link to this definition"></a></dt>
+<dd><p>Derive the log filename from the provided path.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em><em>, </em><em>optional</em>) – Path from which the log filename is to
+be derived. If not provided, the default log base
+filename is used. Defaults to ‘badsnakes’.</p>
+</dd>
+<dt class="field-even">Logic<span class="colon">:</span></dt>
+<dd class="field-even"><p>If <code class="docutils literal notranslate"><span class="pre">path</span></code> is provided, the basename is extracted and the
+file extension is dropped and any trailing ‘/’ are dropped.
+This is used as the base for the filename convention.
+Otherwise, ‘badsnakes’ is used as the base.</p>
+<p>Filename convention:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">base</span><span class="o">&gt;</span><span class="n">__YmdTHMS</span><span class="o">.</span><span class="n">bs</span><span class="o">.</span><span class="n">log</span>
+</pre></div>
+</div>
+<p>Additionally, if the <code class="docutils literal notranslate"><span class="pre">--logpath</span></code> argument was passed to the
+CLI, this directory is used. Otherwise the user’s desktop is
+used as the directory.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The complete path to the log file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="badsnakes.libs.utilities.Utilities.exclude_dirs">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exclude_dirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/badsnakes/libs/utilities.html#Utilities.exclude_dirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.utilities.Utilities.exclude_dirs" title="Link to this definition"></a></dt>
@@ -297,7 +329,7 @@ the below. Otherwise, False.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.2.0.</p>
   </div>
 
    

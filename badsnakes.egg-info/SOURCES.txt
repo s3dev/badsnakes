@@ -1,5 +1,6 @@
 .gitignore
 .pylintrc
+.readthedocs.yaml
 LICENSE
 MANIFEST.in
 README.md
@@ -29,12 +30,14 @@ badsnakes/libs/module.py
 badsnakes/libs/parser.py
 badsnakes/libs/reporter.py
 badsnakes/libs/utilities.py
-dist/badsnakes-0.1.0.tar.gz
+dist/badsnakes-0.2.0.tar.gz
 docs/.constants.config
 docs/create.sh
+docs/requirements.txt
 docs/spellcheck.sh
 docs/update.sh
 docs/build/.buildinfo
+docs/build/.buildinfo.bak
 docs/build/analysers.html
 docs/build/badsnakes.html
 docs/build/changelog.html

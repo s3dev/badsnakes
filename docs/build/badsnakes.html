@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Module: badsnakes.py &mdash; badsnakes - v0.1.0 Documentation</title>
+  <title>Module: badsnakes.py &mdash; badsnakes - v0.2.0 Documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="_static/documentation_options.js?v=1be0d999"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -222,8 +222,9 @@ this list of modules is given to the logger.</p></li>
 <dt class="field-odd">Tasks<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p>Collect files to be analysed.</p></li>
+<li><p>Determine if specific or generic logging should be used.</p></li>
 <li><p>Analyse each collected file.</p></li>
-<li><p>Report the overall (worst) classification.</p></li>
+<li><p>Report the overall (worst) classification, per package.</p></li>
 <li><p>Create a log file, if instructed by the CLI by the
 <code class="docutils literal notranslate"><span class="pre">--log</span></code> argument.</p></li>
 </ul>
@@ -277,10 +278,16 @@ object.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="badsnakes.badsnakes.BadSnakes._create_log">
-<span class="sig-name descname"><span class="pre">_create_log</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/badsnakes.html#BadSnakes._create_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.badsnakes.BadSnakes._create_log" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_create_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'badsnakes'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/badsnakes.html#BadSnakes._create_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.badsnakes.BadSnakes._create_log" title="Link to this definition"></a></dt>
 <dd><p>Create a log file if instructed via the CLI.</p>
 <p>If the <code class="docutils literal notranslate"><span class="pre">--log</span></code> argument was passed to the CLI, this method will
 be triggered.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em><em>, </em><em>optional</em>) – Path from which the log’s filename is
+to be derived. Defaults to ‘badsnakes’.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -319,7 +326,7 @@ entry-point for the installed executable.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.2.0.</p>
   </div>
 
    

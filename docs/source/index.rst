@@ -120,7 +120,7 @@ Indices and Tables
 
 .. _GitHub Releases: https://github.com/s3dev/badsnakes/releases
 .. _GitHub: https://github.com/s3dev/badsnakes
-.. _PyPI: https://pypi.org/project/badsnakes/#files
+.. _PyPI: https://pypi.org/project/badsnakes/#history
 
 
 |lastupdated|

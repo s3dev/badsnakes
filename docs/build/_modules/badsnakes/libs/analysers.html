@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>badsnakes.libs.analysers &mdash; badsnakes - v0.1.0 Documentation</title>
+  <title>badsnakes.libs.analysers &mdash; badsnakes - v0.2.0 Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="../../../_static/documentation_options.js?v=1be0d999"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -525,11 +525,14 @@
 <span class="sd">    :Checks:</span>
 <span class="sd">        The checks performed by this class are:</span>
 
-<span class="sd">            - Modules with no defined functions or imports.</span>
-<span class="sd">            - High percentage of long lines, relative to the number of</span>
-<span class="sd">              lines in a module.</span>
-<span class="sd">            - A high percentage of semi-colons, relative to the number of</span>
-<span class="sd">              lines in a module.</span>
+<span class="sd">            - :meth:`_get_line_count`</span>
+<span class="sd">            - :meth:`_test_high_pct_long_lines`</span>
+<span class="sd">            - :meth:`_test_high_pct_semi_colons`</span>
+<span class="sd">            - :meth:`_test_no_function_defs_no_imports`</span>
+<span class="sd">            - :meth:`_test_single_line_module`</span>
+
+<span class="sd">        The docstring for each of the linked methods provides a</span>
+<span class="sd">        description of the analysis.</span>
 
 <span class="sd">        As these techniques are often used by threat actors to obfuscate</span>
 <span class="sd">        code, these checks should pass for well-written / PEP oriented</span>
@@ -558,16 +561,9 @@
 
 <span class="sd">        :Code analysis:</span>
 
-<span class="sd">            - Suspect:</span>
-
-<span class="sd">                - Single line modules</span>
-<span class="sd">                - Modules with no defined functions or imports</span>
-<span class="sd">                - Modules with a high percentage of long lines</span>
-
-<span class="sd">            - Dangerous:</span>
-
-<span class="sd">                - A &#39;frequent&#39; use of semi-colons, relative to the</span>
-<span class="sd">                  number of lines in the module</span>
+<span class="sd">            Please refer to the docstring for the</span>
+<span class="sd">            :class:`~CodeTextAnalyser` for description of the various</span>
+<span class="sd">            analyses carried out.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Bypass analysis if the module AST could not be parsed. The user</span>
@@ -1058,7 +1054,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.2.0.</p>
   </div>
 
    

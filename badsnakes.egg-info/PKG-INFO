@@ -1,14 +1,14 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: badsnakes
-Version: 0.1.0
+Version: 0.2.0
 Summary: A toolset to help identify malware in Python projects.
 Author-email: The Developers <development@s3dev.uk>
 License: GNU GPL-3
-Project-URL: Documentation, https://github.com/s3dev/badsnakes
+Project-URL: Documentation, https://badsnakes.readthedocs.io/en/latest/index.html
 Project-URL: Homepage, https://github.com/s3dev/badsnakes
 Project-URL: Repository, https://github.com/s3dev/badsnakes
 Keywords: library,utility,utilities,security,malware detection
-Classifier: Development Status :: 4 - Beta
+Classifier: Development Status :: 5 - Production/Stable
 Classifier: Intended Audience :: Developers
 Classifier: Intended Audience :: Education
 Classifier: Intended Audience :: End Users/Desktop

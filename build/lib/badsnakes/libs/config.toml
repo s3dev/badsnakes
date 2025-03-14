@@ -209,7 +209,6 @@ kwds = [
 [analyser.constant.suspect]
 # No long string detection as docstrings are constants.
 kwds = [
-        ";",
         ".bat",
         ".cmd",
         "\\x",

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Module: analysers.py &mdash; badsnakes - v0.1.0 Documentation</title>
+  <title>Module: analysers.py &mdash; badsnakes - v0.2.0 Documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="_static/documentation_options.js?v=1be0d999"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -826,13 +826,15 @@ rather than on parsed AST node extractions.</p>
 <dd class="field-odd"><p>The checks performed by this class are:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Modules with no defined functions or imports.</p></li>
-<li><p>High percentage of long lines, relative to the number of
-lines in a module.</p></li>
-<li><p>A high percentage of semi-colons, relative to the number of
-lines in a module.</p></li>
+<li><p><a class="reference internal" href="#badsnakes.libs.analysers.CodeTextAnalyser._get_line_count" title="badsnakes.libs.analysers.CodeTextAnalyser._get_line_count"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_get_line_count()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#badsnakes.libs.analysers.CodeTextAnalyser._test_high_pct_long_lines" title="badsnakes.libs.analysers.CodeTextAnalyser._test_high_pct_long_lines"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_test_high_pct_long_lines()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#badsnakes.libs.analysers.CodeTextAnalyser._test_high_pct_semi_colons" title="badsnakes.libs.analysers.CodeTextAnalyser._test_high_pct_semi_colons"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_test_high_pct_semi_colons()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#badsnakes.libs.analysers.CodeTextAnalyser._test_no_function_defs_no_imports" title="badsnakes.libs.analysers.CodeTextAnalyser._test_no_function_defs_no_imports"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_test_no_function_defs_no_imports()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#badsnakes.libs.analysers.CodeTextAnalyser._test_single_line_module" title="badsnakes.libs.analysers.CodeTextAnalyser._test_single_line_module"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_test_single_line_module()</span></code></a></p></li>
 </ul>
 </div></blockquote>
+<p>The docstring for each of the linked methods provides a
+description of the analysis.</p>
 <p>As these techniques are often used by threat actors to obfuscate
 code, these checks should pass for well-written / PEP oriented
 Python code, and are expected to trigger for suspect or poorly
@@ -843,7 +845,7 @@ written code.</p>
 <dt class="sig sig-object py" id="badsnakes.libs.analysers.CodeTextAnalyser.analyse">
 <span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><span class="pre">Module</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/badsnakes/libs/analysers.html#CodeTextAnalyser.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#badsnakes.libs.analysers.CodeTextAnalyser.analyse" title="Link to this definition"></a></dt>
 <dd><p>Run the code text analyser against this module.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>module</strong> (<a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><em>module.Module</em></a>) – A <a class="reference internal" href="module.html#badsnakes.libs.module.Module" title="badsnakes.libs.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a>
 class containing the stream of textual code to be
@@ -851,25 +853,9 @@ analysed, and <code class="docutils literal notranslate"><span class="pre">modul
 inspection.</p>
 </dd>
 <dt class="field-even">Code analysis<span class="colon">:</span></dt>
-<dd class="field-even"><ul>
-<li><p>Suspect:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Single line modules</p></li>
-<li><p>Modules with no defined functions or imports</p></li>
-<li><p>Modules with a high percentage of long lines</p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p>Dangerous:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>A ‘frequent’ use of semi-colons, relative to the
-number of lines in the module</p></li>
-</ul>
-</div></blockquote>
-</li>
-</ul>
+<dd class="field-even"><p>Please refer to the docstring for the
+<a class="reference internal" href="#badsnakes.libs.analysers.CodeTextAnalyser" title="badsnakes.libs.analysers.CodeTextAnalyser"><code class="xref py py-class docutils literal notranslate"><span class="pre">CodeTextAnalyser</span></code></a> for description of the various
+analyses carried out.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1585,7 +1571,7 @@ will result is double-reporting, but that’s OK.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.2.0.</p>
   </div>
 
    

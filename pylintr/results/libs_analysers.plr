@@ -21,7 +21,19 @@ Statistics by type
 
 
 
-859 lines have been analyzed
+External dependencies
+---------------------
+::
+
+    badsnakes 
+      \-libs 
+        \-config (analysers)
+        \-containers (analysers)
+        \-enums (analysers)
+
+
+
+855 lines have been analyzed
 
 Raw metrics
 -----------
@@ -29,13 +41,13 @@ Raw metrics
 +----------+-------+------+---------+-----------+
 |type      |number |%     |previous |difference |
 +==========+=======+======+=========+===========+
-|code      |311    |36.20 |311      |=          |
+|code      |311    |36.37 |311      |=          |
 +----------+-------+------+---------+-----------+
-|docstring |450    |52.39 |450      |=          |
+|docstring |446    |52.16 |446      |=          |
 +----------+-------+------+---------+-----------+
-|comment   |33     |3.84  |33       |=          |
+|comment   |33     |3.86  |33       |=          |
 +----------+-------+------+---------+-----------+
-|empty     |65     |7.57  |65       |=          |
+|empty     |65     |7.60  |65       |=          |
 +----------+-------+------+---------+-----------+
 
 

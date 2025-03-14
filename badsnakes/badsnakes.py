@@ -91,7 +91,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 # imports
 import logging
 import traceback
-from datetime import datetime as dt
 # locals
 from badsnakes.libs.argparser import argparser as ap
 from badsnakes.libs.collector import Collector
@@ -130,8 +129,9 @@ class BadSnakes:
 
         :Tasks:
             - Collect files to be analysed.
+            - Determine if specific or generic logging should be used.
             - Analyse each collected file.
-            - Report the overall (worst) classification.
+            - Report the overall (worst) classification, per package.
             - Create a log file, if instructed by the CLI by the
               ``--log`` argument.
 
@@ -139,11 +139,24 @@ class BadSnakes:
         file = None
         try:
             self._collect_files()
-            for pkg in self._files:
-                for file in pkg:
-                    self._analyse(path=file)
-            self._report_worst_classification()
-            self._create_log()
+            # Each package will have its own log file.
+            if len(ap.args.PATH) == len(self._files):
+                logging.debug('Log files will be package specific.')
+                for path, pkg in zip(ap.args.PATH, self._files):
+                    self._clf = Severity.UNKNOWN  #  --- Reinitialise
+                    self._modules = []            #  --/
+                    for file in pkg:
+                        self._analyse(path=file)
+                    self._report_worst_classification()
+                    self._create_log(path=path)
+            # A single log will contain all results.
+            else:
+                logging.debug('Log files will be package generic.')
+                for pkg in self._files:
+                    for file in pkg:
+                        self._analyse(path=file)
+                self._report_worst_classification()
+                self._create_log()
         # General project error handler.
         except Exception:  # pragma: nocover
             print()
@@ -171,7 +184,6 @@ class BadSnakes:
         m = Module(path=path)
         m.analyse()
         r = ReporterModule(modules=m)
-        # if args.verbose:
         if ap.args.verbose:
             r.report()
         else:
@@ -205,35 +217,35 @@ class BadSnakes:
         object.
 
         """
-        # self._collector = Collector(paths=args.PATH)
         self._collector = Collector(paths=ap.args.PATH)
         self._collector.collect()
         self._files = self._collector.files
         self._exclude_directories()
 
-    def _create_log(self):
+    def _create_log(self, path: str='badsnakes'):
         """Create a log file if instructed via the CLI.
 
         If the ``--log`` argument was passed to the CLI, this method will
         be triggered.
 
+        Args:
+            path (str, optional): Path from which the log's filename is
+                to be derived. Defaults to 'badsnakes'.
+
         """
-        # if args.log:
         if ap.args.log:
-            dtme = dt.now().strftime('%Y%m%dT%H%M%S')
-            path = os.path.join(os.path.expanduser('~/Desktop/'), f'badsnakes_{dtme}.log')
+            path = utilities.derive_log_filename(path=path)
+            logging.debug('Log path: %s', path)
             logger = Logger(path=path, modules=self._modules)
             logger.write()
 
     def _exclude_directories(self):
         """Remove any paths starting in an ``--exclude_dirs`` path."""
         # pylint: disable=consider-using-f-string
-        # if args.exclude_dirs:
         if ap.args.exclude_dirs:
             files = []
             for pkg in self._files:
                 # This is intentionally verbose to enable debug logging.
-                # keep = utilities.exclude_dirs(source=pkg, exclude=args.exclude_dirs)
                 keep = utilities.exclude_dirs(source=pkg, exclude=ap.args.exclude_dirs)
                 files.append(keep)
                 logging.debug('Files excluded:')

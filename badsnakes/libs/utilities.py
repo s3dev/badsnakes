@@ -37,6 +37,9 @@
 """
 
 import os
+from datetime import datetime as dt
+# locals
+from badsnakes.libs.argparser import argparser as ap
 
 
 class Utilities:
@@ -47,6 +50,40 @@ class Utilities:
     _ZIPSIG = b'\x50\x4b\x03\x04'
     _ZIPSIG_EMPTY = b'\x50\x4b\x05\x06'
     _ZIPSIG_SPAN = b'\x50\x4b\x07\x08'
+
+    @staticmethod
+    def derive_log_filename(path: str='badsnakes') -> str:
+        """Derive the log filename from the provided path.
+
+        Args:
+            path (str, optional): Path from which the log filename is to
+                be derived. If not provided, the default log base
+                filename is used. Defaults to 'badsnakes'.
+
+        :Logic:
+            If ``path`` is provided, the basename is extracted and the
+            file extension is dropped and any trailing '/' are dropped.
+            This is used as the base for the filename convention.
+            Otherwise, 'badsnakes' is used as the base.
+
+            Filename convention::
+
+                <base>__YmdTHMS.bs.log
+
+            Additionally, if the ``--logpath`` argument was passed to the
+            CLI, this directory is used. Otherwise the user's desktop is
+            used as the directory.
+
+        Returns:
+            str: The complete path to the log file.
+
+        """
+        dir_ = ap.args.logpath if ap.args.logpath else os.path.expanduser('~/Desktop/')
+        dtme = dt.now().strftime('%Y%m%dT%H%M%S')
+        base = os.path.splitext(os.path.basename(path.strip('/')))[0]
+        base = f'{base}__{dtme}.log'
+        fpath = os.path.join(dir_, base)
+        return fpath
 
     @staticmethod
     def exclude_dirs(source: list[str], exclude: list[str]) -> list[str]:

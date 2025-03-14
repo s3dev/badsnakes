@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>badsnakes.libs.utilities &mdash; badsnakes - v0.1.0 Documentation</title>
+  <title>badsnakes.libs.utilities &mdash; badsnakes - v0.2.0 Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="../../../_static/documentation_options.js?v=1be0d999"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -114,6 +114,9 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dt</span>
+<span class="c1"># locals</span>
+<span class="kn">from</span> <span class="nn">badsnakes.libs.argparser</span> <span class="kn">import</span> <span class="n">argparser</span> <span class="k">as</span> <span class="n">ap</span>
 
 
 <div class="viewcode-block" id="Utilities">
@@ -126,6 +129,43 @@
     <span class="n">_ZIPSIG</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x50\x4b\x03\x04</span><span class="s1">&#39;</span>
     <span class="n">_ZIPSIG_EMPTY</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x50\x4b\x05\x06</span><span class="s1">&#39;</span>
     <span class="n">_ZIPSIG_SPAN</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x50\x4b\x07\x08</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="Utilities.derive_log_filename">
+<a class="viewcode-back" href="../../../utilities.html#badsnakes.libs.utilities.Utilities.derive_log_filename">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">derive_log_filename</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;badsnakes&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Derive the log filename from the provided path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str, optional): Path from which the log filename is to</span>
+<span class="sd">                be derived. If not provided, the default log base</span>
+<span class="sd">                filename is used. Defaults to &#39;badsnakes&#39;.</span>
+
+<span class="sd">        :Logic:</span>
+<span class="sd">            If ``path`` is provided, the basename is extracted and the</span>
+<span class="sd">            file extension is dropped and any trailing &#39;/&#39; are dropped.</span>
+<span class="sd">            This is used as the base for the filename convention.</span>
+<span class="sd">            Otherwise, &#39;badsnakes&#39; is used as the base.</span>
+
+<span class="sd">            Filename convention::</span>
+
+<span class="sd">                &lt;base&gt;__YmdTHMS.bs.log</span>
+
+<span class="sd">            Additionally, if the ``--logpath`` argument was passed to the</span>
+<span class="sd">            CLI, this directory is used. Otherwise the user&#39;s desktop is</span>
+<span class="sd">            used as the directory.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The complete path to the log file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dir_</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">logpath</span> <span class="k">if</span> <span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">logpath</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~/Desktop/&#39;</span><span class="p">)</span>
+        <span class="n">dtme</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">T%H%M%S&#39;</span><span class="p">)</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">base</span><span class="si">}</span><span class="s1">__</span><span class="si">{</span><span class="n">dtme</span><span class="si">}</span><span class="s1">.log&#39;</span>
+        <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_</span><span class="p">,</span> <span class="n">base</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fpath</span></div>
+
 
 <div class="viewcode-block" id="Utilities.exclude_dirs">
 <a class="viewcode-back" href="../../../utilities.html#badsnakes.libs.utilities.Utilities.exclude_dirs">[docs]</a>
@@ -271,7 +311,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.2.0.</p>
   </div>
 
    

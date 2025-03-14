@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>badsnakes.badsnakes &mdash; badsnakes - v0.1.0 Documentation</title>
+  <title>badsnakes.badsnakes &mdash; badsnakes - v0.2.0 Documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=2caa9db7"></script>
+      <script src="../../_static/documentation_options.js?v=1be0d999"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -168,7 +168,6 @@
 <span class="c1"># imports</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dt</span>
 <span class="c1"># locals</span>
 <span class="kn">from</span> <span class="nn">badsnakes.libs.argparser</span> <span class="kn">import</span> <span class="n">argparser</span> <span class="k">as</span> <span class="n">ap</span>
 <span class="kn">from</span> <span class="nn">badsnakes.libs.collector</span> <span class="kn">import</span> <span class="n">Collector</span>
@@ -214,8 +213,9 @@
 
 <span class="sd">        :Tasks:</span>
 <span class="sd">            - Collect files to be analysed.</span>
+<span class="sd">            - Determine if specific or generic logging should be used.</span>
 <span class="sd">            - Analyse each collected file.</span>
-<span class="sd">            - Report the overall (worst) classification.</span>
+<span class="sd">            - Report the overall (worst) classification, per package.</span>
 <span class="sd">            - Create a log file, if instructed by the CLI by the</span>
 <span class="sd">              ``--log`` argument.</span>
 
@@ -223,11 +223,24 @@
         <span class="n">file</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_collect_files</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">pkg</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_analyse</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_report_worst_classification</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_create_log</span><span class="p">()</span>
+            <span class="c1"># Each package will have its own log file.</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">PATH</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Log files will be package specific.&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">PATH</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_clf</span> <span class="o">=</span> <span class="n">Severity</span><span class="o">.</span><span class="n">UNKNOWN</span>  <span class="c1">#  --- Reinitialise</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_modules</span> <span class="o">=</span> <span class="p">[]</span>            <span class="c1">#  --/</span>
+                    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">pkg</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_analyse</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_report_worst_classification</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_create_log</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+            <span class="c1"># A single log will contain all results.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Log files will be package generic.&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">pkg</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_analyse</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_report_worst_classification</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_create_log</span><span class="p">()</span>
         <span class="c1"># General project error handler.</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pragma: nocover</span>
             <span class="nb">print</span><span class="p">()</span>
@@ -258,7 +271,6 @@
         <span class="n">m</span> <span class="o">=</span> <span class="n">Module</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
         <span class="n">m</span><span class="o">.</span><span class="n">analyse</span><span class="p">()</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">ReporterModule</span><span class="p">(</span><span class="n">modules</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
-        <span class="c1"># if args.verbose:</span>
         <span class="k">if</span> <span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="n">r</span><span class="o">.</span><span class="n">report</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -295,7 +307,6 @@
 <span class="sd">        object.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># self._collector = Collector(paths=args.PATH)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_collector</span> <span class="o">=</span> <span class="n">Collector</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">PATH</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_collector</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collector</span><span class="o">.</span><span class="n">files</span>
@@ -304,17 +315,20 @@
 
 <div class="viewcode-block" id="BadSnakes._create_log">
 <a class="viewcode-back" href="../../badsnakes.html#badsnakes.badsnakes.BadSnakes._create_log">[docs]</a>
-    <span class="k">def</span> <span class="nf">_create_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;badsnakes&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a log file if instructed via the CLI.</span>
 
 <span class="sd">        If the ``--log`` argument was passed to the CLI, this method will</span>
 <span class="sd">        be triggered.</span>
 
+<span class="sd">        Args:</span>
+<span class="sd">            path (str, optional): Path from which the log&#39;s filename is</span>
+<span class="sd">                to be derived. Defaults to &#39;badsnakes&#39;.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># if args.log:</span>
         <span class="k">if</span> <span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">log</span><span class="p">:</span>
-            <span class="n">dtme</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">T%H%M%S&#39;</span><span class="p">)</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~/Desktop/&#39;</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;badsnakes_</span><span class="si">{</span><span class="n">dtme</span><span class="si">}</span><span class="s1">.log&#39;</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">derive_log_filename</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Log path: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
             <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">modules</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_modules</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">write</span><span class="p">()</span></div>
 
@@ -324,12 +338,10 @@
     <span class="k">def</span> <span class="nf">_exclude_directories</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove any paths starting in an ``--exclude_dirs`` path.&quot;&quot;&quot;</span>
         <span class="c1"># pylint: disable=consider-using-f-string</span>
-        <span class="c1"># if args.exclude_dirs:</span>
         <span class="k">if</span> <span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">exclude_dirs</span><span class="p">:</span>
             <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">:</span>
                 <span class="c1"># This is intentionally verbose to enable debug logging.</span>
-                <span class="c1"># keep = utilities.exclude_dirs(source=pkg, exclude=args.exclude_dirs)</span>
                 <span class="n">keep</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">exclude_dirs</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="n">pkg</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">ap</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">exclude_dirs</span><span class="p">)</span>
                 <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">keep</span><span class="p">)</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Files excluded:&#39;</span><span class="p">)</span>
@@ -376,7 +388,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024-2025 | s3dev | version 0.1.0.</p>
+    <p>&#169; Copyright 2024-2025 | s3dev | version 0.2.0.</p>
   </div>
 
    

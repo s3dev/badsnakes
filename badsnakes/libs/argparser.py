@@ -12,12 +12,15 @@
 
 """
 # pylint: disable=import-error
+# pylint: disable=no-member  # ExCode does have the members.
 
 import argparse
 import logging
 import os
+import sys
 # locals
 from badsnakes.libs.config import config, projectcfg
+from badsnakes.libs.enums import ExCode
 from badsnakes.libs._version import __version__
 
 
@@ -32,7 +35,12 @@ class ArgParser:
     _h_dbug = 'Display debugging output to the terminal.'
     _h_excl = 'Directories to be excluded from file collection.'
     _h_help = 'Display this help and usage, then exit.'
-    _h_logg = 'Store the analysis results into a log file on your Desktop.'
+    _h_logg = ('Store the analysis results into a log file on your desktop,\n'
+               'or the path provided to --logpath.')
+    _h_logp = ('Path into which the log file(s) will be stored.\n'
+               'Notes:\n'
+               '- The path *must* already exist, otherwise the program will abort.\n'
+               '- If not provided, the logs are stored to the user\'s desktop.')
     _h_path = ('Path(s) to the Python module(s) or wheel(s) to be analysed.\n'
                '- If files, glob wildcard patterns are honoured.\n'
                '  For example, *.py or *.whl.\n'
@@ -49,6 +57,7 @@ class ArgParser:
         """Project argument parser class initialiser."""
         self._args = None
         self._epil = self._build_epilog()
+        self._excode = ExCode.OK.value
 
     @property
     def args(self):
@@ -72,9 +81,18 @@ class ArgParser:
         argp.add_argument('-v', '--verbose', help=self._h_verb, action='store_true')
         argp.add_argument('-h', '--help', help=self._h_help, action='help')
         argp.add_argument('-V', '--version', help=self._h_vers, action='version', version=self._epil)
+        argp.add_argument('--logpath', help=self._h_logp, nargs=1)
         self._args = argp.parse_args()
         self._set_logger()
         logging.debug('CLI arguments: %s', self._args)
+        try:
+            self._verify_args()
+        except ValueError as err:
+            argp.print_help()
+            print('')
+            logging.critical(err)
+            print('')
+            sys.exit(self._excode)
 
     def _build_epilog(self) -> str:
         """Build the epilog string for terminal display.
@@ -107,6 +125,19 @@ class ArgParser:
         """
         level = 10 if self._args.debug else projectcfg['log_level']
         logging.basicConfig(level=level, format="[%(levelname)s]: %(message)s")
+
+    def _verify_args(self):
+        """Verify the provided arguments are valid.
+
+        If any argument is not valid, a ``ValueError`` is raised and the
+        appropriate exit code is set.
+
+        """
+        if self._args.logpath:
+            self._args.logpath = self._args.logpath[0]
+            if not os.path.exists(self._args.logpath):
+                self._excode = ExCode.ERR_ARGP_LOGP.value
+                raise ValueError(f'The requested log path does not exist: {self._args.logpath}')
 
 
 # Make the arg parser accessible as an import.

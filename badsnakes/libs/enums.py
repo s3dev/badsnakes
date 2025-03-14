@@ -22,11 +22,17 @@ import enum
 class ExCode(enum.IntEnum):
     """Exit code enumerator class."""
 
-    # Main (1-10)
+    # No error
+    OK = 0
+
+    # Main (1-9)
     ERR_MAIN = 1   # Error from the BadSnakes.main, the main error handler.
 
-    # Config module (21-29)
+    # Config module (20-29)
     ERR_TOML = 21  # The toml module is not installed (< 3.11).
+
+    # Argparser (30-39)
+    ERR_ARGP_LOGP = 30  # The requested log path does not exist.
 
 
 class Severity(enum.IntEnum):
